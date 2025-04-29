@@ -9,14 +9,17 @@
 	projectile_type = /obj/projectile/magic/lightning
 	releasedrain = 30
 	chargedrain = 1
-	chargetime = 20
-	charge_max = 20 SECONDS
+	chargetime = 15
+	charge_max = 25 SECONDS
 	warnie = "spellwarning"
 	no_early_release = TRUE
 	movement_interrupt = FALSE
 	charging_slowdown = 3
 	chargedloop = /datum/looping_sound/invokelightning
 	associated_skill = /datum/skill/magic/arcane
+	spell_tier = 2
+	invocation = "Fulmen!"
+	invocation_type = "shout"
 	cost = 2
 	xp_gain = TRUE
 
@@ -70,6 +73,9 @@
 	warnie = "spellwarning"
 	no_early_release = TRUE
 	movement_interrupt = FALSE
+	spell_tier = 2 // Doesn't matter for the most part
+	invocation = "Sanguis Sagitta!"
+	invocation_type = "shout"
 	charging_slowdown = 3
 	chargedloop = /datum/looping_sound/invokegen
 	associated_skill = /datum/skill/magic/blood
@@ -118,6 +124,9 @@
 	warnie = "spellwarning"
 	no_early_release = TRUE
 	movement_interrupt = FALSE
+	spell_tier = 2
+	invocation = "Sanguis Furtum!"
+	invocation_type = "shout"
 	charging_slowdown = 3
 	chargedloop = /datum/looping_sound/invokegen
 	associated_skill = /datum/skill/magic/blood
@@ -166,15 +175,17 @@
 	projectile_type = /obj/projectile/magic/aoe/fireball/rogue
 	overlay_state = "fireball"
 	sound = list('sound/magic/fireball.ogg')
-	active = FALSE
 	releasedrain = 30
 	chargedrain = 1
-	chargetime = 15
-	charge_max = 10 SECONDS
+	chargetime = 25
+	charge_max = 20 SECONDS
 	warnie = "spellwarning"
 	no_early_release = TRUE
 	movement_interrupt = FALSE
 	charging_slowdown = 3
+	spell_tier = 3 // AOE
+	invocation = "Sphaera Ignis!"
+	invocation_type = "shout"
 	chargedloop = /datum/looping_sound/invokefire
 	associated_skill = /datum/skill/magic/arcane
 	cost = 2
@@ -217,13 +228,16 @@
 	active = FALSE
 	releasedrain = 50
 	chargedrain = 1
-	chargetime = 15
-	charge_max = 10 SECONDS
+	chargetime = 25
+	charge_max = 20 SECONDS
 	warnie = "spellwarning"
+	spell_tier = 4 // Highest tier AOE
+	invocation = "Maior Sphaera Ignis!"
+	invocation_type = "shout"
 	no_early_release = TRUE
 	movement_interrupt = TRUE
 	chargedloop = /datum/looping_sound/invokefire
-	cost = 5
+	cost = 3
 	xp_gain = TRUE
 
 /obj/projectile/magic/aoe/fireball/rogue/great
@@ -250,6 +264,9 @@
 	warnie = "spellwarning"
 	no_early_release = TRUE
 	movement_interrupt = FALSE
+	spell_tier = 2
+	invocation = "Evomere Flammas!"
+	invocation_type = "shout"
 	charging_slowdown = 3
 	chargedloop = /datum/looping_sound/invokefire
 	associated_skill = /datum/skill/magic/arcane
@@ -285,6 +302,9 @@
 	overlay_state = "fetch"
 	no_early_release = TRUE
 	charging_slowdown = 1
+	spell_tier = 2
+	invocation = "Recolligere"
+	invocation_type = "whisper"
 	chargedloop = /datum/looping_sound/invokegen
 	associated_skill = /datum/skill/magic/arcane
 	cost = 1

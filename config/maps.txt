@@ -13,6 +13,9 @@ Format:
 	votable (is this map votable)
 endmap
 
+map roguetest
+endmap
+
 map dun_manor
 endmap
 

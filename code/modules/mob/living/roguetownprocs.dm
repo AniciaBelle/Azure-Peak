@@ -17,7 +17,7 @@
 
 	var/chance2hit = 0
 
-	if(check_zone(zone) == zone)
+	if(check_zone(zone) == zone)	//Are we targeting a big limb or chest?
 		chance2hit += 10
 
 	if(user.mind)
@@ -26,25 +26,29 @@
 	if(used_intent)
 		if(used_intent.blade_class == BCLASS_STAB)
 			chance2hit += 10
+		if(used_intent.blade_class == BCLASS_PEEL)
+			chance2hit += 25
 		if(used_intent.blade_class == BCLASS_CUT)
 			chance2hit += 6
+		if((used_intent.blade_class == BCLASS_BLUNT || used_intent.blade_class == BCLASS_SMASH) && check_zone(zone) != zone)	//A mace can't hit the eyes very well
+			chance2hit -= 10
 
 	if(I)
 		if(I.wlength == WLENGTH_SHORT)
 			chance2hit += 10
 
 	if(user.STAPER > 10)
-		chance2hit += ((user.STAPER-10)*6)
+		chance2hit += (min((user.STAPER-10)*8, 40))
 
 	if(user.STAPER < 10)
-		chance2hit -= ((10-user.STAPER)*6)
+		chance2hit -= ((10-user.STAPER)*10)
 
 	if(istype(user.rmb_intent, /datum/rmb_intent/aimed))
 		chance2hit += 20
 	if(istype(user.rmb_intent, /datum/rmb_intent/swift))
 		chance2hit -= 20
 
-	chance2hit = CLAMP(chance2hit, 5, 95)
+	chance2hit = CLAMP(chance2hit, 5, 93)
 
 	if(prob(chance2hit))
 		return zone
@@ -129,7 +133,7 @@
 			if(world.time < last_parry + setparrytime)
 				if(!istype(rmb_intent, /datum/rmb_intent/riposte))
 					return FALSE
-			if(has_status_effect(/datum/status_effect/debuff/feinted))
+			if(has_status_effect(/datum/status_effect/debuff/exposed))
 				return FALSE
 			if(has_status_effect(/datum/status_effect/debuff/riposted))
 				return FALSE
@@ -172,7 +176,11 @@
 
 			if(highest_defense <= (H.mind ? (H.mind.get_skill_level(/datum/skill/combat/unarmed) * 20) : 20))
 				defender_skill = H.mind?.get_skill_level(/datum/skill/combat/unarmed)
-				prob2defend += (defender_skill * 20)
+				var/obj/B = H.get_item_by_slot(SLOT_WRISTS)
+				if(istype(B, /obj/item/clothing/wrists/roguetown/bracers))
+					prob2defend += (defender_skill * 30)
+				else
+					prob2defend += (defender_skill * 10)		// no bracers gonna be butts.
 				weapon_parry = FALSE
 			else
 				defender_skill = H.mind?.get_skill_level(used_weapon.associated_skill)
@@ -324,6 +332,8 @@
 
 					var/dam2take = round((get_complex_damage(AB,user,used_weapon.blade_dulling)/2),1)
 					if(dam2take)
+						if(dam2take > 0 && intenty.masteritem?.intdamage_factor)
+							dam2take = dam2take * intenty.masteritem?.intdamage_factor
 						used_weapon.take_damage(max(dam2take,1), BRUTE, used_weapon.d_type)
 					return TRUE
 				else
@@ -352,7 +362,7 @@
 					return FALSE
 			if(has_status_effect(/datum/status_effect/debuff/riposted))
 				return FALSE
-			if(has_status_effect(/datum/status_effect/debuff/feinted))
+			if(has_status_effect(/datum/status_effect/debuff/exposed))
 				return FALSE
 			last_dodge = world.time
 			if(src.loc == user.loc)

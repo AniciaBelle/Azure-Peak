@@ -23,6 +23,8 @@
 	var/wallcraft = FALSE
 	var/craftdiff = 1
 	var/sellprice = 0
+	/// Whether this recipe will transmit a message in a 7x7 column around the source.
+	var/loud = FALSE
 	//crafting diff, every diff removes 25% chance to craft
 /*
 /datum/crafting_recipe/example

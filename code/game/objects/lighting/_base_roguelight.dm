@@ -8,6 +8,7 @@
 	var/datum/looping_sound/soundloop = null // = /datum/looping_sound/fireloop
 	pass_flags = LETPASSTHROW
 	flags_1 = NODECONSTRUCT_1
+	var/no_refuel = FALSE // For special holder that don't actually refuel
 	var/cookonme = FALSE
 	var/crossfire = TRUE
 	var/can_damage = FALSE
@@ -147,9 +148,20 @@
 						else
 							break
 					return
-	if(W.firefuel)
-		if (alert(usr, "Fuel the [src] with [W]?", "ROGUETOWN", "Fuel", "Smelt") != "Fuel")
-			return TRUE //returns true if the answer is no, we don't want to feed it
+	if(W.firefuel && !no_refuel)
+		if(W.smeltresult) // For things with actual smelt results - functionally no differences
+			if(alert(usr, "Fuel [src] with [W]?", "ROGUETOWN", "Fuel", "Smelt") != "Fuel")
+				return TRUE
+		if(alert(usr, "Fuel [src] with [W]?", "ROGUETOWN", "Yes", "No") != "Yes")
+			return TRUE
+		if(!W)
+			return
+		if(user.get_active_held_item() != W)
+			to_chat(user, span_warning("That item is no longer in my hand..."))
+			return
+
+		user.dropItemToGround(W)
+
 		if(initial(fueluse))
 			if(fueluse > initial(fueluse) - 5 SECONDS)
 				to_chat(user, "<span class='warning'>[src] is fully fueled.</span>")

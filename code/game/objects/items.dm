@@ -71,6 +71,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	var/interaction_flags_item = INTERACT_ITEM_ATTACK_HAND_PICKUP
 
 	var/body_parts_covered = 0 //see setup.dm for appropriate bit flags
+	var/body_parts_covered_dynamic = 0
+	var/body_parts_inherent	= 0 //bodypart coverage areas you cannot peel off because it wouldn't make any sense (peeling chest off of torso armor, hands off of gloves, head off of helmets, etc)
 	var/gas_transfer_coefficient = 1 // for leaking gas from turf to mask and vice-versa (for masks right now, but at some point, i'd like to include space helmets)
 	var/permeability_coefficient = 1 // for chemicals/diseases
 	var/siemens_coefficient = 1 // for electrical admittance/conductance (electrocution checks and shit)
@@ -130,6 +132,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	//Grinder vars
 	var/list/grind_results //A reagent list containing the reagents this item produces when ground up in a grinder - this can be an empty list to allow for reagent transferring only
 	var/list/juice_results //A reagent list containing blah blah... but when JUICED in a grinder!
+	var/mill_result = null // What it grinds into on a millstone or similar.
 
 	var/canMouseDown = FALSE
 	var/can_parry = FALSE
@@ -151,6 +154,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	var/wbalance = 0
 	var/wdefense = 0 //better at defending
 	var/minstr = 0  //for weapons
+	var/intdamage_factor = 0	//%-age of our raw damage that is dealt to armor or weapon on hit / parry.
 
 	var/sleeved = null
 	var/sleevetype = null
@@ -165,6 +169,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 	var/bloody_icon = 'icons/effects/blood.dmi'
 	var/bloody_icon_state = "itemblood"
+	var/dam_icon = 'icons/effects/item_damage32.dmi'
+	var/dam_icon_state = "itemdamaged"
 	var/boobed = FALSE
 
 	var/firefuel = 0 //add this idiot
@@ -235,7 +241,9 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		grid_width = (w_class * world.icon_size)
 	if(grid_height <= 0)
 		grid_height = (w_class * world.icon_size)
-
+	
+	if(body_parts_covered)
+		body_parts_covered_dynamic = body_parts_covered
 	update_transform()
 
 
@@ -255,6 +263,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 					B.remove()
 					B.generate_appearance()
 					B.apply()
+				if (obj_broken)
+					update_damaged_state()
 			return
 		if(wielded)
 			if(gripsprite)
@@ -264,6 +274,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 					B.remove()
 					B.generate_appearance()
 					B.apply()
+				if (obj_broken)
+					update_damaged_state()
 			if(toggle_state)
 				icon_state = "[toggle_state]1"
 			return
@@ -277,6 +289,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 				B.remove()
 				B.generate_appearance()
 				B.apply()
+			if (obj_broken)
+				update_damaged_state()
 
 /obj/item/Initialize()
 	if (attack_verb)
@@ -442,6 +456,9 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 		if(associated_skill && associated_skill.name)
 			inspec += "\n<b>SKILL:</b> [associated_skill.name]"
+		
+		if(intdamage_factor)
+			inspec += "\n<b>INTEGRITY DAMAGE:</b>[intdamage_factor * 100]%"
 
 //**** CLOTHING STUFF
 
@@ -452,9 +469,30 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 			if(C.body_parts_covered)
 				inspec += "\n<b>COVERAGE: <br></b>"
 				inspec += " | "
-				for(var/zone in body_parts_covered2organ_names(C.body_parts_covered))
-					inspec += "<b>[capitalize(zone)]</b> | "
+				if(C.body_parts_covered == C.body_parts_covered_dynamic)
+					for(var/zone in body_parts_covered2organ_names(C.body_parts_covered))
+						inspec += "<b>[capitalize(zone)]</b> | "
+				else
+					var/list/zones = list()
+					//We have some part peeled, so we turn the printout into precise mode and highlight the missing coverage.
+					for(var/zoneorg in body_parts_covered2organ_names(C.body_parts_covered, precise = TRUE))
+						zones += zoneorg
+					for(var/zonedyn in body_parts_covered2organ_names(C.body_parts_covered_dynamic, precise = TRUE))
+						inspec += "<b>[capitalize(zonedyn)]</b> | "
+						if(zonedyn in zones)
+							zones.Remove(zonedyn)
+					for(var/zone in zones)			
+						inspec += "<b><font color = '#7e0000'>[capitalize(zone)]</font></b> | "
 				inspec += "<br>"
+			if(C.body_parts_inherent)
+				inspec += "<b>CANNOT BE PEELED: </b>"
+				var/list/inherentList = body_parts_covered2organ_names(C.body_parts_inherent)
+				if(length(inherentList) == 1)
+					inspec += "<b><font color = '#77cde2'>[capitalize(inherentList[1])]</font></b>"
+				else
+					inspec += "| "
+					for(var/zone in inherentList)
+						inspec += "<b><font color = '#77cde2'>[capitalize(zone)]</b></font> | "
 			if(C.prevent_crits)
 				if(length(C.prevent_crits))
 					inspec += "\n<b>PREVENTS CRITS:</b>"
@@ -1199,6 +1237,9 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	if(user.get_num_arms() < 2)
 		to_chat(user, span_warning("I don't have enough hands."))
 		return
+	if (obj_broken)
+		to_chat(user, span_warning("It's completely broken."))
+		return
 	wielded = TRUE
 	if(force_wielded)
 		force = force_wielded
@@ -1248,3 +1289,145 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		else
 			str += "NO DEFENSE"
 	return str
+
+/obj/item/obj_break(mob/living/carbon/user, damage_flag)
+	..()
+
+	if (wielded)
+		ungrip(user, show_message = FALSE)
+	update_damaged_state()
+	if(!ismob(loc))
+		return
+	var/mob/M = loc
+	to_chat(M, "\The [src] BREAKS...!")
+
+/obj/item/obj_fix()
+	..()
+	update_damaged_state()
+
+/obj/item/obj_destruction(damage_flag)
+	if (damage_flag == "acid")
+		obj_destroyed = TRUE
+		acid_melt()
+		return TRUE
+	if (damage_flag == "fire")
+		obj_destroyed = TRUE
+		burn()
+		return TRUE
+	if (ismob(loc))
+		return FALSE
+
+	obj_destroyed = TRUE
+	if(destroy_sound)
+		playsound(src, destroy_sound, 100, TRUE)
+	if(destroy_message)
+		visible_message(destroy_message)
+	deconstruct(FALSE)
+
+	return TRUE
+
+/obj/item/proc/update_damaged_state()
+	cut_overlays()
+	if (!obj_broken)
+		return
+	var/icon/damaged_icon = icon(initial(icon), icon_state, , TRUE)
+	damaged_icon.Blend("#fff", ICON_ADD)
+	damaged_icon.Blend(icon(dam_icon, dam_icon_state), ICON_MULTIPLY)
+	var/mutable_appearance/damage = new(damaged_icon)
+	damage.alpha = 150
+	add_overlay(damage)
+
+/// Proc that is only called with the Peel intent. Stacks consecutive hits, shreds coverage once a threshold is met. Thresholds are defined on /obj/item
+/obj/item/proc/peel_coverage(bodypart, divisor)
+	var/coveragezone = attackzone2coveragezone(bodypart)
+	if(!(body_parts_inherent & coveragezone))
+		if(!last_peeled_limb || coveragezone == last_peeled_limb)
+			if(divisor >= peel_threshold)
+				peel_count += divisor ? (peel_threshold / divisor ) : 1
+			else if(divisor < peel_threshold)
+				peel_count++
+			if(peel_count >= peel_threshold)
+				body_parts_covered_dynamic &= ~coveragezone
+				playsound(src, 'sound/foley/peeled_coverage.ogg', 100)
+				var/list/peeledpart = body_parts_covered2organ_names(coveragezone, precise = TRUE)
+				var/parttext
+				if(length(peeledpart))
+					parttext = peeledpart[1]	//There should really only be one bodypart that gets exposed here.
+				visible_message("<font color = '#f5f5f5'><b>[parttext ? parttext : "Coverage"]</font></b> gets peeled off of [src]!")
+				reset_peel(success = TRUE)
+			else
+				visible_message(span_info("Peel strikes [src]! <b>[ROUND_UP(peel_count)]</b>!"))
+		else
+			last_peeled_limb = coveragezone
+			reset_peel()
+	else
+		last_peeled_limb = coveragezone
+		reset_peel()
+
+/obj/item/proc/repair_coverage()
+	body_parts_covered_dynamic = body_parts_covered
+	reset_peel()
+
+/obj/item/proc/reset_peel(success = FALSE)
+	if(peel_count > 0 && !success)
+		visible_message(span_info("Peel count lost on [src]!"))
+	peel_count = 0
+
+/obj/item/proc/attackzone2coveragezone(location)
+	switch(location)
+		if(BODY_ZONE_HEAD)
+			return HEAD
+		if(BODY_ZONE_PRECISE_EARS)
+			return EARS
+		if(BODY_ZONE_PRECISE_SKULL)
+			return HAIR
+		if(BODY_ZONE_PRECISE_NOSE)
+			return NOSE
+		if(BODY_ZONE_PRECISE_NECK)
+			return NECK
+		if(BODY_ZONE_PRECISE_L_EYE)
+			return LEFT_EYE
+		if(BODY_ZONE_PRECISE_R_EYE)
+			return RIGHT_EYE
+		if(BODY_ZONE_PRECISE_MOUTH)
+			return MOUTH
+		if(BODY_ZONE_CHEST)
+			return CHEST
+		if(BODY_ZONE_PRECISE_STOMACH)
+			return VITALS
+		if(BODY_ZONE_PRECISE_GROIN)
+			return GROIN
+		if(BODY_ZONE_L_ARM)
+			return ARM_LEFT
+		if(BODY_ZONE_R_ARM)
+			return ARM_RIGHT
+		if(BODY_ZONE_L_LEG)
+			return LEG_LEFT
+		if(BODY_ZONE_R_LEG)
+			return LEG_RIGHT
+		if(BODY_ZONE_PRECISE_L_HAND)
+			return HAND_LEFT
+		if(BODY_ZONE_PRECISE_R_HAND)
+			return HAND_RIGHT
+		if(BODY_ZONE_PRECISE_L_FOOT)
+			return FOOT_LEFT
+		if(BODY_ZONE_PRECISE_R_FOOT)
+			return FOOT_RIGHT
+
+/obj/item/examine(mob/user)
+	. = ..()
+	if(isliving(user))
+		var/mob/living/L = user
+		if(L.STAINT < 9)
+			return .
+	if(isnull(anvilrepair) && isnull(sewrepair))
+		return .
+	else
+		var/str = "This object can be repaired using "
+		if(anvilrepair)	
+			var/datum/skill/S = anvilrepair		//Should only ever be a skill or null
+			str += "<b>[initial(S.name)]</b> and a hammer."
+		if(sewrepair)
+			str += "<b>Sewing</b> and a needle."
+		str = span_info(str)
+		. += str

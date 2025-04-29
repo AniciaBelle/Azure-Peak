@@ -234,7 +234,7 @@
 /obj/item/alch/puresalt
 	name = "purified salts"
 	desc = "Salts that have been finely sifted to enchance their healing properties and to bolster its connection to the arcyne."
-	icon_state = "transisdust"
+	icon_state = "puresalt"
 
 	major_pot = /datum/alch_cauldron_recipe/antidote
 	med_pot = /datum/alch_cauldron_recipe/disease_cure
@@ -389,10 +389,7 @@
 	spitoutmouth = FALSE
 	muteinmouth = FALSE
 	alternate_worn_layer  = 8.9 //On top of helmet
-
-	major_pot = /datum/alch_cauldron_recipe/rosewater_potion
-	med_pot = /datum/alch_cauldron_recipe/rosewater_potion
-	minor_pot = /datum/alch_cauldron_recipe/rosewater_potion
+	mill_result = /obj/item/reagent_containers/food/snacks/grown/rogue/rosa_petals
 
 /obj/item/alch/rosa/equipped(mob/living/carbon/human/user, slot)
 	. = ..()

@@ -43,7 +43,7 @@
 
 
 /mob/living/simple_animal/hostile/rogue/deepone/arm
-	name = "Deep One Paladin"
+	name = "Deep One"
 	desc = ""
 	icon = 'icons/roguetown/mob/monster/fishman.dmi'
 	icon_state = "deep1_arm"
@@ -56,7 +56,7 @@
 	attack_verb_simple = "maul"
 
 /mob/living/simple_animal/hostile/rogue/deepone/spit
-	name = "Deep One Spitter"
+	name = "Deep One"
 	desc = ""
 	icon = 'icons/roguetown/mob/monster/fishman.dmi'
 	icon_state = "deep1_spit"
@@ -78,7 +78,7 @@
 	icon_state = "deep1_wiz"
 	icon_living = "deep1_wiz"
 	icon_dead = "deep1_d"
-	projectiletype = /obj/projectile/magic/frostbolt
+	projectiletype = /obj/projectile/magic
 	projectilesound = 'sound/magic/fireball.ogg'
 	ranged = 1
 	retreat_distance = 2
@@ -86,12 +86,33 @@
 	ranged_cooldown_time = 70
 	check_friendly_fire = 1
 	ai_controller = /datum/ai_controller/deepone_ranged
+	var/allowed_projectile_types = list(/obj/projectile/magic/frostbolt, /obj/projectile/energy/rogue3, /obj/projectile/magic/repel)	
 
+
+/mob/living/simple_animal/hostile/rogue/deepone/wiz/Shoot()
+	projectiletype = pick(allowed_projectile_types)
+	..()
+/mob/living/simple_animal/hostile/rogue/deepone/wiz/boss
+	wander = FALSE
+/mob/living/simple_animal/hostile/rogue/deepone/spit/boss
+	wander = FALSE
+/mob/living/simple_animal/hostile/rogue/deepone/arm/boss
+	wander = FALSE
+/mob/living/simple_animal/hostile/rogue/deepone/boss
+	wander = FALSE
 /datum/intent/simple/claw/deepone_unarmed
 	attack_verb = list("claws", "strikes")
 	blade_class = BCLASS_CHOP
 	animname = "cut"
 	hitsound = 'sound/combat/hits/bladed/smallslash (1).ogg'
+	clickcd = DEEPONE_ATTACK_SPEED
+	penfactor = 5
+	chargetime = 2
+/datum/intent/simple/claw/deepone_boss
+	attack_verb = list("smashes", "slams")
+	blade_class = BCLASS_CHOP
+	animname = "cut"
+	hitsound = 'sound/combat/hits/blunt/metalblunt (1).ogg'
 	clickcd = DEEPONE_ATTACK_SPEED
 	penfactor = 5
 	chargetime = 2

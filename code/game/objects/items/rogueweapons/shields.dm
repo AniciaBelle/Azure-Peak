@@ -85,6 +85,7 @@
 	desc = "A sturdy wooden shield. Will block anything you can imagine."
 	icon_state = "woodsh"
 	dropshrink = 0.8
+	anvilrepair = /datum/skill/craft/carpentry
 	coverage = 40
 
 /obj/item/rogueweapon/shield/wood/attack_right(mob/user)

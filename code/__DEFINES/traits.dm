@@ -67,7 +67,7 @@
 //Hearthstone/Azure end.
 
 // ROGUEspecialTRAITS (description when rmb skills button)
-#define TRAIT_CIVILIZEDBARBARIAN "Tavern Brawler"
+#define TRAIT_CIVILIZEDBARBARIAN "Expert Pugilist"
 #define TRAIT_COMICSANS "Annoying Face"
 #define TRAIT_WATERBREATHING "Water Breathing"
 
@@ -144,6 +144,10 @@
 #define TRAIT_SLEUTH	"Sleuth"
 #define TRAIT_HARDSHELL "Hardshell"
 #define TRAIT_WOODWALKER "Woodwalker"
+#define TRAIT_ARCYNE_T1 "Arcyne Training (Novice)"
+#define TRAIT_ARCYNE_T2 "Arcyne Training (Apprentice)"
+#define TRAIT_ARCYNE_T3 "Arcyne Training (Expert)"
+#define TRAIT_ARCYNE_T4 "Arcyne Training (Master)"
 
 
 GLOBAL_LIST_INIT(roguetraits, list(
@@ -210,7 +214,7 @@ GLOBAL_LIST_INIT(roguetraits, list(
 	TRAIT_SEEDKNOW = span_info("I know which seeds grow which crops."),
 	TRAIT_PERFECT_TRACKER = span_info("I am the perfect tracker. No tracks will deceive my eyes, nor will they hide their secrets from me."),//Hearthstone port.
 	TRAIT_NOCSIGHT = span_info("Noc blesses my eyes to be unburdened by the night."), //Hearthstone change.
-	TRAIT_CIVILIZEDBARBARIAN = span_info("Your fists are heavier."),
+	TRAIT_CIVILIZEDBARBARIAN = span_info("My rigorous training in the martial arts has turned me into a living weapon. No limb is out of reach for my fists and feet, and my unarmed strikes now have a higher chance to inflict critical damage."),
 	TRAIT_COMICSANS = span_sans("I am cursed with a odd voice."),
 	TRAIT_SQUIRE_REPAIR = span_info("I know my way around my Master's tools."),
 	TRAIT_WATERBREATHING = span_info("I do not drown in bodies of water."),
@@ -265,7 +269,11 @@ GLOBAL_LIST_INIT(roguetraits, list(
 	TRAIT_SLEUTH = span_info("I can spot my tracked Mark's trail without needing to approach it, and can spot them at a distance. I can track more frequently, and the act is not impaired by movement. I can examine tracks right away."),
 	TRAIT_HARDSHELL = span_info("The bulk of this armor prevents me from parrying effectively, but I can still move out of the way."),
 	TRAIT_MATTHIOS_EYES = span_notice("I have a sense for what the most valuable item someone has is."),
-	TRAIT_WOODWALKER = span_notice("I can climb trees quicker, and gain climbing experience twice as quickly. I can step on thorns and branches safely in the woods. I can get twice as many things from searching bushes, and I can stand on leaves in trees safely.")
+	TRAIT_WOODWALKER = span_notice("I can climb trees quicker, and gain climbing experience twice as quickly. I can step on thorns and branches safely in the woods. I can get twice as many things from searching bushes, and I can stand on leaves in trees safely."),
+	TRAIT_ARCYNE_T1 = span_notice("I have received basic training in the Arcyne arts, allowing me access to a small variety of spells useful outside of combat."),
+	TRAIT_ARCYNE_T2 = span_notice("I have received advanced training in the Arcyne arts, allowing me to learn basic combat spells"),
+	TRAIT_ARCYNE_T3 = span_notice("I am a full-fledged mage, and have access to devastating spells that affects a wide area."),
+	TRAIT_ARCYNE_T4 = span_notice("I'm a master of the Arcyne arts, and has access to some of the most powerful spells ever devised."),
 ))
 
 // trait accessor defines
@@ -461,6 +469,7 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 // common trait sources
 #define TRAIT_GENERIC "generic"
 #define TRAIT_VIRTUE "virtue"
+#define TRAIT_MIRACLE "miracle"
 #define UNCONSCIOUS_BLIND "unconscious_blind"
 #define EYE_DAMAGE "eye_damage"
 #define GENETIC_MUTATION "genetic"

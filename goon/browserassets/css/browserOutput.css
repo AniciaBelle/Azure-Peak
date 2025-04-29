@@ -45,7 +45,7 @@ body {
 }
 
 @font-face { 
-  font-family: "Arabolical"; 
+  font-family: "Furqan"; 
   src: url('sand.ttf'); 
 }
 
@@ -72,6 +72,31 @@ body {
 @font-face { 
   font-family: "Emperialisme"; 
   src: url('lupian.ttf'); 
+}
+
+@font-face {
+  font-family: "Yuji Boku";
+  src: url('kazengunese.ttf');
+}
+
+@font-face { 
+  font-family: "Notredame"; 
+  src: url('otavan.ttf'); 
+}
+
+@font-face { 
+  font-family: "Feronia"; 
+  src: url('etruscan.ttf'); 
+}
+
+@font-face { 
+  font-family: "Jorvik Informal"; 
+  src: url('gronnic.ttf'); 
+}
+
+@font-face {
+	font-family: "Romeodn";
+	src: url('aavnic.ttf');
 }
 
 /* */
@@ -422,7 +447,7 @@ h1.alert, h2.alert	{color: #c9c1ba;font-family: Pterra, TrueType;}
 .human 					{font-family: "Honoka Mincho", "Pterra";}
 .elf					{font-family: "Dauphin", cursive, "Pterra";}
 .dwarf 					{font-family: "MasonAlternate", "Pterra";} 
-.sandspeak 				{font-family: "Arabolical", "Pterra";}
+.sandspeak 				{font-family: "Furqan", "Pterra";}
 .delf 					{font-family: "Dauphin", "Pterra";}
 .hellspeak				{font-family: "Xaphan", "Pterra"; font-size: 110%}
 .undead					{font-family: "FriskyVampire", "Pterra";}
@@ -430,6 +455,15 @@ h1.alert, h2.alert	{color: #c9c1ba;font-family: Pterra, TrueType;}
 .beast					{font-family: "Thief by The Riddler", Pterra;}
 .reptile				{font-family: "Kingthings Petrock", Pterra; font-size: 120%;}
 .lupian					{font-family: "Emperialisme", Pterra; font-size: 120%;}
+.kazengunese			{font-family: "Yuji Boku", Pterra;}
+.orc					{font-family: "Thief by The Riddler", "Pterra";}
+.beast					{font-family: "Thief by The Riddler", "Pterra";}
+.reptile				{font-family: "Kingthings Petrock", "Pterra"; font-size: 120%;}
+.lupian					{font-family: "Emperialisme", "Pterra"; font-size: 120%;}
+.otavan					{font-family: "Notredame", "Pterra"; font-size: 200%;}
+.etruscan				{font-family: "Feronia", "Pterra"; font-size: 100%;}
+.gronnic				{font-family: "Jorvik Informal", "Pterra"; font-size: 100%;}
+.aavnic					{font-family: "Romeodn", "Pterra"; font-size: 100%;}
 
 .torture				{color: #42ff20}
 

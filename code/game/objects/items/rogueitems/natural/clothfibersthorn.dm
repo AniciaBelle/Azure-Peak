@@ -15,6 +15,7 @@
 	w_class = WEIGHT_CLASS_TINY
 	spitoutmouth = FALSE
 	experimental_inhand = FALSE
+	sellprice = 2
 	bundletype = /obj/item/natural/bundle/fibers
 
 /obj/item/natural/fibers/attack_right(mob/user)
@@ -114,6 +115,7 @@
 	spitoutmouth = FALSE
 	experimental_inhand = FALSE
 	bundletype = /obj/item/natural/bundle/cloth
+	sellprice = 4
 	var/wet = 0
 	/// Effectiveness when used as a bandage, how much bloodloss we can staunch
 	var/bandage_effectiveness = 0.9

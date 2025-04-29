@@ -129,21 +129,6 @@
 	if(istype(user.rmb_intent, /datum/rmb_intent/swift))
 		user.rogfat_add(10)
 	if(M.checkdefense(user.used_intent, user))
-		if(M.d_intent == INTENT_PARRY)
-			if(!M.get_active_held_item() && !M.get_inactive_held_item()) //we parried with a bracer, redirect damage
-				if(M.active_hand_index == 1)
-					user.tempatarget = BODY_ZONE_L_ARM
-				else
-					user.tempatarget = BODY_ZONE_R_ARM
-				if(M.attacked_by(src, user)) //we change intents when attacking sometimes so don't play if we do (embedding items)
-					if(user.used_intent == cached_intent)
-						var/tempsound = user.used_intent.hitsound
-						if(tempsound)
-							playsound(M.loc,  tempsound, 100, FALSE, -1)
-						else
-							playsound(M.loc,  "nodmg", 100, FALSE, -1)
-				log_combat(user, M, "attacked", src.name, "(INTENT: [uppertext(user.used_intent.name)]) (DAMTYPE: [uppertext(damtype)])")
-				add_fingerprint(user)
 		if(M.d_intent == INTENT_DODGE)
 			if(!user.used_intent.swingdelay)
 				if(get_dist(get_turf(user), get_turf(M)) <= user.used_intent.reach)

@@ -190,6 +190,11 @@
 /obj/effect/proc_holder/spell/invoked/churnwealthy/cast(list/targets, mob/living/user)
 	if(ishuman(targets[1]))
 		var/mob/living/carbon/human/target = targets[1]
+
+		if(user.z != target.z) //Stopping no-interaction snipes
+			to_chat(user, "<font color='yellow'>The Free-God compels me to face [target] on level ground before I transact.</font>")
+			revert_cast()
+			return
 		var/mammonsonperson = get_mammons_in_atom(target)
 		var/mammonsinbank = SStreasury.bank_accounts[target]
 		var/totalvalue = mammonsinbank + mammonsonperson
@@ -197,6 +202,7 @@
 			totalvalue += 101 // We're ALWAYS going to do a medium level smite minimum to nobles.
 		if(totalvalue <=10)
 			to_chat(user, "<font color='yellow'>[target] one has no wealth to hold against them.</font>")
+			revert_cast()
 			return
 		if(totalvalue <=30)
 			user.say("Wealth becomes woe!")

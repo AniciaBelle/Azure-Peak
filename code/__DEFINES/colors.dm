@@ -62,7 +62,7 @@
 
 //roguetown
 #define CLOTHING_RED			"#8b2323"
-#define CLOTHING_PURPLE			"#764b8d"
+#define CLOTHING_PURPLE			"#8747b1"
 #define CLOTHING_BLACK			"#2b292e"
 #define CLOTHING_GREY			"#6c6c6c"
 #define CLOTHING_BROWN			"#61462c"

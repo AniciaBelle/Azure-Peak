@@ -69,6 +69,17 @@
 	craftsound = null
 	skillcraft = null
 
+/datum/crafting_recipe/roguetown/dryrosa
+	name = "dry rosa petals"
+	result = /obj/item/reagent_containers/food/snacks/grown/rogue/rosa_petals_dried
+	reqs = list(/obj/item/reagent_containers/food/snacks/grown/rogue/rosa_petals = 1)
+	structurecraft = /obj/machinery/tanningrack
+	time = 2 SECONDS
+	verbage_simple = "dry"
+	verbage = "dries"
+	craftsound = null
+	skillcraft = null
+
 /datum/crafting_recipe/roguetown/sigdry
 	name = "westleach zig"
 	result = /obj/item/clothing/mask/cigarette/rollie/nicotine

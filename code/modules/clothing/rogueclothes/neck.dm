@@ -5,6 +5,21 @@
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/neck.dmi'
 	bloody_icon_state = "bodyblood"
 	experimental_inhand = FALSE
+	alternate_worn_layer = NECK_LAYER
+	var/overarmor
+
+/obj/item/clothing/neck/roguetown/MiddleClick(mob/user, params)
+	. = ..()
+	overarmor = !overarmor
+	to_chat(user, span_info("I [overarmor ? "wear \the [src] over my armor" : "wear \the [src] under my armor"]."))
+	if(overarmor)
+		alternate_worn_layer = NECK_LAYER
+	else
+		alternate_worn_layer = UNDER_ARMOR_LAYER
+	user.update_inv_neck()
+	user.update_inv_cloak()
+	user.update_inv_armor()
+	user.update_inv_shirt()
 
 /obj/item/clothing/neck/roguetown/coif
 	name = "coif"
@@ -192,6 +207,7 @@
 	anvilrepair = /datum/skill/craft/armorsmithing
 	max_integrity = 150
 	resistance_flags = FIRE_PROOF
+	body_parts_inherent = NECK
 	slot_flags = ITEM_SLOT_NECK
 	body_parts_covered = NECK
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
@@ -204,6 +220,7 @@
 	smeltresult = /obj/item/ingot/iron
 	anvilrepair = /datum/skill/craft/armorsmithing
 	max_integrity = 150
+	body_parts_inherent = NECK
 	resistance_flags = FIRE_PROOF
 	slot_flags = ITEM_SLOT_NECK
 	body_parts_covered = NECK

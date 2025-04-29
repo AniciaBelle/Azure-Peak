@@ -1,21 +1,34 @@
 //Speech verbs.
 
 
+//Because of how classic keys work, we need to use a custom verb to show the typing indicator. 
+//Otherwise when you press enter, it will open up the input box.
+/mob/verb/say_typing_indicator()
+	set name = "say_indicator"
+	set hidden = TRUE
+	set category = "IC"
+	
+	display_typing_indicator()
+	var/message = input(usr, "", "say") as text|null
+	// If they don't type anything just drop the message.
+	clear_typing_indicator()
+	if(!length(message))
+		return
+	return say_verb(message)
+
 /mob/verb/say_verb(message as text)
 	set name = "Say"
 	set category = "IC"
 	set hidden = 1
 
-	// If they don't type anything just drop the message.
-	set_typing_indicator(FALSE)
 	if(!length(message))
 		return
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
-		to_chat(usr, span_danger("Speech is currently admin-disabled."))
+		to_chat(usr, "<span class='danger'>Speech is currently admin-disabled.</span>")
 		return
-	if(message)
-		set_typing_indicator(FALSE)
-		say(message)
+	clear_typing_indicator()		// clear it immediately!
+
+	say(message)
 
 ///Whisper verb
 /mob/verb/whisper_verb(message as text)
@@ -32,6 +45,21 @@
 /mob/proc/whisper(message, bubble_type, list/spans = list(), sanitize = TRUE, datum/language/language = null, ignore_spam = FALSE, forced = null)
 	say(message, language) //only living mobs actually whisper, everything else just talks
 
+
+/mob/verb/me_typing_indicator()
+	set name = "me_indicator"
+	set hidden = TRUE
+	set category = "IC"
+
+	display_typing_indicator()
+	var/message = input(usr, "", "me") as text|null
+	// If they don't type anything just drop the message.
+	clear_typing_indicator()		// clear it immediately!
+	if(!length(message))
+		return
+	return me_verb(message)
+
+///The me emote verb
 ///The me emote verb
 /mob/verb/me_verb(message as text)
 	set name = "Me"
@@ -41,7 +69,7 @@
 	return
 #endif
 	// If they don't type anything just drop the message.
-	set_typing_indicator(FALSE)
+	clear_typing_indicator()
 	if(!length(message))
 		return
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
@@ -53,6 +81,19 @@
 		return
 	usr.emote("me",1,message,TRUE, custom_me = TRUE)
 
+/mob/verb/me_big_verb_indicator()
+	set name = "me_big_indicator"
+	set category = "IC"
+	set hidden = 1
+
+	display_typing_indicator()
+	var/message = input(usr, "", "me") as message|null
+	// If they don't type anything just drop the message.
+	clear_typing_indicator()
+	if(!length(message))
+		return
+	return me_big_verb(message)
+
 ///The me emote verb
 /mob/verb/me_big_verb(message as message)
 	set name = "Me(big)"
@@ -62,7 +103,7 @@
 	return
 #endif
 	// If they don't type anything just drop the message.
-	set_typing_indicator(FALSE)
+	clear_typing_indicator()
 	if(!length(message))
 		return
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
@@ -114,6 +155,8 @@
 		return MODE_WHISPER
 	else if(key == ";")
 		return MODE_HEADSET
+	else if(key == "%")
+		return MODE_SING
 	else if(length(message) > 2 && (key in GLOB.department_radio_prefixes))
 		var/key_symbol = lowertext(copytext_char(message, 2, 3))
 		return GLOB.department_radio_keys[key_symbol]

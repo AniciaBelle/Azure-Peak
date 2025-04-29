@@ -60,6 +60,13 @@
 	createditem_num = 1
 	craftdiff = 0
 
+/datum/anvil_recipe/armor/iron/mask/hound
+	name = "Mask (Hound)"
+	req_bar = /obj/item/ingot/iron
+	created_item = /obj/item/clothing/mask/rogue/facemask/hound
+	createditem_num = 1
+	craftdiff = 0
+
 /datum/anvil_recipe/armor/iron/wildguard
 	name = "Wild guard Mask"
 	req_bar = /obj/item/ingot/iron
@@ -80,13 +87,13 @@
 	created_item = /obj/item/clothing/head/roguetown/helmet/skullcap
 
 /datum/anvil_recipe/armor/iron/studded
-	name = "Studded Leather Armor (+Leather Armor)"
+	name = "Studded Leather Armor (+ Leather Armor)"
 	req_bar = /obj/item/ingot/iron
 	additional_items = list(/obj/item/clothing/suit/roguetown/armor/leather)
 	created_item = /obj/item/clothing/suit/roguetown/armor/leather/studded
 
 /datum/anvil_recipe/armor/studdedbikini
-	name = "Studded Leather Bikini (+Leather Bikini)"
+	name = "Studded Leather Corslet (+ Leather Corslet)"
 	req_bar = /obj/item/ingot/iron
 	additional_items = list(/obj/item/clothing/suit/roguetown/armor/leather)
 	created_item = /obj/item/clothing/suit/roguetown/armor/leather/studded/bikini
@@ -114,7 +121,7 @@
 	craftdiff = 2
 
 /datum/anvil_recipe/armor/steel/chainkini
-	name = "Chainmail Bikini (+1 Cloth)"
+	name = "Chainmail Corslet (+1 Cloth)"
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/natural/cloth)
 	created_item = /obj/item/clothing/suit/roguetown/armor/chainmail/bikini
@@ -133,6 +140,20 @@
 	created_item = /obj/item/clothing/suit/roguetown/armor/plate
 	craftdiff = 3
 
+/datum/anvil_recipe/armor/steel/halfplate/fluted
+	name = "Fluted Half-Plate Armour (+2 Steel, +1 Iron, +1 Cured Leather)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/ingot/steel, /obj/item/ingot/steel, /obj/item/ingot/iron, /obj/item/natural/hide/cured)
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/fluted
+	craftdiff = 3
+
+/datum/anvil_recipe/armor/steel/halfplate/fluted/ornate
+	name = "Psydonite Half-Plate Armour (+ P.Cuirass, +1 Steel, +1 Blessed Silver, +1 Cured Leather)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/clothing/suit/roguetown/armor/plate/half/fluted/ornate, /obj/item/ingot/steel, /obj/item/ingot/silverblessed, /obj/item/natural/hide/cured)
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/fluted/ornate
+	craftdiff = 3
+
 /datum/anvil_recipe/armor/steel/fullplate
 	name = "Full-Plate Armour (+3 Steel, +1 Cured Leather)"
 	req_bar = /obj/item/ingot/steel
@@ -140,15 +161,36 @@
 	created_item = /obj/item/clothing/suit/roguetown/armor/plate/full
 	craftdiff = 4
 
+/datum/anvil_recipe/armor/steel/fullplate/fluted
+	name = "Fluted Full-Plate Armour (+3 Steel, +1 Iron, +1 Cured Leather)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/ingot/steel, /obj/item/ingot/steel, /obj/item/ingot/steel, /obj/item/ingot/iron, /obj/item/natural/hide/cured)
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/full/fluted
+	craftdiff = 4
+
+/datum/anvil_recipe/armor/steel/fullplate/fluted/ornate
+	name = "Psydonite Full-Plate Armour (+ P.Half-Plate, +1 Blessed Silver, +1 Cured Leather)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/clothing/suit/roguetown/armor/plate/fluted/ornate, /obj/item/ingot/silverblessed, /obj/item/natural/hide/cured)
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate
+	craftdiff = 4
+
+/datum/anvil_recipe/armor/steel/fullplate/fluted/ornate/alt
+	name = "Psydonite Full-Plate Armour (+ P.Hauberk, +1 Steel, +2 Blessed Silver, +1 Cured Leather)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/ornate, /obj/item/ingot/steel, /obj/item/ingot/silverblessed, /obj/item/ingot/silverblessed, /obj/item/natural/hide/cured)
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate
+	craftdiff = 4
+
 /datum/anvil_recipe/armor/steel/platebikini
-	name = "Half-Plate Bikini (+1 Steel, +1 Cured Leather)"
+	name = "Half-Plate Corslet (+1 Steel, +1 Cured Leather)"
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/ingot/steel, /obj/item/natural/hide/cured)
 	created_item = /obj/item/clothing/suit/roguetown/armor/plate/bikini
 	craftdiff = 3
 
 /datum/anvil_recipe/armor/steel/fullplatebikini
-	name = "Full-Plate Bikini (+2 Steel, +1 Cured Leather)"
+	name = "Full-Plate Corslet (+2 Steel, +1 Cured Leather)"
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/ingot/steel, /obj/item/ingot/steel, /obj/item/natural/hide/cured)
 	created_item = /obj/item/clothing/suit/roguetown/armor/plate/full/bikini
@@ -225,7 +267,7 @@
 	created_item = /obj/item/clothing/under/roguetown/chainlegs/skirt
 
 /datum/anvil_recipe/armor/steel/plateskirt
-	name = "Plated Skirt (+1 Steel)"
+	name = "Plate Tassets (+1 Steel)"
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/ingot/steel)
 	created_item = /obj/item/clothing/under/roguetown/platelegs/skirt
@@ -238,11 +280,25 @@
 	created_item = /obj/item/clothing/under/roguetown/platelegs
 	craftdiff = 2
 
-/datum/anvil_recipe/armor/stee/cuirass
+/datum/anvil_recipe/armor/steel/cuirass
 	name = "Cuirass (+1 Steel)"
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/ingot/steel)
 	created_item = /obj/item/clothing/suit/roguetown/armor/plate/half
+	craftdiff = 3
+
+/datum/anvil_recipe/armor/steel/cuirass/fluted
+	name = "Fluted Cuirass (+1 Steel, +1 Iron)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/ingot/steel, /obj/item/ingot/iron)
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/half/fluted
+	craftdiff = 3
+
+/datum/anvil_recipe/armor/steel/cuirass/fluted/ornate
+	name = "Psydonite Cuirass (+1 Blessed Silver)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/ingot/silverblessed)
+	created_item = /obj/item/clothing/suit/roguetown/armor/plate/half/fluted/ornate
 	craftdiff = 3
 
 /datum/anvil_recipe/armor/steel/scalemail
@@ -396,6 +452,13 @@
 	createditem_num = 1
 	craftdiff = 2
 
+/datum/anvil_recipe/armor/steel/mask/hound
+	name = "Mask (Hound)"
+	req_bar = /obj/item/ingot/steel
+	created_item = /obj/item/clothing/mask/rogue/facemask/steel/hound
+	createditem_num = 1
+	craftdiff = 2
+
 /datum/anvil_recipe/armor/steel/astratahelm
 	name = "Astrata Helmet (+1 Steel)"
 	req_bar = /obj/item/ingot/steel
@@ -442,6 +505,12 @@
 	name = "Steel Plated Belt"
 	req_bar = /obj/item/ingot/steel
 	created_item = /obj/item/storage/belt/rogue/leather/steel
+	craftdiff = 2
+
+/datum/anvil_recipe/armor/steel/belt/tasset
+	name = "Tasseted Steel Plated Belt"
+	req_bar = /obj/item/ingot/steel
+	created_item = /obj/item/storage/belt/rogue/leather/steel/tasset
 	craftdiff = 2
 
 // --------- SILVER RECIPES-----------

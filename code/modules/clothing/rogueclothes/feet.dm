@@ -6,6 +6,7 @@
 	gender = PLURAL
 	slot_flags = ITEM_SLOT_SHOES
 	body_parts_covered = FEET
+	body_parts_inherent = FEET
 	sleeved = 'icons/roguetown/clothing/onmob/feet.dmi'
 	sleevetype = "leg"
 	bloody_icon_state = "shoeblood"
@@ -244,12 +245,37 @@
 /obj/item/clothing/shoes/roguetown/jester
 	name = "funny shoes"
 	icon_state = "jestershoes"
+	detail_tag = "_detail"
 	resistance_flags = null
 	sewrepair = TRUE
+	detail_color = CLOTHING_WHITE
+	color = CLOTHING_AZURE
 
-/obj/item/clothing/shoes/roguetown/jester/Initialize(mapload)
+/obj/item/clothing/shoes/roguetown/jester/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
+
+/obj/item/clothing/shoes/roguetown/jester/lordcolor(primary,secondary)
+	detail_color = secondary
+	color = primary
+	update_icon()
+
+/obj/item/clothing/shoes/roguetown/jester/Initialize()
 	. = ..()
-	AddComponent(/datum/component/item_equipped_movement_rustle, SFX_JINGLE_BELLS)
+	AddComponent(/datum/component/item_equipped_movement_rustle, SFX_JINGLE_BELLS, 2)
+	if(GLOB.lordprimary)
+		lordcolor(GLOB.lordprimary,GLOB.lordsecondary)
+	else
+		GLOB.lordcolor += src
+
+/obj/item/clothing/shoes/roguetown/jester/Destroy()
+	GLOB.lordcolor -= src
+	return ..()
 
 /obj/item/clothing/shoes/roguetown/grenzelhoft
 	name = "grenzelhoft boots"
@@ -276,6 +302,7 @@
 	icon_state = "furlinedanklets"
 	item_state = "furlinedanklets"
 	sewrepair = TRUE
+	is_barefoot = TRUE
 	armor = list("blunt" = 30, "slash" = 10, "stab" = 20, "piercing" = 0, "fire" = 0, "acid" = 0)
 	is_barefoot = TRUE
 	salvage_amount = 1
@@ -333,9 +360,10 @@
 /obj/item/clothing/shoes/roguetown/boots/leather/elven_boots
 	name = "woad elven boots"
 	desc = "The living trunks still blossom in the spring. They let water through, but it is never cold."
-	armor = list("blunt" = 90, "slash" = 10, "stab" = 100, "piercing" = 20, "fire" = 0, "acid" = 0)
+	armor = list("blunt" = 100, "slash" = 10, "stab" = 100, "piercing" = 20, "fire" = 0, "acid" = 0)
 	prevent_crits = list(BCLASS_BLUNT, BCLASS_SMASH, BCLASS_TWIST, BCLASS_PICK)
 	icon = 'icons/roguetown/clothing/special/race_armor.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/race_armor.dmi'
 	icon_state = "welfshoes"
 	item_state = "welfshoes"
+	anvilrepair = /datum/skill/craft/carpentry

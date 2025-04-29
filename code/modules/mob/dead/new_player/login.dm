@@ -71,6 +71,7 @@
 			postfix = "soon"
 		to_chat(src, "The game will start [postfix].")
 		if(client)
+			SSvote.send_vote(client)
 			var/usedkey = ckey(key)
 			/*if(usedkey in GLOB.anonymize)
 				usedkey = get_fake_key(usedkey)*/

@@ -16,10 +16,21 @@
 	H.mind.adjust_skillrank(/datum/skill/craft/cooking, 1, TRUE)
 	H.mind.adjust_skillrank(/datum/skill/misc/athletics, 4, TRUE)
 	H.mind.adjust_skillrank(/datum/skill/misc/swimming, 3, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/climbing, 2, TRUE) 
+	H.mind.adjust_skillrank(/datum/skill/misc/climbing, 3, TRUE) 
 	H.mind.adjust_skillrank(/datum/skill/labor/mining, 1, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/labor/lumberjacking, 1, TRUE)
+	H.mind.adjust_skillrank(/datum/skill/labor/lumberjacking, 2, TRUE)
 	H.mind.adjust_skillrank(/datum/skill/labor/farming, 1, TRUE)
+	H.mind.adjust_skillrank(/datum/skill/labor/fishing, 2, TRUE)
+	H.mind.adjust_skillrank(/datum/skill/misc/sneaking, 2, TRUE)
+	H.mind.adjust_skillrank(/datum/skill/misc/stealing, 3, TRUE)
+	var/weapons = list("Knuckles","Cudgel")
+	var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
+	H.set_blindness(0)
+	switch(weapon_choice)
+		if("Knuckles")
+			beltr = /obj/item/rogueweapon/knuckles/bronzeknuckles
+		if("Cudgel")
+			beltl = /obj/item/rogueweapon/mace/cudgel
 	head = /obj/item/clothing/head/roguetown/roguehood/random 
 	belt = /obj/item/storage/belt/rogue/leather
 	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/light
@@ -30,9 +41,8 @@
 	gloves = /obj/item/clothing/gloves/roguetown/fingerless
 	neck = /obj/item/storage/belt/rogue/pouch/coins/poor
 	armor = /obj/item/clothing/suit/roguetown/armor/workervest
-	beltr = /obj/item/rogueweapon/mace/cudgel
-	beltl = /obj/item/flashlight/flare/torch
 	H.change_stat("strength", 2)
 	H.change_stat("endurance", 1)
-	H.change_stat("constitution", 2)
+	H.change_stat("constitution", 3)
 	H.change_stat("speed", -1)
+	H.change_stat("intelligence", -1)

@@ -58,6 +58,7 @@
 		ADD_TRAIT(H, TRAIT_CRITICAL_RESISTANCE, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_NOPAINSTUN, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_OUTLANDER, TRAIT_GENERIC)		//You're a foreigner, a guest of the realm.
+		H.grant_language(/datum/language/otavan)
 
 /datum/outfit/job/roguetown/disciple/proc/naledi_equip(mob/living/carbon/human/H)
 	backpack_contents = list(/obj/item/roguekey/inquisition = 1)
@@ -74,7 +75,6 @@
 		H.mind.adjust_skillrank(/datum/skill/misc/sneaking, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/medicine, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/craft/cooking, 1, TRUE)
-		H.mind.adjust_spellpoints(-6)
 		H.change_stat("strength", 3)
 		H.change_stat("speed", 2)
 		H.change_stat("endurance", 2)
@@ -89,3 +89,5 @@
 		ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_INQUISITION, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_OUTLANDER, TRAIT_GENERIC)		//You're a foreigner, a guest of the realm.
+		ADD_TRAIT(H, TRAIT_ARCYNE_T1, TRAIT_GENERIC)
+		H.grant_language(/datum/language/celestial)

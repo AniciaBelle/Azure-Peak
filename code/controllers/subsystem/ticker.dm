@@ -81,6 +81,7 @@ SUBSYSTEM_DEF(ticker)
 	var/list/cuckers = list()
 	var/cums = 0
 
+	var/gamemode_voted = FALSE
 	var/end_party = FALSE
 	var/last_lobby = 0
 	var/round_end = FALSE
@@ -191,6 +192,10 @@ SUBSYSTEM_DEF(ticker)
 				var/mob/dead/new_player/player = i
 				if(player.ready == PLAYER_READY_TO_PLAY)
 					++totalPlayersReady
+			
+			if(!gamemode_voted)
+				SSvote.initiate_vote("gamemode", "Psydon", timeLeft/2)
+				gamemode_voted = TRUE
 
 			if(start_immediately)
 				timeLeft = 0
@@ -445,7 +450,7 @@ SUBSYSTEM_DEF(ticker)
 
 	SSdbcore.SetRoundStart()
 
-	message_admins(span_notice("<B>Welcome to [station_name()], enjoy your stay!</B>"))
+	message_admins(span_notice("<B>Welcome to [station_name()], enjoy your stay! Gamemode: [mode.name] </B>"))
 
 	for(var/client/C in GLOB.clients)
 		if(C.mob)

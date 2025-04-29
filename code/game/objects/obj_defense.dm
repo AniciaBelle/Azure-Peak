@@ -98,6 +98,7 @@
 	visible_message(span_danger("[src] is hit by \a [P]!"), null, null, COMBAT_MESSAGE_RANGE)
 	if(!QDELETED(src)) //Bullet on_hit effect might have already destroyed this object
 		take_damage(P.damage, P.damage_type, P.flag, 0, turn(P.dir, 180), P.armor_penetration)
+	P.handle_drop() //AZURE PEAK: Make sure reusable projectiles don't disappear on hit
 
 /obj/proc/attack_generic(mob/user, damage_amount = 0, damage_type = BRUTE, damage_flag = 0, sound_effect = 1, armor_penetration = 0) //used by attack_alien, attack_animal, and attack_slime
 	user.do_attack_animation(src)
@@ -225,13 +226,20 @@ GLOBAL_DATUM_INIT(acid_overlay, /mutable_appearance, mutable_appearance('icons/e
 				new I (get_turf(src))
 	qdel(src)
 
-///called after the obj takes damage and integrity is below integrity_failure level
+/// Called after the obj takes damage and integrity is below integrity_failure level
 /obj/proc/obj_break(damage_flag)
+	if (obj_broken)
+		return
 	obj_broken = TRUE
 	if(break_sound)
 		playsound(get_turf(src), break_sound, 80, TRUE)
 	if(break_message)
 		visible_message(break_message)
+
+/// Called after obj is repaired (needle/hammer for items)
+/obj/proc/obj_fix(mob/user)
+	obj_broken = FALSE
+	obj_integrity = max_integrity
 
 ///what happens when the obj's integrity reaches zero.
 /obj/proc/obj_destruction(damage_flag)

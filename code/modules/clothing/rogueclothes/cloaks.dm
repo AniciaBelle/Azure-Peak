@@ -33,6 +33,18 @@
 	var/picked
 	var/overarmor = TRUE
 
+/obj/item/clothing/cloak/tabard/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/tabard/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
+
 /obj/item/clothing/cloak/abyssortabard
 	name = "abyssorite tabard"
 	desc = "A tabard worn by Abyssorite devouts."
@@ -46,6 +58,18 @@
 	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_CLOAK
 	flags_inv = HIDECROTCH|HIDEBOOB
 	var/overarmor = TRUE
+
+/obj/item/clothing/cloak/abyssortabard/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/abyssortabard/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
 
 /obj/item/clothing/cloak/abyssortabard/MiddleClick(mob/user)
 	overarmor = !overarmor
@@ -71,6 +95,19 @@
 	flags_inv = HIDECROTCH|HIDEBOOB
 	var/open_wear = FALSE
 	var/overarmor = TRUE
+
+/obj/item/clothing/cloak/psydontabard/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/psydontabard/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
+
 
 /obj/item/clothing/cloak/psydontabard/alt
 	name = "opened psydonian tabard"
@@ -418,6 +455,18 @@
 	flags_inv = HIDECROTCH|HIDEBOOB
 	var/picked
 	var/overarmor = TRUE
+
+/obj/item/clothing/cloak/stabard/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/stabard/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
 
 /obj/item/clothing/cloak/stabard/MiddleClick(mob/user) 
 	overarmor = !overarmor
@@ -1181,6 +1230,18 @@
 /obj/item/clothing/cloak/templar
 	var/overarmor = TRUE
 
+/obj/item/clothing/cloak/templar/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/templar/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
+
 /obj/item/clothing/cloak/templar/psydon
 	name = "psydon tabard"
 	desc = "An outer garment commonly worn by soldiers. This one has the symbol of Psydon on it."
@@ -1538,6 +1599,7 @@
 	detail_tag = "_spl"
 	detail_color = CLOTHING_WHITE
 	icon_state = "guard_hood"
+	item_state = "guard_hood"
 	body_parts_covered = CHEST
 
 /obj/item/clothing/cloak/stabard/guardhood/attack_right(mob/user)

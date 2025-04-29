@@ -93,8 +93,7 @@
 			var/repairskill = (user.mind.get_skill_level(/datum/skill/misc/sewing) + user.mind.get_skill_level(/datum/skill/craft/tanning)) * 5
 			var/sewtime = max(5, (60 - skill))
 			if(HAS_TRAIT(user, TRAIT_SQUIRE_REPAIR))
-				skill = max(30, skill) // Squire can't fail a repair
-				sewtime = min(skill, 30) // Squire have half sewing time minimum
+				skill = skill < 30 ? 30 : skill // Make sure they can't fail but let them suffer sewtime
 			if(!do_after(user, sewtime, target = I))
 				return
 			if(prob(max(0, 60 - (skill * 2)))) //The more knowlegeable we are the less chance we damage the object
@@ -111,6 +110,9 @@
 					cloth.obj_fix()
 				playsound(loc, 'sound/foley/sewflesh.ogg', 50, TRUE, -2)
 				user.visible_message(span_info("[user] repairs [I]!"))
+				if(I.body_parts_covered != I.body_parts_covered_dynamic)
+					user.visible_message(span_info("[user] repairs [I]'s coverage!"))
+					I.repair_coverage()
 				I.obj_integrity = min(I.obj_integrity + 10 + skill, I.max_integrity)
 				if(do_after(user, CLICK_CD_MELEE, target = I))
 					attack_obj(I, user)

@@ -269,7 +269,7 @@
 	sellprice = 26
 
 /datum/crafting_recipe/roguetown/leather/bikini
-	name = "leather bikini armor (2 leather)"
+	name = "leather corslet (2 leather)"
 	result = /obj/item/clothing/suit/roguetown/armor/leather/bikini
 	reqs = list(/obj/item/natural/hide/cured = 2)
 	sellprice = 26
@@ -316,7 +316,7 @@
 	craftdiff = 4
 
 /datum/crafting_recipe/roguetown/leather/hidebikini
-	name = "hide bikini armor (2 leather, 1 tallow)"
+	name = "hide corslet (2 leather, 1 tallow)"
 	result = /obj/item/clothing/suit/roguetown/armor/leather/hide/bikini
 	reqs = list(/obj/item/natural/hide/cured = 2,
 				/obj/item/natural/fur = 1)
@@ -396,7 +396,7 @@
 
 /datum/crafting_recipe/roguetown/leather/otavanleatherpants
 	name = "otavan leather trousers (1 fibers, 2 leather, 1 fur)"
-	result = list(/obj/item/clothing/under/roguetown/trou/otavan)
+	result = list(/obj/item/clothing/under/roguetown/heavy_leather_pants/otavan)
 	reqs = list(/obj/item/reagent_containers/food/snacks/tallow = 1,
 	            /obj/item/natural/fibers = 1,
 	            /obj/item/natural/hide/cured = 2,

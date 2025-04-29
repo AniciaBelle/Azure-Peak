@@ -109,11 +109,12 @@
 /obj/structure/flora/roguetree/wise/Initialize()
 	. = ..()
 	icon_state = "mystical"
-/*
+
 /obj/structure/flora/roguetree/wise/examine(mob/user)
 	. = ..()
-	user.play_priomusic('sound/music/tree.ogg', MUSIC_PRIO_DEFAULT)
-*/
+	SEND_SOUND(usr, sound(null))
+	playsound(user, 'sound/music/tree.ogg', 80)
+
 
 /obj/structure/flora/roguetree/burnt
 	name = "burnt tree"
@@ -256,7 +257,7 @@
 /obj/structure/flora/roguegrass/bush
 	name = "bush"
 	desc = "A bush, I think I can see some spiders crawling in it."
-	icon_state = "bush1"
+	icon_state = "bush2"
 	layer = ABOVE_ALL_MOB_LAYER
 	var/res_replenish
 	blade_dulling = DULLING_CUT
@@ -268,7 +269,7 @@
 	var/bushtype
 
 /obj/structure/flora/roguegrass/bush/Initialize()
-	if(prob(88))
+	if(prob(88) && isnull(bushtype))
 		bushtype = pickweight(list(/obj/item/reagent_containers/food/snacks/grown/berries/rogue=5,
 					/obj/item/reagent_containers/food/snacks/grown/berries/rogue/poison=3,
 					/obj/item/reagent_containers/food/snacks/grown/rogue/pipeweed=1))
@@ -336,7 +337,7 @@
 				to_chat(user, span_warning("Picked clean... I should try later."))
 #endif
 /obj/structure/flora/roguegrass/bush/update_icon()
-	icon_state = "bush[rand(1, 4)]"
+	icon_state = "bush[rand(2, 4)]"
 
 /obj/structure/flora/roguegrass/bush/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && (mover.pass_flags & PASSGRILLE))
@@ -351,6 +352,23 @@
 	if(get_dir(mover.loc, target) == dir)
 		return 0
 	return 1
+
+/obj/structure/flora/roguegrass/bush/westleach
+	name = "westleach bush"
+	desc = "Large, red leaves peek out of it with an alluring aroma."
+	icon_state = "bush1"
+
+/obj/structure/flora/roguegrass/bush/westleach/update_icon()
+	return
+
+/obj/structure/flora/roguegrass/bush/westleach/loot_replenish()
+	. = ..()
+	if(prob(50))
+		looty += /obj/item/reagent_containers/food/snacks/grown/rogue/pipeweed
+
+/obj/structure/flora/roguegrass/bush/westleach/Initialize()
+	bushtype = /obj/item/reagent_containers/food/snacks/grown/rogue/pipeweed
+	return ..()
 
 /obj/structure/flora/roguegrass/bush/wall
 	name = "great bush"
@@ -623,9 +641,9 @@
 					B = new B(user.loc)
 					user.put_in_hands(B)
 					if(HAS_TRAIT(user, TRAIT_WOODWALKER))
-						var/obj/item/C = new B(user.loc)
+						var/obj/item/C = new B.type(user.loc)
 						user.put_in_hands(C)
-					user.visible_message("<span class='notice'>[user] finds [HAS_TRAIT(user, TRAIT_WOODWALKER) ? "two " : ""][B] in [src].</span>")
+					user.visible_message("<span class='notice'>[user] finds [HAS_TRAIT(user, TRAIT_WOODWALKER) ? "two of " : ""][B] in [src].</span>")
 					return
 			user.visible_message("<span class='warning'>[user] searches through [src].</span>")
 #ifdef MATURESERVER

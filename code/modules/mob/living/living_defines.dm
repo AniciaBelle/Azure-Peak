@@ -6,6 +6,8 @@
 	see_in_dark = 8
 	hud_possible = list(ANTAG_HUD)
 	
+	typing_indicator_enabled = TRUE
+	
 	var/resize = 1 //Badminnery resize
 	var/lastattacker = null
 	var/lastattackerckey = null

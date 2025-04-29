@@ -13,6 +13,10 @@
 	penfactor = 50
 	item_d_type = "stab"
 
+/datum/intent/spear/thrust/militia
+	penfactor = 40
+	chargetime = 0
+
 /datum/intent/spear/bash
 	name = "bash"
 	blade_class = BCLASS_BLUNT
@@ -34,6 +38,10 @@
 
 /datum/intent/spear/cut/halberd
 	damfactor = 0.9
+
+/datum/intent/spear/cut/scythe
+	reach = 3
+	damfactor = 1
 
 /datum/intent/spear/cut/bardiche
     damfactor = 1.0
@@ -80,6 +88,21 @@
 	recovery = 20
 	clickcd = 10
 
+/datum/intent/rend
+	name = "rend"
+	icon_state = "inrend"
+	attack_verb = list("rends")
+	animname = "cut"
+	blade_class = BCLASS_CHOP
+	reach = 1
+	penfactor = -30
+	damfactor = 2.0
+	chargetime = 5
+	no_early_release = TRUE
+	hitsound = list('sound/combat/hits/bladed/genslash (1).ogg', 'sound/combat/hits/bladed/genslash (2).ogg', 'sound/combat/hits/bladed/genslash (3).ogg')
+	item_d_type = "slash"
+	misscost = 5
+
 //polearm objs ฅ^•ﻌ•^ฅ
 
 /obj/item/rogueweapon/woodstaff
@@ -105,6 +128,7 @@
 	bigboy = TRUE
 	gripsprite = TRUE
 	associated_skill = /datum/skill/combat/polearms
+	anvilrepair = /datum/skill/craft/carpentry
 	resistance_flags = FLAMMABLE
 
 /obj/item/rogueweapon/woodstaff/getonmobprop(tag)
@@ -153,7 +177,7 @@
 	possible_item_intents = list(SPEAR_THRUST, SPEAR_BASH) //bash is for nonlethal takedowns, only targets limbs
 	gripped_intents = list(SPEAR_THRUST, SPEAR_CUT, SPEAR_BASH)
 	name = "spear"
-	desc = "This iron spear is great to impale goblins. However its lack of reinforcements means it is ill prepared for combat against someone aiming to hew it in two!"
+	desc = "This iron spear is great to impale goblins."
 	icon_state = "spear"
 	icon = 'icons/roguetown/weapons/64.dmi'
 	pixel_y = -16
@@ -166,7 +190,6 @@
 	w_class = WEIGHT_CLASS_BULKY
 	minstr = 8
 	max_blade_int = 100
-	max_integrity = 300
 	anvilrepair = /datum/skill/craft/weaponsmithing
 	smeltresult = /obj/item/ingot/iron
 	associated_skill = /datum/skill/combat/polearms
@@ -222,11 +245,10 @@
 
 /obj/item/rogueweapon/spear/billhook
 	name = "billhook"
-	desc = "A neat hook. Used to pull riders from horses, as well as defend against said horses when used in a proper formation. The reinforcements along it's shaft grant it higher durability against attacks."
+	desc = "A neat hook. Used to pull riders from horses, as well as defend against said horses when used in a proper formation."
 	icon_state = "billhook"
 	smeltresult = /obj/item/ingot/steel
 	max_blade_int = 200
-	max_integrity = 500
 	minstr = 8
 	wdefense = 6
 	throwforce = 15
@@ -239,7 +261,6 @@
 	icon_state = "billhook"
 	smeltresult = /obj/item/ingot/iron
 	max_blade_int = 100
-	max_integrity = 200
 	wdefense = 4
 	throwforce = 10
 
@@ -483,7 +504,7 @@
 	possible_item_intents = list(SPEAR_THRUST, SPEAR_BASH) //bash is for nonlethal takedowns, only targets limbs
 	gripped_intents = list(SPEAR_THRUST, /datum/intent/spear/cut/halberd, /datum/intent/sword/chop, SPEAR_BASH)
 	name = "halberd"
-	desc = "A steel halberd, the pinnicle of all cumulative melee weapon knowledge to some, but commonly seen in a guardsman's hands none-the-less. The reinforcments along the shaft provide greater durability."
+	desc = "A steel halberd, the pinnicle of all cumulative melee weapon knowledge to some, but commonly seen in a guardsman's hands none-the-less."
 	icon_state = "halberd"
 	icon = 'icons/roguetown/weapons/64.dmi'
 	pixel_y = -16
@@ -496,7 +517,6 @@
 	w_class = WEIGHT_CLASS_BULKY
 	minstr = 9
 	max_blade_int = 200
-	max_integrity = 500
 	anvilrepair = /datum/skill/craft/weaponsmithing
 	smeltresult = /obj/item/ingot/steel
 	associated_skill = /datum/skill/combat/polearms
@@ -517,9 +537,9 @@
 
 /obj/item/rogueweapon/halberd/holysee
 	name = "eclipsum halberd"
-	desc = "A mutual effort of Noc and Astrata's followers, this halberd was forged with both Silver and Gold alike. Blessed to hold strength and bring hope. Whether dae or nite. The reinforced shaft provides greater durability."
+	desc = "A mutual effort of Noc and Astrata's followers, this halberd was forged with both Silver and Gold alike. Blessed to hold strength and bring hope. Whether dae or nite."
 	icon_state = "gsspear"
-	max_integrity = 600
+	max_integrity = 300
 	force = 20
 	force_wielded = 35
 
@@ -527,12 +547,11 @@
 	possible_item_intents = list(/datum/intent/spear/thrust/eaglebeak, SPEAR_BASH) //bash is for nonlethal takedowns, only targets limbs
 	gripped_intents = list(/datum/intent/spear/thrust/eaglebeak, /datum/intent/spear/cut/bardiche, /datum/intent/axe/chop, SPEAR_BASH)
 	name = "bardiche"
-	desc = "A beautiful variant of the halberd. Its reinforced shaft provides it with greater durability against attacks."
+	desc = "A beautiful variant of the halberd."
 	icon_state = "bardiche"
 	anvilrepair = /datum/skill/craft/weaponsmithing
 	smeltresult = /obj/item/ingot/iron
 	max_blade_int = 200
-	max_integrity = 500
 
 /obj/item/rogueweapon/halberd/bardiche/scythe
 	name = "summer scythe"
@@ -558,7 +577,6 @@
 	anvilrepair = /datum/skill/craft/weaponsmithing
 	smeltresult = /obj/item/ingot/steel
 	max_blade_int = 300
-	max_integrity = 300
 	wdefense = 9
 
 /obj/item/rogueweapon/halberd/glaive/getonmobprop(tag)
@@ -595,12 +613,12 @@
 	smeltresult = /obj/item/ingot/steel
 	associated_skill = /datum/skill/combat/polearms
 	max_blade_int = 300
-	max_integrity = 500
 	blade_dulling = DULLING_BASHCHOP
 	walking_stick = TRUE
 	wdefense = 5
 	wbalance = -1
 	sellprice = 60
+	intdamage_factor = 0.7
 
 /obj/item/rogueweapon/eaglebeak/getonmobprop(tag)
 	. = ..()
@@ -616,13 +634,12 @@
 
 /obj/item/rogueweapon/eaglebeak/lucerne
 	name = "lucerne"
-	desc = "A polehammer of simple iron. Fracture bone and dissent with simple brute force. The studding along its shaft makes for a slightly more reinforced weapon."
+	desc = "A polehammer of simple iron. Fracture bone and dissent with simple brute force."
 	force = 12
 	force_wielded = 25
 	icon_state = "polehammer"
 	smeltresult = /obj/item/ingot/iron
 	max_blade_int = 300
-	max_integrity = 350
 	sellprice = 40
 
 /datum/intent/spear/thrust/eaglebeak
@@ -652,7 +669,7 @@
 	force = 12
 	force_wielded = 30
 	possible_item_intents = list(/datum/intent/sword/chop,/datum/intent/sword/strike) //bash is for nonlethal takedowns, only targets limbs
-	gripped_intents = list(/datum/intent/sword/cut/zwei, /datum/intent/sword/chop, /datum/intent/sword/thrust/zwei, /datum/intent/sword/strike)
+	gripped_intents = list(/datum/intent/sword/cut/zwei, /datum/intent/sword/chop, /datum/intent/sword/thrust/zwei, /datum/intent/sword/peel/big)
 	name = "greatsword"
 	desc = "Might be able to chop anything in half!"
 	icon_state = "gsw"
@@ -697,12 +714,15 @@
 	smelt_bar_num = 3
 	max_blade_int = 200
 	wdefense = 4
+	force = 14
+	force_wielded = 35
 
 /obj/item/rogueweapon/greatsword/grenz
 	name = "steel zweihander"
 	icon_state = "steelzwei"
 	smeltresult = /obj/item/ingot/steel
 	smelt_bar_num = 3
+	max_blade_int = 300
 
 /obj/item/rogueweapon/greatsword/psygsword
 	name = "Apocrypha"

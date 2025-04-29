@@ -219,6 +219,62 @@ GLOBAL_VAR_INIT(mobids, 1)
 		log_seen(src, null, hearers, (log_seen_msg ? log_seen_msg : message), log_seen)
 
 /**
+ * Show a message to all mobs in a vertical plane around the source atom. 
+ * Only use this for cases where the action being done is important enough to ignore z level / LOS.
+ * vars:
+ * * message is the message output. Keep in mind that its end will be appended with "Far Above / Above / Below / Far Below" & "North / East / West / South" etc
+ * * hearing_distance is the distance from the source that the message will be sent to.
+ * * directional will add an additional direction of the source of sound relative to the listener's position.
+ */
+
+/atom/proc/loud_message(message, hearing_distance = DEFAULT_MESSAGE_RANGE, directional = TRUE)
+	var/list/listening = get_hearers_in_view(hearing_distance, src)
+	for(var/_M in GLOB.player_list)
+		var/mob/M = _M
+		if(!M.client) //client is so that ghosts don't have to listen to mice
+			continue
+		if(!M)
+			continue
+		if(!M.client)
+			continue
+		if(get_dist(M, src) > hearing_distance) //they're out of range of normal hearing
+			if(M.client.prefs)
+				if(!(M.client.prefs.chat_toggles & CHAT_GHOSTEARS)) //they're talking normally and we have hearing at any range off
+					continue
+		if(!is_in_zweb(src.z,M.z))
+			continue
+		listening |= M
+	
+	for(var/mob/living/L in listening)
+		var/strz
+		var/strdir
+		if(L.STAPER <= 8 && !(L in viewers(world.view, src)))
+			to_chat(L, span_warning("You hear something... somewhere!"))
+			continue
+		if(L.z != src.z)
+			var/zdiff = abs(L.z - src.z)
+			if(L.z > src.z)
+				switch(zdiff)
+					if(1)
+						strz = "below"
+					if(2 to 999)
+						strz = "far below"
+			if(L.z < src.z)
+				switch(zdiff)
+					if(1)
+						strz = "above"
+					if(2 to 999)
+						strz = "far above"
+		if(directional)
+			var/dir = get_dir(L, src)
+			strdir = dir2text(dir)
+		//message + "from" + strz if we have it. If we do we add "and" + "strdir", otherwise only "strdir".
+		//If there's a z difference: "A rock can be heard falling" + "from" + "below/above/etc" + "and" + "northeast"
+		//No z difference: "A rock can be heard falling" + "from" + "northeast"
+		//No dir difference:"A rock can be heard falling" + "from" + "above"
+		var/fullmsg = span_warning("[message] from [strz ? "<b>[strz]</b>" : ""][strdir ? "[strz ? " and " : ""]<b>[strdir]</b>" : ""].")
+		to_chat(L, fullmsg)
+/**
  * Show a message to all mobs in earshot of this one
  *
  * This would be for audible actions by the src mob

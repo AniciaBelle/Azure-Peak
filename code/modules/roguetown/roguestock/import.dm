@@ -72,6 +72,19 @@
 	new /obj/item/reagent_containers/glass/bottle/rogue/healthpot(src)
 	new /obj/item/reagent_containers/glass/bottle/rogue/healthpot(src)
 
+/datum/roguestock/import/rotpotion
+	name = "Crate of Rot Cure Potions"
+	desc = "A sought-after crate of rare potions of rot-curing."
+	item_type = /obj/structure/closet/crate/chest/steward/rotpotion
+	export_price = 400		//Expensive, 200 each roughly. Four uses total, as only 5u needed to reverse rot. Each bottle is 10u.
+	importexport_amt = 1
+
+/obj/structure/closet/crate/chest/steward/rotpotion/Initialize()
+	. = ..()
+	new /obj/item/reagent_containers/glass/bottle/rogue/rotcure(src)
+	new /obj/item/reagent_containers/glass/bottle/rogue/rotcure(src)
+
+
 /datum/roguestock/import/knight
 	name = "Knight Equipment Crate"
 	desc = "Kit for a Knight."
@@ -238,8 +251,20 @@
 	new /obj/item/roguebin(src)
 	new /obj/item/reagent_containers/glass/bucket/wooden(src)
 
+/datum/roguestock/import/glasscrate
+	name = "Glass Crate"
+	desc = "A crate full of glass for windows, repairs, and works of art.."
+	item_type = /obj/structure/closet/crate/chest/steward/glasscrate
+	export_price = 150
+	importexport_amt = 1
 
-
+/obj/structure/closet/crate/chest/steward/glasscrate/Initialize()
+	. = ..()
+	new /obj/item/ingot/glass(src)
+	new /obj/item/ingot/glass(src)
+	new /obj/item/ingot/glass(src)
+	new /obj/item/ingot/glass(src)
+	new /obj/item/ingot/glass(src)
 
 
 

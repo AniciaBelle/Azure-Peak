@@ -704,8 +704,11 @@
 
 /mob/living/carbon/human/MouseDrop_T(mob/living/target, mob/living/user)
 	if(pulling == target && stat == CONSCIOUS)
-		//If they dragged themselves and we're currently aggressively grabbing them try to piggyback
+		//If they dragged themselves and we're currently aggressively grabbing them try to piggyback (not on cmode)
 		if(user == target && can_piggyback(target))
+			if(cmode)
+				to_chat(target, span_warning("[src] won't let you on!"))
+				return FALSE
 			piggyback(target)
 			return TRUE
 		//If you dragged them to you and you're aggressively grabbing try to carry them

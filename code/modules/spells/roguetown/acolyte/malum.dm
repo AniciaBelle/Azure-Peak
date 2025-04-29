@@ -4,7 +4,6 @@
 	releasedrain = 0
 	chargedrain = 0
 	chargetime = 0
-	range = 1
 	warnie = "sydwarning"
 	movement_interrupt = FALSE
 	no_early_release = TRUE

@@ -50,7 +50,7 @@
 	id = "druqks"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
 	effectedstats = list("intelligence" = 5,"speed" = 3,"fortune" = -5)
-	duration = 10 SECONDS
+	duration = 2 MINUTES
 
 /datum/status_effect/buff/druqks/on_apply()
 	. = ..()
@@ -236,7 +236,7 @@
 	id = "druqks"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/vitae
 	effectedstats = list("fortune" = 2)
-	duration = 10 SECONDS
+	duration = 1 MINUTES
 
 /datum/status_effect/buff/vitae/on_apply()
 	. = ..()

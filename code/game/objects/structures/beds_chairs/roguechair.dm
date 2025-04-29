@@ -114,6 +114,22 @@
 	destroy_sound = 'sound/combat/hits/onwood/destroyfurniture.ogg'
 	attacked_sound = "woodimpact"
 
+/obj/structure/chair/wood/rogue/chair4
+	icon_state = "chair4"
+	icon = 'icons/roguetown/misc/structure.dmi'
+	item_chair = /obj/item/chair/rogue
+	blade_dulling = DULLING_BASHCHOP
+	destroy_sound = 'sound/combat/hits/onwood/destroyfurniture.ogg'
+	attacked_sound = "woodimpact"
+
+/obj/structure/chair/wood/rogue/chair5
+	icon_state = "chair5"
+	icon = 'icons/roguetown/misc/structure.dmi'
+	item_chair = /obj/item/chair/rogue
+	blade_dulling = DULLING_BASHCHOP
+	destroy_sound = 'sound/combat/hits/onwood/destroyfurniture.ogg'
+	attacked_sound = "woodimpact"
+
 /obj/structure/chair/wood/rogue/throne
 	icon_state = "thronechair"
 	icon = 'icons/roguetown/misc/structure.dmi'
@@ -262,12 +278,22 @@
 
 /obj/structure/bed/rogue
 	icon_state = "bed"
-	icon = 'icons/roguetown/misc/structure.dmi'
+	icon = 'icons/roguetown/misc/beds.dmi'
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_lying = 90
 	sleepy = 3
 	debris = list(/obj/item/grown/log/tree/small = 1)
+
+/obj/structure/bed/rogue/OnCrafted(dirin)
+	dirin = turn(dirin, 180)
+	. = ..(dirin)
+	update_icon()
+
+/obj/structure/bed/rogue/attack_right(mob/user)
+	var/datum/component/simple_rotation/rotcomp = GetComponent(/datum/component/simple_rotation)
+	if(rotcomp)
+		rotcomp.HandRot(rotcomp,user,ROTATION_CLOCKWISE)
 
 /obj/structure/bed/rogue/shit
 	icon_state = "shitbed"
@@ -291,7 +317,7 @@
 
 /obj/structure/bed/rogue/bedroll/attack_hand(mob/user, params)
 	..()
-	user.visible_message("<span class='notice'>[user] begins rolling up \the [src].</span>")
+	user.visible_message(span_notice("[user] begins rolling up \the [src]."))
 	if(do_after(user, 2 SECONDS, TRUE, src))
 		var/obj/item/bedroll/new_bedroll = new /obj/item/bedroll(get_turf(src))
 		new_bedroll.color = src.color
@@ -310,16 +336,16 @@
 	..()
 	var/turf/T = get_turf(loc)
 	if(!isfloorturf(T))
-		to_chat(user, "<span class='warning'>I need ground to plant this on!</span>")
+		to_chat(user, span_warning("I need ground to plant this on!"))
 		return
 	for(var/obj/A in T)
 		if(istype(A, /obj/structure))
-			to_chat(user, "<span class='warning'>I need some free space to deploy a [src] here!</span>")
+			to_chat(user, span_warning("I need some free space to deploy a [src] here!"))
 			return
 		if(A.density && !(A.flags_1 & ON_BORDER_1))
-			to_chat(user, "<span class='warning'>There is already something here!</span>")
+			to_chat(user, span_warning("There is already something here!</span>"))
 			return
-	user.visible_message("<span class='notice'>[user] begins placing \the [src] down on the ground.</span>")
+	user.visible_message(span_notice("[user] begins placing \the [src] down on the ground."))
 	if(do_after(user, 2 SECONDS, TRUE, src))
 		var/obj/structure/bed/rogue/bedroll/new_bedroll = new /obj/structure/bed/rogue/bedroll(get_turf(src))
 		new_bedroll.color = src.color
@@ -327,7 +353,7 @@
 
 /obj/structure/bed/rogue/inn
 	icon_state = "inn_bed"
-	icon = 'icons/roguetown/misc/structure.dmi'
+	icon = 'icons/roguetown/misc/beds.dmi'
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_lying = 90
@@ -336,7 +362,7 @@
 
 /obj/structure/bed/rogue/inn/wooldouble
 	icon_state = "double_wool"
-	icon = 'icons/roguetown/misc/structure.dmi'
+	icon = 'icons/roguetown/misc/beds.dmi'
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_lying = 90
@@ -346,7 +372,7 @@
 
 /obj/structure/bed/rogue/inn/double
 	icon_state = "double"
-	icon = 'icons/roguetown/misc/structure.dmi'
+	icon = 'icons/roguetown/misc/beds.dmi'
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_lying = 90
@@ -377,7 +403,7 @@
 */
 /obj/structure/bed/rogue/inn/hay
 	icon_state = "haybed"
-	icon = 'icons/roguetown/misc/structure.dmi'
+	icon = 'icons/roguetown/misc/beds.dmi'
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_lying = 90
@@ -386,7 +412,7 @@
 
 /obj/structure/bed/rogue/inn/wool
 	icon_state = "woolbed"
-	icon = 'icons/roguetown/misc/structure.dmi'
+	icon = 'icons/roguetown/misc/beds.dmi'
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_lying = 90
@@ -395,7 +421,7 @@
 
 /obj/structure/bed/rogue/inn/pileofshit
 	icon_state = "shitbed2"
-	icon = 'icons/roguetown/misc/structure.dmi'
+	icon = 'icons/roguetown/misc/beds.dmi'
 	anchored = TRUE
 	can_buckle = TRUE
 	buckle_lying = 90

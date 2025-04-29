@@ -299,7 +299,10 @@
 //Turns a Body_parts_covered bitfield into a list of organ/limb names.
 //(I challenge you to find a use for this)
 //^ I did.
-/proc/body_parts_covered2organ_names(bpc)
+//verbose = TRUE will include BOTH flags like "ARMS" and individual flags like "L ARM"
+//precise = TRUE will EXCLUDE combined flags like "ARMS" or "LEGS" and only include "L ARM" / "R ARM" etc
+//leaving both FALSE will include combined flags where appropriate.
+/proc/body_parts_covered2organ_names(bpc, verbose = FALSE, precise = FALSE)
 	var/list/covered_parts = list()
 
 	if(!bpc)
@@ -309,9 +312,9 @@
 		covered_parts |= list(READABLE_ZONE_HEAD)
 	if(bpc & NECK)
 		covered_parts |= list(READABLE_ZONE_NECK)
-	if(bpc & FACE)
+	if(bpc & FACE && !precise)
 		covered_parts |= list(READABLE_ZONE_FACE)
-	else
+	if(verbose || precise || !(bpc & FACE))
 		if(bpc & MOUTH)
 			covered_parts |= list(READABLE_ZONE_MOUTH)
 		if(bpc & NOSE)
@@ -326,33 +329,34 @@
 	if(bpc & GROIN)
 		covered_parts |= list(READABLE_ZONE_GROIN)
 
-	if(bpc & ARMS)
+	if(bpc & ARMS && !precise)
 		covered_parts |= list(READABLE_ZONE_ARMS)
-	else
+	if(verbose || precise || !(bpc & ARMS))
 		if(bpc & ARM_LEFT)
 			covered_parts |= list(READABLE_ZONE_L_ARM)
 		if(bpc & ARM_RIGHT)
 			covered_parts |= list(READABLE_ZONE_R_ARM)
 
-	if(bpc & HANDS)
+	if(bpc & HANDS && !precise)
 		covered_parts |= list(READABLE_ZONE_HANDS)
-	else
+	if(verbose || precise || !(bpc & HANDS))
 		if(bpc & HAND_LEFT)
 			covered_parts |= list(READABLE_ZONE_L_HAND)
 		if(bpc & HAND_RIGHT)
 			covered_parts |= list(READABLE_ZONE_R_HAND)
 
-	if(bpc & LEGS)
+	if(bpc & LEGS && !precise)
 		covered_parts |= list(READABLE_ZONE_LEGS)
-	else
+	if(verbose || precise || !(bpc & LEGS))
 		if(bpc & LEG_LEFT)
 			covered_parts |= list(READABLE_ZONE_L_LEG)
 		if(bpc & LEG_RIGHT)
 			covered_parts |= list(READABLE_ZONE_R_LEG)
 
-	if(bpc & FEET)
+
+	if(bpc & FEET && !precise)
 		covered_parts |= list(READABLE_ZONE_FEET)
-	else
+	if(verbose || precise || !(bpc & FEET))
 		if(bpc & FOOT_LEFT)
 			covered_parts |= list(READABLE_ZONE_L_FOOT)
 		if(bpc & FOOT_RIGHT)

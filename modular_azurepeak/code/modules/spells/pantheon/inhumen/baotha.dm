@@ -20,16 +20,13 @@
 /obj/effect/proc_holder/spell/invoked/baothablessings/cast(list/targets, mob/living/user)
 	if(isliving(targets[1]))
 		var/mob/living/carbon/target = targets[1]
-		if(istype(target.patron, /datum/patron/inhumen/baotha))
-			to_chat(user, span_warning("They already possess Baotha's blessings.."))
-			return FALSE										//This stops us from accidently removing another Baothan's anti-overdose trait.
 		target.apply_status_effect(/datum/status_effect/buff/druqks)
-		ADD_TRAIT(target, TRAIT_CRACKHEAD, TRAIT_GENERIC)		//Gets the trait temorarily, basically will just stop any active/upcoming ODs.
+		ADD_TRAIT(target, TRAIT_CRACKHEAD, TRAIT_MIRACLE)		//Gets the trait temorarily, basically will just stop any active/upcoming ODs.
 		target.visible_message("<span class='info'>[target]'s eyes appear to gloss over!</span>", "<span class='notice'>I feel.. at ease.</span>")
-		addtimer(CALLBACK(src, PROC_REF(remove_buff), target), wait = 15 SECONDS)	//Should be long enough to prevent an overdose. If not, maybe up to 20 or so.
+		addtimer(CALLBACK(src, PROC_REF(remove_buff), target), wait = 2 MINUTES)	//Should be long enough to prevent an overdose.
 
 /obj/effect/proc_holder/spell/invoked/baothablessings/proc/remove_buff(mob/living/carbon/target)
-	REMOVE_TRAIT(target, TRAIT_CRACKHEAD, TRAIT_GENERIC)							
+	REMOVE_TRAIT(target, TRAIT_CRACKHEAD, TRAIT_MIRACLE)							
 	to_chat(target, span_warning("I see everything clearly once more.."))
 	target.visible_message("[target]'s eyes appear to return to normal.")
 
@@ -47,12 +44,18 @@
 	chargedrain = 0
 	chargetime = 15
 	charge_max = 10 SECONDS
-	invocation = "Have a taste of the maiden's pure-bliss!"
+	invocation_type = "whisper"
+	invocation = "Have a taste of the maiden's pure-bliss..."
+	devotion_cost = 30
 
 /obj/projectile/magic/blowingdust
 	name = "unholy dust"
 	icon_state = "spark"
-	nodamage = TRUE	//No effect because it's drugs.
+	nodamage = FALSE
+	damage = 1
+	poisontype = /datum/reagent/herozium
+	poisonfeel = "burning" //Would make sense for your eyes or nose to burn, I guess.
+	poisonamount = 8 //Decent bit of high, three doses would be just above the overdose threshold if applied fast enough.
 
 /obj/projectile/magic/blowingdust/on_hit(target, mob/living/M)
 	. = ..()
@@ -61,9 +64,6 @@
 	if(target)
 		to_chat(target, span_warning("Gah! Something.. got in my - eyes.."))
 		M.blur_eyes(2)
-		poisontype = /datum/reagent/ozium
-		poisonfeel = "burning" //Would make sense for your eyes or nose to burn, I guess.
-		poisonamount = 7 //Decent bit of high, second dose would cause flat-out overdose.
 
 //Numbing Pleasure - T3, removes all pain from self for a period of time. (Similar to Ravox's without any blood-clotting and better pain suppression + good mood buff.)
 /obj/effect/proc_holder/spell/invoked/painkiller
@@ -79,7 +79,7 @@
 	invocation_type = "shout"
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = TRUE
-	charge_max = 20 SECONDS
+	charge_max = 90 SECONDS
 	miracle = TRUE
 	devotion_cost = 75
 
@@ -92,7 +92,7 @@
 			return FALSE	//No, you don't get to feel good. You're a undead mob. Feel bad.
 		target.visible_message(span_info("[target] begins to twitch as warmth radiates from them!"), span_notice("The pain from my wounds fade, every new one being a mere, pleasent warmth!"))
 		phy.pain_mod *= 0.5	//Literally halves your pain modifier.
-		addtimer(VARSET_CALLBACK(phy, pain_mod, phy.pain_mod /= 0.5), 20 SECONDS)	//Adds back the 0.5 of pain, basically setting it back to 1.
+		addtimer(VARSET_CALLBACK(phy, pain_mod, phy.pain_mod /= 0.5), 1 MINUTES)	//Adds back the 0.5 of pain, basically setting it back to 1.
 		target.apply_status_effect(/datum/status_effect/buff/vitae)					//Basically lowers fortune by 2 but +3 speed, it's powerful. Drugs cus Baotha.
 		return TRUE
 

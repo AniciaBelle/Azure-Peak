@@ -221,6 +221,7 @@
 		/datum/sprite_accessory/hair/head/unshavenmohawk,
 		/datum/sprite_accessory/hair/head/mulder,
 		/datum/sprite_accessory/hair/head/nitori,
+		/datum/sprite_accessory/hair/head/newyou,
 		/datum/sprite_accessory/hair/head/odango,
 		/datum/sprite_accessory/hair/head/ombre,
 		/datum/sprite_accessory/hair/head/oneshoulder,

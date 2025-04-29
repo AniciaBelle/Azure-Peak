@@ -3,6 +3,7 @@
 /obj/item/clothing/suit/roguetown/armor
 	slot_flags = ITEM_SLOT_ARMOR
 	body_parts_covered = CHEST
+	body_parts_inherent = CHEST
 	icon = 'icons/roguetown/clothing/armor.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/armor.dmi'
 	equip_sound = 'sound/blank.ogg'
@@ -136,23 +137,14 @@
 
 
 
-/obj/item/clothing/suit/roguetown/armor/gambeson/otavan
-	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_SHIRT
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy/otavan
 	name = "fencer gambeson"
 	desc = "A large shirt with heavy padding meant to be used below armor. Will probably stop an arrow, unlikely to stop a bolt."
 	icon_state = "fancygamb"
-	body_parts_covered = CHEST|GROIN|LEGS|ARMS|VITALS
 	armor = list("blunt" = 80, "slash" = 50, "stab" = 40, "piercing" = 60, "fire" = 0, "acid" = 0)
-	prevent_crits = list(BCLASS_CUT,BCLASS_BLUNT)
-	blocksound = SOFTUNDERHIT
-	blade_dulling = DULLING_BASHCHOP
-	break_sound = 'sound/foley/cloth_rip.ogg'
-	drop_sound = 'sound/foley/dropsound/cloth_drop.ogg'
-	sewrepair = TRUE
-	r_sleeve_status = SLEEVE_NORMAL
-	l_sleeve_status = SLEEVE_NORMAL
-	armor_class = ARMOR_CLASS_LIGHT
 	allowed_race = NON_DWARVEN_RACE_TYPES
+	color = "#FFFFFF"
+	shiftable = FALSE
 
 /obj/item/clothing/suit/roguetown/armor/gambeson/councillor
 	color = "#646464"
@@ -389,9 +381,19 @@
 	max_integrity = 300
 	sellprice = 25
 
+/obj/item/clothing/suit/roguetown/armor/leather/trophyfur
+	name = "treated trophy fur robes"
+	desc = "A heavy set of hardened robes, lined with fur. The leather is composed of several creatures that were notably difficult to fell by arrow. A proof or rangership among many."
+	icon_state = "hatanga"
+	item_state = "hatanga"
+	armor = list("blunt" = 90, "slash" = 30, "stab" = 40, "piercing" = 160, "fire" = 0, "acid" = 0)	//Light armor that blocks arrows (even longbow)
+	prevent_crits = list(BCLASS_STAB, BCLASS_BLUNT, BCLASS_SMASH, BCLASS_PICK, BCLASS_TWIST)
+	max_integrity = 300
+	sellprice = 100
+
 /obj/item/clothing/suit/roguetown/armor/leather/bikini
-	name = "leather bikini"
-	desc = "Flexible cowhide armor. Lightweight, better than nothing. Now in tasteful bikini shape."
+	name = "leather corslet"
+	desc = "Flexible cowhide armor. Lightweight, better than nothing. Trimmed to protect the heart and hips."
 	body_parts_covered = CHEST|GROIN
 	icon_state = "leatherkini"
 	item_state = "leatherkini"
@@ -399,8 +401,8 @@
 	allowed_race = CLOTHED_RACES_TYPES
 
 /obj/item/clothing/suit/roguetown/armor/leather/studded/bikini
-	name = "studded leather bikini"
-	desc = "Studded leather is the most durable of all hides and leathers and about as light. This one is in bikini form."
+	name = "studded leather corslet"
+	desc = "Studded leather is the most durable of all hides and leathers and about as light. Trimmed to protect the heart and hips."
 	body_parts_covered = CHEST|GROIN
 	icon_state = "studleatherkini"
 	item_state = "studleatherkini"
@@ -408,8 +410,8 @@
 	allowed_race = CLOTHED_RACES_TYPES
 
 /obj/item/clothing/suit/roguetown/armor/leather/hide/bikini
-	name = "hide bikini"
-	desc = "A light armor of wildbeast hide. Far more durable than leather. This will not keep a person warm though..."
+	name = "hide corslet"
+	desc = "A light armor of wildbeast hide. Far more durable than leather. Trimmed to protect the heart and hips."
 	body_parts_covered = CHEST|GROIN
 	icon_state = "hidearmorkini"
 	item_state = "hidearmorkini"
@@ -572,21 +574,22 @@
 	armor_class = ARMOR_CLASS_MEDIUM
 	smelt_bar_num = 2
 
-/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/fluted
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/ornate
 	slot_flags = ITEM_SLOT_ARMOR
 	armor_class = ARMOR_CLASS_HEAVY
-	name = "fluted hauberk"
-	desc = "An ornate steel cuirass with tassets, worn atop thick chainmaille. While it falters against arrows and bolts, these interlinked layers are superb at warding off the blows of inhumen claws and axes."
-	icon_state = "flutedhauberk"
-	item_state = "flutedhauberk"
+	name = "psydonite hauberk"
+	desc = "An ornate steel cuirass with tassets, worn atop thick chainmaille. While it falters against arrows and bolts, \
+			these interlinked layers are superb at warding off the blows of inhumen claws and axes."
+	icon_state = "ornatehauberk"
+	item_state = "ornatehauberk"
 	max_integrity = 350
 
 
 
 
 /obj/item/clothing/suit/roguetown/armor/chainmail/bikini
-	name = "chainmail bikini"
-	desc = "Not very comfortable against the skin."
+	name = "chainmail corslet"	// corslet, from the old French 'cors' or bodice, with the diminutive 'let', used to describe lightweight military armor since 1500. Chosen here to replace 'bikini', an extreme anachronism.
+	desc = "For the daring, affording maille's protection with light weight."
 	icon_state = "chainkini"
 	item_state = "chainkini"
 	allowed_sex = list(FEMALE)
@@ -595,11 +598,13 @@
 	armor_class = ARMOR_CLASS_LIGHT //placed in the medium category to keep it with its parent obj
 
 /obj/item/clothing/suit/roguetown/armor/plate/bikini
-	name = "half-plate bikini"
-	desc = "Half plate in bikini form, still just as protective somehow. Save for the stomach."
+	name = "half-plate corslet"
+	desc = "A high breastplate and hip armor allowing flexibility and great protection, save for the stomach."
 	body_parts_covered = CHEST|GROIN
 	icon_state = "halfplatekini"
 	item_state = "halfplatekini"
+	armor = list("blunt" = 80, "slash" = 100, "stab" = 80, "piercing" = 40, "fire" = 0, "acid" = 0) // Identical to steel cuirass, but covering the groin instead of the vitals.
+	max_integrity = 300	// Identical to steel cuirasss. Same steel price.
 	allowed_sex = list(FEMALE)
 	armor_class = ARMOR_CLASS_MEDIUM
 	smelt_bar_num = 2
@@ -624,8 +629,18 @@
 /obj/item/clothing/suit/roguetown/armor/plate/half/fluted
 	name = "fluted cuirass"
 	icon_state = "flutedcuirass"
-	desc = "An ornate steel cuirass with tassets, favored by both the Holy Otavan Inquisition and the Order of the Silver Psycross. Arrows may yet splinter against the steel, but a bolt will still punch straight through it."
-	body_parts_covered = CHEST|VITALS|LEGS
+	desc = "A sturdily made steel cuirass with tassets. Made to sustain, supposedly; though maybe not crossbow bolts."
+
+	body_parts_covered = CHEST | VITALS | LEGS
+	max_integrity = 350
+
+/obj/item/clothing/suit/roguetown/armor/plate/half/fluted/ornate
+	name = "psydonite cuirass"
+	icon_state = "ornatecuirass"
+	desc = "An ornate steel cuirass with tassets, favored by both the Holy Otavan Inquisition and the Order of the Silver Psycross. \
+			Made to endure."
+	
+	max_integrity = 300
 
 /obj/item/clothing/suit/roguetown/armor/plate/half/iron
 	name = "iron breastplate"
@@ -676,13 +691,52 @@
 	armor_class = ARMOR_CLASS_HEAVY
 	smelt_bar_num = 3
 
-/obj/item/clothing/suit/roguetown/armor/plate/Initialize(mapload)
+/obj/item/clothing/suit/roguetown/armor/plate/ComponentInitialize()
 	. = ..()
 	AddComponent(/datum/component/item_equipped_movement_rustle, SFX_PLATE_STEP)
 
+/obj/item/clothing/suit/roguetown/armor/plate/fluted
+	name = "fluted half-plate"
+	desc = "A sturdily made fluted half-plate armour-set, complete with pauldrons and shoulder-guards. \
+	Supposedly made to deflect blows."
+	icon_state = "flutedhalfplate"
+
+	equip_delay_self = 6 SECONDS
+	unequip_delay_self = 6 SECONDS
+
+	max_integrity = 600
+	body_parts_covered = CHEST | VITALS | ARMS
+
+/obj/item/clothing/suit/roguetown/armor/plate/fluted/ornate
+	name = "psydonite half-plate"
+	desc = "A sturdily made fluted half-plate armour-set, complete with pauldrons and shoulder-guards. \
+			Favored by both the Holy Otavan Inquisition and the Order of the Silver Psycross. It smells of the madness of an enduring God."
+	icon_state = "ornatehalfplate"
+
+	max_integrity = 400
+
+	/// Whether the user has the Heavy Armour Trait prior to donning.
+	var/traited = FALSE
+
+/obj/item/clothing/suit/roguetown/armor/plate/fluted/ornate/equipped(mob/living/user, slot)
+	..()
+	if(slot != SLOT_ARMOR)
+		return
+	if (!HAS_TRAIT(user, TRAIT_MEDIUMARMOR))
+		return
+	ADD_TRAIT(user, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
+	to_chat(user, span_notice("Endure til' inevitability."))
+
+/obj/item/clothing/suit/roguetown/armor/plate/fluted/ornate/dropped(mob/living/user)
+	..()
+	if (traited)
+		return
+	REMOVE_TRAIT(user, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
+	to_chat(user, span_notice("Trust in thyself."))
+
 /obj/item/clothing/suit/roguetown/armor/plate/full
 	name = "plate armor"
-	desc = "Full plate. Leg protecting tassets, groin cup, armored vambraces."
+	desc = "Full plate. Slow to don and doff without the aid of a good squire."
 	icon_state = "plate"
 	body_parts_covered = CHEST|GROIN|VITALS|LEGS|ARMS
 	equip_delay_self = 12 SECONDS
@@ -691,6 +745,48 @@
 	strip_delay = 6 SECONDS
 	smelt_bar_num = 4
 
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted
+	name = "fluted plate"
+	desc = "A sturdily made fluted full-plate. Supposedly made to deflect blows from blades and arrows."
+	icon_state = "flutedplate"
+
+	equip_delay_self = 14 SECONDS
+	unequip_delay_self = 14 SECONDS
+
+	max_integrity = 600
+
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate
+	name = "psydonite plate"
+	desc = "A sturdily made fluted full-plate. Heavy-duty, and made to deflect blows from blades and arrows. \
+			Favored by both the Holy Otavan Inquisition and the Order of the Silver Psycross. It smells of the madness of an enduring God."
+	icon_state = "ornateplate"
+
+	max_integrity = 500
+
+	/// Whether the user has the Heavy Armour Trait prior to donning.
+	var/traited = FALSE
+
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate/equipped(mob/living/user, slot)
+	..()
+	if(slot != SLOT_ARMOR)
+		return
+	user.change_stat("endurance", 1)
+	user.change_stat("constitution", 1)
+	to_chat(user, span_notice("Endure til' inevitability."))
+	if (!HAS_TRAIT(user, TRAIT_MEDIUMARMOR))
+		return
+	if (HAS_TRAIT(user, TRAIT_HEAVYARMOR))
+		traited = TRUE
+		return
+	ADD_TRAIT(user, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
+
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate/dropped(mob/living/user)
+	..()
+	user.change_stat("endurance", -1)
+	user.change_stat("constitution", -1)
+	to_chat(user, span_notice("Trust in thyself."))
+	if (!traited)
+		REMOVE_TRAIT(user, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/matthios
 	name = "gilded fullplate"
@@ -714,6 +810,7 @@
 	desc = "Full plate. Called forth from the edge of what should be known. In Her name."
 	icon_state = "zizoplate"
 	max_integrity = 700
+	peel_threshold = 5	//-Any- weapon will require 5 peel hits to peel coverage off of this armor.
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/zizo/Initialize()
 	. = ..()
@@ -727,8 +824,8 @@
 
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/bikini
-	name = "fullplate bikini"
-	desc = "Full plate in bikini form, full package and full exposure."
+	name = "full-plate corslet"
+	desc = "Breastplate, pauldrons, couters, cuisses... did you forget something?"
 	icon_state = "platekini"
 	allowed_sex = list(FEMALE)
 	body_parts_covered = CHEST|GROIN|LEGS|ARMS
@@ -774,28 +871,17 @@
 	armor_class = ARMOR_CLASS_HEAVY
 	smelt_bar_num = 4
 
-/obj/item/clothing/suit/roguetown/armor/otavan
-	slot_flags = ITEM_SLOT_ARMOR
+/obj/item/clothing/suit/roguetown/armor/plate/otavan
 	name = "otavan half-plate"
 	desc = "Half-plate armor with pauldrons. Recommended to layer with the otavan gambeson."
+	armor = list("blunt" = 80, "slash" = 100, "stab" = 80, "piercing" = 20, "fire" = 0, "acid" = 0)
 	body_parts_covered = CHEST|GROIN|VITALS
 	icon_state = "corsethalfplate"
 	item_state = "corsethalfplate"
 	adjustable = CAN_CADJUST
-	armor = list("blunt" = 80, "slash" = 100, "stab" = 80, "piercing" = 20, "fire" = 0, "acid" = 0)
-	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
-	nodismemsleeves = TRUE
-	max_integrity = 500
-	allowed_sex = list(MALE, FEMALE)
-	anvilrepair = /datum/skill/craft/armorsmithing
-	smeltresult = /obj/item/ingot/steel
-	equip_delay_self = 4 SECONDS
-	unequip_delay_self = 4 SECONDS
-	armor_class = ARMOR_CLASS_HEAVY
-	smelt_bar_num = 3
 	allowed_race = NON_DWARVEN_RACE_TYPES
 
-/obj/item/clothing/suit/roguetown/armor/otavan/AdjustClothes(mob/user)
+/obj/item/clothing/suit/roguetown/armor/plate/otavan/AdjustClothes(mob/user)
 	if(loc == user)
 		playsound(user, "sound/foley/dropsound/cloth_drop.ogg", 100, TRUE, -1)
 		if(adjustable == CAN_CADJUST)
@@ -821,7 +907,7 @@
 /obj/item/clothing/suit/roguetown/armor/brigandine
 	slot_flags = ITEM_SLOT_ARMOR
 	name = "brigandine"
-	desc = "A coat with plates concealed inside an exterior fabric. The gap between the plates is susceptible to being picked at."
+	desc = "Composite armour made according to an Etruscan tradition. It's a high-quality arched plate cuirass sewn into dyed leather fitted with a wide skirt at the bottom, to cover the knight's groin."
 	icon_state = "brigandine"
 	blocksound = SOFTHIT
 	body_parts_covered = CHEST|GROIN|VITALS|ARMS
@@ -962,6 +1048,9 @@
 	smelt_bar_num = 2
 	blocksound = SOFTHIT
 
+/obj/item/clothing/suit/roguetown/armor/plate/scale/inqcoat/ComponentInitialize()	//No movement rustle component.
+	return
+
  //--------------- BLACKSTEEL ---------------------
 
 /obj/item/clothing/suit/roguetown/armor/plate/blacksteel_full_plate
@@ -1001,13 +1090,15 @@
 	name = "woad elven plate"
 	desc = "Woven by song and tool of the oldest elven druids. It still creaks and weeps with forlorn reminiscence of a bygone era. It looks like only Elves can fit in it."
 	allowed_race = list(/datum/species/elf/wood, /datum/species/human/halfelf, /datum/species/elf/dark, /datum/species/elf)
-	armor = list("blunt" = 100, "slash" = 20, "stab" = 100, "piercing" = 40, "fire" = 0, "acid" = 0)
+	armor = list("blunt" = 130, "slash" = 20, "stab" = 130, "piercing" = 40, "fire" = 0, "acid" = 0)
 	prevent_crits = list(BCLASS_BLUNT, BCLASS_TWIST, BCLASS_PICK, BCLASS_SMASH)
+	body_parts_covered = CHEST|GROIN|VITALS|LEGS|ARMS
 	icon = 'icons/roguetown/clothing/special/race_armor.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/race_armor.dmi'
 	icon_state = "welfchest"
 	item_state = "welfchest"
 	max_integrity = 500
+	anvilrepair = /datum/skill/craft/carpentry
 	smeltresult = /obj/item/rogueore/coal
 	smelt_bar_num = 4
 	blocksound = SOFTHIT

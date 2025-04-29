@@ -198,7 +198,7 @@ var/global/list/roguegamemodes = list("Rebellion", "Vampires and Werewolves", "E
 	"Knight")
 	var/num_bandits = 0
 	if(num_players() >= 10)
-		num_bandits = CLAMP(round(num_players() / 5), 4, 6)
+		num_bandits = CLAMP(round(num_players() / 5), 3, 5) // minimum is now 3, increased by 1 for every 5 players readied up beyond 20, with a maximum of 5 bandits.
 		var/datum/job/bandit_job = SSjob.GetJob("Bandit")
 		bandit_job.total_positions = num_bandits
 		bandit_job.spawn_positions = num_bandits

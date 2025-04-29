@@ -2012,7 +2012,7 @@
 /obj/effect/spawner/lootdrop/potion_vitals,
 /obj/item/ingot/blacksteel,
 /obj/item/ingot/blacksteel,
-/obj/item/book/granter/spellbook/magician,
+/obj/item/book/spellbook/magician,
 /turf/open/floor/rogue/naturalstone,
 /area/rogue/under/cave/dragonden)
 "zV" = (

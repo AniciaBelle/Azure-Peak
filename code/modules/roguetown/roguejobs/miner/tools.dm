@@ -1,6 +1,8 @@
 /obj/item/rogueweapon/pick
-	force = 21
+	force = 17
+	force_wielded = 21
 	possible_item_intents = list(/datum/intent/pick)
+	gripped_intents = list(/datum/intent/pick)
 	name = "iron pick"
 	desc = "This tool is essential to mine in the dark depths."
 	icon_state = "pick"
@@ -48,6 +50,7 @@
 /obj/item/rogueweapon/pick/steel
 	name = "steel pick"
 	desc = "With a reinforced handle and sturdy shaft, this is a superior tool for delving in the darkness."
+	force = 21
 	force_wielded = 28
 	icon_state = "steelpick"
 	possible_item_intents = list(/datum/intent/pick)
@@ -58,9 +61,10 @@
 /obj/item/rogueweapon/pick/stone
 	name = "stone pick"
 	desc = "Stone versus sharp stone, who wins?"
+	force = 12
 	force_wielded = 17
 	icon_state = "stonepick"
 	possible_item_intents = list(/datum/intent/pick)
 	gripped_intents = list(/datum/intent/pick)
 	max_integrity = 250
-	smeltresult = /obj/item/ingot/steel
+	smeltresult = null

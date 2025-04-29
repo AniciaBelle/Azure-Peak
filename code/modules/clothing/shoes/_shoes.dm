@@ -19,8 +19,8 @@
 	var/is_barefoot = FALSE
 	bloody_icon_state = "shoeblood"
 
-	grid_width = 64
-	grid_height = 32
+	grid_width = 32
+	grid_height = 64
 
 /obj/item/clothing/shoes/ComponentInitialize()
 	. = ..()
@@ -76,7 +76,7 @@
 		restore_offsets(user)
 	. = ..()
 
-/obj/item/clothing/shoes/update_clothes_damaged_state(damaging = TRUE)
+/obj/item/clothing/shoes/update_damaged_state()
 	..()
 	if(ismob(loc))
 		var/mob/M = loc

@@ -3,6 +3,13 @@
 	craftdiff = 1
 
 // --------- IRON -----------
+
+/datum/anvil_recipe/tools/iron/blowrod
+	name = "Glass Blowing Rod"
+	req_bar = /obj/item/ingot/iron
+	created_item = /obj/item/rogueweapon/blowrod
+	craftdiff = 0
+
 /datum/anvil_recipe/tools/surgery/surgerytools
 	name = "Surgeon's Bag (+1 Iron, +1 Cured Leather)"
 	req_bar = /obj/item/ingot/iron

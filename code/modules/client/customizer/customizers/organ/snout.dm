@@ -39,17 +39,7 @@
 		/datum/sprite_accessory/snout/lcanidalt,
 		/datum/sprite_accessory/snout/lcanidstriped,
 		/datum/sprite_accessory/snout/lcanidstripedalt,
-		/datum/sprite_accessory/snout/sharp,
-		/datum/sprite_accessory/snout/round,
-		/datum/sprite_accessory/snout/sharplight,
-		/datum/sprite_accessory/snout/roundlight,
 		/datum/sprite_accessory/snout/vulp,
-		/datum/sprite_accessory/snout/front/sharp,
-		/datum/sprite_accessory/snout/front/round,
-		/datum/sprite_accessory/snout/front/sharplight,
-		/datum/sprite_accessory/snout/front/roundlight,
-		/datum/sprite_accessory/snout/stubby,
-		/datum/sprite_accessory/snout/stubbyalt,
 		)
 
 /datum/customizer/organ/snout/lupian
@@ -82,8 +72,7 @@
 		/datum/sprite_accessory/snout/front/wolf,
 		/datum/sprite_accessory/snout/front/wolfalt,
 		/datum/sprite_accessory/snout/front/otie,
-		/datum/sprite_accessory/snout/stubby,
-		/datum/sprite_accessory/snout/stubbyalt,
+		/datum/sprite_accessory/snout/hpanda
 		)
 
 /datum/customizer/organ/snout/tajaran

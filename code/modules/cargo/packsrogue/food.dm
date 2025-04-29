@@ -12,6 +12,15 @@
 					/obj/item/reagent_containers/glass/bottle/rogue/healthpot,
 				)
 
+//Only two since that's 4 uses total; two sips each. You only need one sip for cure.
+/datum/supply_pack/rogue/food/rotcure
+	name = "Rot Cure Potion"
+	cost = 300
+	contains = list(
+					/obj/item/reagent_containers/glass/bottle/rogue/rotcure,
+					/obj/item/reagent_containers/glass/bottle/rogue/rotcure,
+				)
+
 /datum/supply_pack/rogue/food/manapot
 	name = "Manna Potion"
 	cost = 80

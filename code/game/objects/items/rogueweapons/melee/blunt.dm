@@ -66,6 +66,7 @@
 	wdefense = 2
 	wbalance = -1
 	blade_dulling = DULLING_BASHCHOP
+	intdamage_factor = 0.7
 
 /obj/item/rogueweapon/mace/church
 	force = 25
@@ -165,6 +166,7 @@
 	possible_item_intents = list(/datum/intent/mace/strike/wood)
 	gripped_intents = list(/datum/intent/mace/strike/wood, /datum/intent/mace/smash/wood)
 	smeltresult = /obj/item/ash
+	anvilrepair = /datum/skill/craft/carpentry
 	minstr = 7
 	resistance_flags = FLAMMABLE
 
@@ -235,6 +237,7 @@
 	wdefense = 5
 	wbalance = 0
 	associated_skill = /datum/skill/combat/swords
+	anvilrepair = /datum/skill/craft/carpentry
 	resistance_flags = FLAMMABLE
 
 
@@ -315,6 +318,7 @@
 	dropshrink = 0.6
 	bigboy = TRUE
 	gripsprite = TRUE
+	intdamage_factor = 0.5
 
 /obj/item/rogueweapon/mace/goden/getonmobprop(tag)
 	. = ..()
@@ -336,6 +340,18 @@
 	smeltresult = /obj/item/ingot/steel
 	smelt_bar_num = 2
 
+/obj/item/rogueweapon/mace/goden/deepduke
+	name = "deep duke's staff"
+	desc = "A staff made of seaglass and sturdy but unusual metal, holding no power after its misled owner's death. More useful as a bashing tool than a magic focus."
+	icon = 'icons/roguetown/mob/monster/pufferboss.dmi'
+	icon_state = "pufferprod"
+	force = 15
+	force_wielded = 35
+	minstr = 11
+	max_integrity = 900
+	smeltresult = /obj/item/ingot/steelholy
+	smelt_bar_num = 2
+
 /obj/item/rogueweapon/mace/goden/steel/ravox
 	name = "duel settler"
 	desc = "The tenets of ravoxian duels are enscribed upon the head of this maul."
@@ -355,7 +371,7 @@
 	blade_dulling = DULLING_BASH
 	smelt_bar_num = 2
 
-/obj/item/rogueweapon/mace/steel/psymace/ComponentInitialize()
+/obj/item/rogueweapon/mace/goden/psymace/ComponentInitialize()
 	. = ..()								//+3 force, +50 int, +1 def, make silver
 	AddComponent(/datum/component/psyblessed, FALSE, 3, FALSE, 50, 1, TRUE)
 
@@ -376,6 +392,7 @@
 	smeltresult = /obj/item/ingot/iron
 	blade_dulling = DULLING_BASH
 	wdefense = 3
+	intdamage_factor = 0.3
 
 /obj/item/rogueweapon/mace/warhammer/steel
 	force = 25

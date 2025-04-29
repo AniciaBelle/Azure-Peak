@@ -7,6 +7,13 @@
 	icon_state = "plex"
 	icon = 'modular_azurepeak/icons/obj/items/donor_weapons_64.dmi'
 
+//Ryebread's donator item - estoc
+/obj/item/rogueweapon/estoc/worttrager
+	name = "Wortträger"
+	desc = "An imported Grenzelhoftian panzerstecher, a superbly crafted implement devoid of armory marks- merely bearing a maker's mark and the Zenitstadt seal. This one has a grip of walnut wood, and a pale saffira set within the crossguard. The ricasso is engraved with Ravoxian scripture."
+	icon_state = "mansa"
+	icon = 'modular_azurepeak/icons/obj/items/donor_weapons_64.dmi'
+
 //Srusu's donator item - dress
 /obj/item/clothing/suit/roguetown/shirt/dress/emerald
 	name = "emerald dress"

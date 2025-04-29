@@ -234,7 +234,7 @@
 		var/str = "[m3] [wear_pants.get_examine_string(user)][accessory_msg]. "
 		if(!wear_armor)
 			if(is_normal && !is_smart)
-				str += "[wear_pants.integrity_check(simple = TRUE)]"
+				str += "[wear_pants.integrity_check()]"
 			else if(is_stupid)
 				str = "[m3] a pair of some pants! "
 		else if(is_smart)
@@ -253,7 +253,7 @@
 			else
 				str = "[m3] some kinda hat!"
 		else
-			str += "[head.integrity_check(simple = TRUE)]"
+			str += "[head.integrity_check()]"
 		. += str
 
 	//suit/armor
@@ -278,7 +278,7 @@
 						else
 							. += "[m3] some heavy metal stuff!"
 		else
-			str += "[wear_armor.integrity_check(simple = TRUE)]"
+			str += "[wear_armor.integrity_check()]"
 		. += str
 		//suit/armor storage
 		if(s_store && !(SLOT_S_STORE in obscured))
@@ -337,7 +337,7 @@
 		if(is_smart)
 			str += gloves.integrity_check()
 		else if(!is_stupid)
-			str += "[gloves.integrity_check(simple = TRUE)]"
+			str += "[gloves.integrity_check()]"
 		else
 			str = "[m3] a pair of gloves of some kind!"
 		. += str
@@ -382,7 +382,7 @@
 		if(is_smart)
 			str += shoes.integrity_check()
 		else if(!is_stupid)
-			str += "[shoes.integrity_check(simple = TRUE)]"
+			str += "[shoes.integrity_check()]"
 		else
 			str = "[m3] some shoes on [m2] feet!"
 		. += str
@@ -395,7 +395,7 @@
 		else if(is_stupid)
 			str = "[m3] some kinda thing on [m2] face!"
 		else
-			str += wear_mask.integrity_check(simple = TRUE)
+			str += wear_mask.integrity_check()
 		. += str
 
 	//mouth
@@ -406,7 +406,7 @@
 		else if(is_stupid)
 			str = "[m3] some kinda thing on [m2] mouth!"
 		else
-			str += "[mouth.integrity_check(simple = TRUE)]"
+			str += "[mouth.integrity_check()]"
 		. += str
 
 	//neck
@@ -417,7 +417,7 @@
 		else if (is_stupid)
 			str = "[m3] something on [m2] neck!"
 		else
-			str += "[wear_neck.integrity_check(simple = TRUE)]"
+			str += "[wear_neck.integrity_check()]"
 		. += str
 
 	//eyes
@@ -455,7 +455,7 @@
 		else if (is_stupid)
 			str = "[m3] something on [m2] wrists!"
 		else
-			str += "[wear_wrists.integrity_check(simple = TRUE)]"
+			str += "[wear_wrists.integrity_check()]"
 		. += str
 
 	//handcuffed?
@@ -761,7 +761,7 @@
 				
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
-		if(get_dist(src, H) <= 2 + clamp(floor(((H.STAPER - 10) / 2)),-1, 2) && (!obscure_name || client?.prefs.masked_examine))
+		if(get_dist(src, H) <= ((2 + clamp(floor(((H.STAPER - 10))),-1, 4)) + HAS_TRAIT(user, TRAIT_INTELLECTUAL)))
 			. += "<a href='?src=[REF(src)];task=assess;'>Assess</a>"
 
 	if((!obscure_name || client?.prefs.masked_examine) && (flavortext || headshot_link || ooc_notes))
@@ -790,7 +790,7 @@
 
 /// Returns patron-related examine text for the mob, if any. Can return null.
 /mob/living/proc/get_heretic_text(mob/examiner)
-	var/heretic_text
+	var/heretic_text = null
 	var/seer
 
 	if(HAS_TRAIT(src,TRAIT_DECEIVING_MEEKNESS))
@@ -811,22 +811,16 @@
 			heretic_text += "A member of Zizo's cabal."
 			if(HAS_TRAIT(examiner, TRAIT_CABAL))
 				heretic_text += " May their ambitions not interfere with mine."
-		else if(HAS_TRAIT(examiner, TRAIT_CABAL))
-			heretic_text += "Another of the Cabal!"
 	else if((HAS_TRAIT(src, TRAIT_HORDE)))
 		if(seer)
 			heretic_text += "Hardened by Graggar's Rituals."
 			if(HAS_TRAIT(examiner, TRAIT_HORDE))
 				heretic_text += " Mine were a glorious memory."
-		else if(HAS_TRAIT(examiner, TRAIT_HORDE))
-			heretic_text += "Anointed!"
 	else if((HAS_TRAIT(src, TRAIT_DEPRAVED)))
 		if(seer)
 			heretic_text += "Baotha's Touched."
 			if(HAS_TRAIT(examiner, TRAIT_DEPRAVED))
 				heretic_text += " She leads us to the greatest ends."
-		else if(HAS_TRAIT(examiner, TRAIT_DEPRAVED))
-			heretic_text += "Debased!"
 	
 	return heretic_text
 

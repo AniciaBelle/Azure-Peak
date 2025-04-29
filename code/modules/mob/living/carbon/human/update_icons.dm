@@ -740,6 +740,12 @@ There are several things that need to be remembered:
 					onbelt_behind = mutable_appearance(beltr.getmoboverlay("onbelt",prop,behind=TRUE,mirrored=FALSE), layer=-BELT_BEHIND_LAYER)
 					onbelt_overlay = center_image(onbelt_overlay, beltr.inhand_x_dimension, beltr.inhand_y_dimension)
 					onbelt_behind = center_image(onbelt_behind, beltr.inhand_x_dimension, beltr.inhand_y_dimension)
+					if(beltr.icon_y_offset)
+						onbelt_behind.pixel_y += beltr.icon_y_offset
+						onbelt_overlay.pixel_y += beltr.icon_y_offset
+					if(beltr.icon_x_offset)
+						onbelt_overlay.pixel_x += beltr.icon_x_offset
+						onbelt_behind.pixel_x += beltr.icon_x_offset
 					if(ishuman(src))
 						var/mob/living/carbon/human/H = src
 						if(H.dna && H.dna.species)
@@ -795,6 +801,12 @@ There are several things that need to be remembered:
 					onbelt_behind = mutable_appearance(beltl.getmoboverlay("onbelt",prop,behind=TRUE,mirrored=TRUE), layer=-BELT_BEHIND_LAYER)
 					onbelt_overlay = center_image(onbelt_overlay, beltl.inhand_x_dimension, beltl.inhand_y_dimension)
 					onbelt_behind = center_image(onbelt_behind, beltl.inhand_x_dimension, beltl.inhand_y_dimension)
+					if(beltl.icon_y_offset)
+						onbelt_behind.pixel_y += beltl.icon_y_offset
+						onbelt_overlay.pixel_y += beltl.icon_y_offset
+					if(beltl.icon_x_offset)
+						onbelt_overlay.pixel_x += beltl.icon_x_offset
+						onbelt_behind.pixel_x += beltl.icon_x_offset
 					if(ishuman(src))
 						var/mob/living/carbon/human/H = src
 						if(H.dna && H.dna.species)

@@ -188,6 +188,8 @@
 				H.adjustBruteLoss(20)
 				playsound(target, 'sound/combat/dismemberment/dismem (2).ogg', 100)
 				H.emote("agony")
+		else
+			target.apply_status_effect(/datum/status_effect/buff/healing, healing)
 		target.visible_message(message_out, message_self)
 		return TRUE
 	revert_cast()

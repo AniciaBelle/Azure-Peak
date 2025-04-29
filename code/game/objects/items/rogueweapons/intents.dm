@@ -45,6 +45,8 @@
 	var/reach = 1 //In tiles, how far this weapon can reach; 1 for adjacent, which is default
 	var/miss_text //THESE ARE FOR UNARMED MISSING ATTACKS
 	var/miss_sound //THESE ARE FOR UNARMED MISSING ATTACKS
+	var/allow_offhand = TRUE	//Do I need my offhand free while using this intent?
+	var/peel_divisor = 0		//How many consecutive peel hits this intent requires to peel a piece of coverage? May be overriden by armor thresholds if they're higher.
 
 /datum/intent/Destroy()
 	if(chargedloop)
@@ -84,7 +86,10 @@
 			inspec += "Quick"
 		if(clickcd > CLICK_CD_MELEE)
 			inspec += "Slow"
-
+	if(blade_class == BCLASS_PEEL)
+		inspec += "\nThis intent will peel the coverage off of your target's armor in non-key areas after [peel_divisor] consecutive hits.\nSome armor may have higher thresholds."
+	if(!allow_offhand)
+		inspec += "\nThis intent requires a free off-hand."
 	inspec += "<br>----------------------"
 
 	to_chat(user, "[inspec.Join()]")
@@ -298,6 +303,11 @@
 	chargetime = 0
 	swingdelay = 0
 
+/datum/intent/stab/militia
+	name = "militia stab"
+	damfactor = 1.1
+	penfactor = 50
+
 /datum/intent/pick //now like icepick intent, we really went in a circle huh
 	name = "pick"
 	icon_state = "inpick"
@@ -309,6 +319,19 @@
 	blade_class = BCLASS_PICK
 	chargetime = 0
 	swingdelay = 12
+
+/datum/intent/pick/ranged
+	name = "ranged pick"
+	icon_state = "inpick"
+	attack_verb = list("stabs", "impales")
+	hitsound = list('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg')
+	penfactor = 60
+	damfactor = 1.1
+	chargetime = 0.7
+	chargedrain = 2
+	reach = 2
+	no_early_release = TRUE
+	blade_class = BCLASS_PICK
 
 /datum/intent/shoot //shooting crossbows or other guns, no parrydrain
 	name = "shoot"

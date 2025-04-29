@@ -35,6 +35,9 @@
 	if(user.mind)
 		burndam -= (user.mind.get_skill_level(/datum/skill/misc/medicine) * 3)
 
+	target.remove_status_effect(/datum/status_effect/debuff/rotted_zombie)	//Removes the rotted-zombie debuff if they have it.
+	target.apply_status_effect(/datum/status_effect/debuff/rotted)	//Perma debuff, needs cure - adds this on surgery.
+
 	if(remove_rot(target = target, user = user, method = "surgery", damage = burndam,
 		success_message = "You burn away the rot inside of [target].",
 		fail_message = "The surgery fails to remove the rot."))
@@ -42,6 +45,5 @@
 		display_results(user, target, span_notice("You burn away the rot inside of [target]."),
 		"[user] burns the rot within [target].",
 		"[user] takes a [tool] to [target]'s innards.")
-
 		return TRUE
 	return TRUE

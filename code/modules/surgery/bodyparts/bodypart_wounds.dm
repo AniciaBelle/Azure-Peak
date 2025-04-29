@@ -100,8 +100,9 @@
 	var/bleed_rate = 0
 	if(bandage && !HAS_BLOOD_DNA(bandage))
 		return 0
-	for(var/datum/wound/wound as anything in wounds)
-		bleed_rate += wound.bleed_rate
+	for(var/datum/wound/wound in wounds)
+		if(istype(wound, /datum/wound))
+			bleed_rate += wound.bleed_rate
 	for(var/obj/item/embedded as anything in embedded_objects)
 		if(!embedded.embedding.embedded_bloodloss)
 			continue
@@ -506,10 +507,12 @@
 	var/static/list/retracting_behaviors = list(
 		TOOL_RETRACTOR,
 		TOOL_CROWBAR,
+		TOOL_IMPROVISED_RETRACTOR,
 	)
 	var/static/list/clamping_behaviors = list(
 		TOOL_HEMOSTAT,
 		TOOL_WIRECUTTER,
+		TOOL_IMPROVISED_HEMOSTAT,
 	)
 	for(var/obj/item/embedded as anything in embedded_objects)
 		if((embedded.tool_behaviour in retracting_behaviors) || embedded.embedding?.retract_limbs)

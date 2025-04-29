@@ -55,6 +55,7 @@
 //	stat_attack = UNCONSCIOUS
 	remains_type = /obj/effect/decal/remains/wolf
 	eat_forever = TRUE
+	rot_type = null
 
 //new ai, old ai off
 	AIStatus = AI_OFF

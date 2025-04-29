@@ -17,6 +17,7 @@
 /datum/game_mode/extended/announced
 	name = "extended"
 	config_tag = "extended"
+	votable = TRUE
 	false_report_weight = 0
 
 /datum/game_mode/extended/announced/send_intercept(report = 0)

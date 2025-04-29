@@ -176,23 +176,25 @@ GLOBAL_VAR_INIT(year_integer, text2num(year)) // = 2013???
 		
 		var/mob/living/carbon/human/H = src
 		var/mob/living/carbon/human/user = usr
+		var/intellectual = HAS_TRAIT(user, TRAIT_INTELLECTUAL)
 
 		if(H.get_visible_name() in unknown_names)
 			obscured_name = TRUE
 
-		if(get_dist(user, H) <= 2 + clamp(floor(((user.STAPER - 10) / 2)),-1, 2) && (!obscured_name || H.client?.prefs.masked_examine))
+		if(get_dist(user, H) <= (2 + clamp(floor(((user.STAPER - 10))),-1, 4) + intellectual))
 			success = TRUE
 		if(!success)
-			to_chat(user, span_info("They've moved too far away or put a mask on!"))
+			to_chat(user, span_info("They've moved too far away!"))
 			return
 		user.visible_message("[user] begins assessing [src].")
-		if(do_mob(user, src, (40 - (user.STAINT - 10) - (user.STAPER - 10) - user.mind?.get_skill_level(/datum/skill/misc/reading)), double_progress = TRUE))
+		
+		if(do_mob(user, src, ((intellectual ? 20 : 40)) - (user.STAINT - 10) - (user.STAPER - 10) - user.mind?.get_skill_level(/datum/skill/misc/reading), uninterruptible = intellectual, double_progress = (intellectual ? FALSE : TRUE)))
 			var/is_guarded = HAS_TRAIT(src, TRAIT_DECEIVING_MEEKNESS)	//Will scramble Stats and prevent skills from being shown
 			var/is_smart = FALSE	//Maximum info (all skills, gear and stats) either Intellectual virtue or having high enough PER / INT / Reading
 			var/is_stupid = FALSE	//Less than 9 INT, Intellectual virtue overrides it.
 			var/is_normal = FALSE	//High amount of info -- most gear slots, combat skills. No stats.
 			//If you don't get any of these, you'll still get to see 3 gear slots and shown weapon skills in Assess.
-			if(HAS_TRAIT(user, TRAIT_INTELLECTUAL) || ((user.STAINT - 10) + (user.STAPER - 10) + user.mind?.get_skill_level(/datum/skill/misc/reading)) >= 10)
+			if(intellectual || ((user.STAINT - 10) + (user.STAPER - 10) + user.mind?.get_skill_level(/datum/skill/misc/reading)) >= 10)
 				is_smart = TRUE	
 			if(user.STAINT < 10 && !is_smart)
 				is_stupid = TRUE
@@ -204,7 +206,7 @@ GLOBAL_VAR_INIT(year_integer, text2num(year)) // = 2013???
 			// NEXT ROW
 			dat += "<tr>"
 			dat += "<td style='width:16%;text-align:left;vertical-align: text-top'>"
-			if(HAS_TRAIT(user, TRAIT_INTELLECTUAL))
+			if(intellectual && (!obscured_name || H.client?.prefs.masked_examine))
 				dat += "<b>STATS:</b><br><br>"
 				if(!is_guarded)
 					dat +=("STR: \Roman [H.STASTR]<br>")
@@ -226,70 +228,153 @@ GLOBAL_VAR_INIT(year_integer, text2num(year)) // = 2013???
 			else
 				dat += "</td>"
 
-			dat += "<td style='width:33%;text-align:center;vertical-align: text-top'>"
-			dat += "<b>BODY:</b><br><br>"
-			dat += "<b><font size = 4; font color = '#dddada'>HEAD</b></font><br>"
-			if(H.head)
-				dat += capitalize("[H.head.name]<br>")
-				dat += defense_report(H.head, is_stupid, is_normal, is_smart, "THE HEAD I THINK. MAYBE MORE?")
+			dat += "<td style='width:33%;text-align:left;vertical-align: text-top'>"
+			var/list/damtypes = list("blunt","slash","stab","piercing")
+			var/list/body_parts = list(skin_armor, head, wear_mask, wear_wrists, gloves, wear_neck, cloak, wear_armor, wear_shirt, shoes, wear_pants, backr, backl, belt, s_store, glasses, ears, wear_ring)
+			var/list/coverage_exposed = list(READABLE_ZONE_HEAD, READABLE_ZONE_CHEST, READABLE_ZONE_ARMS, READABLE_ZONE_L_ARM, READABLE_ZONE_R_ARM, READABLE_ZONE_LEGS, READABLE_ZONE_L_LEG, READABLE_ZONE_R_LEG, READABLE_ZONE_NOSE, READABLE_ZONE_MOUTH, READABLE_ZONE_EYES, READABLE_ZONE_NECK, READABLE_ZONE_VITALS, READABLE_ZONE_GROIN, READABLE_ZONE_HANDS, READABLE_ZONE_L_HAND, READABLE_ZONE_R_HAND, READABLE_ZONE_FEET, READABLE_ZONE_L_FOOT, READABLE_ZONE_R_FOOT)
+			var/list/coverage = list()	//All of the covered areas
+			var/list/blunt_max = list()	//Highest armor prot values
+			var/list/slash_max = list()	
+			var/list/stab_max = list()
+			var/list/piercing_max = list()
+			var/list/crit_weakness = list()	//The critical damage type the zone will be weak to
+			for(var/part in body_parts)
+				if(!part)
+					continue
+				if(part && istype(part, /obj/item/clothing))
+					var/obj/item/clothing/C = part
+					var/list/readable_coverage
+					var/list/critclasses = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST, BCLASS_SMASH, BCLASS_PICK)
+					if(C.max_integrity)
+						if(C.obj_integrity <= 0)
+							continue
+						if(C.integrity_failure)
+							if(C.obj_broken)
+								continue
+					if(!C.armor)	//No armor -- no need to care about it
+						continue
+					if(C.armor)
+						if(C.armor.slash == 0 && C.armor.stab == 0 && C.armor.blunt == 0 && C.armor.piercing == 0)	//No armor but there's an armor datum. Useless for Assess, so we skip it.
+							continue
+					if(C.body_parts_covered_dynamic)
+						readable_coverage = body_parts_covered2organ_names(C.body_parts_covered_dynamic, verbose = TRUE)
+					
+					if(length(C.prevent_crits) && (is_normal || is_smart))
+						for(var/critzone in C.prevent_crits)
+							for(var/crit in critclasses)
+								if(critzone == crit)
+									LAZYREMOVE(critclasses, crit)
+									continue
+
+					for(var/coverageflag in readable_coverage)
+						for(var/type in damtypes)
+							switch(type)			//We get the max armor  values for this coverage flag
+								if("blunt")
+									blunt_max[coverageflag] = max(C.armor.getRating(type), blunt_max[coverageflag])
+								if("slash")
+									slash_max[coverageflag] = max(C.armor.getRating(type), slash_max[coverageflag])
+								if("stab")
+									stab_max[coverageflag] = max(C.armor.getRating(type), stab_max[coverageflag])
+								if("piercing")
+									piercing_max[coverageflag] = max(C.armor.getRating(type), piercing_max[coverageflag])
+						coverage[coverageflag] += 1
+						if(length(critclasses) && (is_normal || is_smart))
+							var/str
+							for(var/critzone in critclasses)
+								if(critzone == BCLASS_PICK)
+									critzone = "Pick"
+								str += "| [capitalize(critzone)] | "
+							crit_weakness[coverageflag] = str
+						switch(coverageflag)		//This removes covered zones from the _exposed list. The remainder, if any, will be highlighted in red as an "exposed" zone.
+							if(READABLE_ZONE_L_ARM)
+								coverage_exposed.Remove(READABLE_ZONE_ARMS, READABLE_ZONE_L_ARM)
+							if(READABLE_ZONE_R_ARM)
+								coverage_exposed.Remove(READABLE_ZONE_ARMS, READABLE_ZONE_R_ARM)	//Since individual limbs can be exposed, this is needed for the accuracy / granularity of the printout.
+							if(READABLE_ZONE_L_LEG)
+								coverage_exposed.Remove(READABLE_ZONE_LEGS, READABLE_ZONE_L_LEG)	//However it do be ugly.
+							if(READABLE_ZONE_R_LEG)	
+								coverage_exposed.Remove(READABLE_ZONE_LEGS, READABLE_ZONE_R_LEG)
+							if(READABLE_ZONE_L_HAND)
+								coverage_exposed.Remove(READABLE_ZONE_HANDS, READABLE_ZONE_L_HAND)
+							if(READABLE_ZONE_R_HAND)
+								coverage_exposed.Remove(READABLE_ZONE_HANDS, READABLE_ZONE_R_HAND)
+							if(READABLE_ZONE_R_FOOT)
+								coverage_exposed.Remove(READABLE_ZONE_FEET, READABLE_ZONE_R_FOOT)
+							if(READABLE_ZONE_L_FOOT)
+								coverage_exposed.Remove(READABLE_ZONE_FEET, READABLE_ZONE_L_FOOT)
+							else
+								coverage_exposed.Remove(coverageflag)
+			for(var/coverageflag in coverage)	//We go through the set up list and filter out redundancies. (ie Left Arm & Right Arm having identical stats to Arms)
+				switch(coverageflag)
+					if(READABLE_ZONE_ARMS)
+						if(coverage[READABLE_ZONE_L_ARM] == coverage[READABLE_ZONE_R_ARM])
+							if((blunt_max[READABLE_ZONE_L_ARM] == blunt_max[READABLE_ZONE_R_ARM]) && (slash_max[READABLE_ZONE_L_ARM] == slash_max[READABLE_ZONE_R_ARM]) && (stab_max[READABLE_ZONE_L_ARM] == stab_max[READABLE_ZONE_R_ARM]))
+								coverage.Remove(READABLE_ZONE_L_ARM, READABLE_ZONE_R_ARM)
+							else
+								coverage.Remove(READABLE_ZONE_ARMS)
+						else
+							coverage.Remove(READABLE_ZONE_ARMS)
+					if(READABLE_ZONE_LEGS)
+						if(coverage[READABLE_ZONE_L_LEG] == coverage[READABLE_ZONE_R_LEG])
+							if((blunt_max[READABLE_ZONE_L_LEG] == blunt_max[READABLE_ZONE_R_LEG]) && (slash_max[READABLE_ZONE_L_LEG] == slash_max[READABLE_ZONE_R_LEG]) && (stab_max[READABLE_ZONE_L_LEG] == stab_max[READABLE_ZONE_R_LEG]))
+								coverage.Remove(READABLE_ZONE_L_LEG, READABLE_ZONE_R_LEG)
+							else
+								coverage.Remove(READABLE_ZONE_LEGS)
+						else
+							coverage.Remove(READABLE_ZONE_LEGS)
+					if(READABLE_ZONE_HANDS)
+						if(coverage[READABLE_ZONE_L_HAND] == coverage[READABLE_ZONE_R_HAND])
+							if((blunt_max[READABLE_ZONE_L_HAND] == blunt_max[READABLE_ZONE_R_HAND]) && (slash_max[READABLE_ZONE_L_HAND] == slash_max[READABLE_ZONE_R_HAND]) && (stab_max[READABLE_ZONE_L_HAND] == stab_max[READABLE_ZONE_R_HAND]))
+								coverage.Remove(READABLE_ZONE_L_HAND, READABLE_ZONE_R_HAND)
+							else
+								coverage.Remove(READABLE_ZONE_HANDS)
+						else
+							coverage.Remove(READABLE_ZONE_HANDS)
+					if(READABLE_ZONE_FEET)
+						if(coverage[READABLE_ZONE_L_FOOT] == coverage[READABLE_ZONE_R_FOOT])
+							if((blunt_max[READABLE_ZONE_L_FOOT] == blunt_max[READABLE_ZONE_R_FOOT]) && (slash_max[READABLE_ZONE_L_FOOT] == slash_max[READABLE_ZONE_R_FOOT]) && (stab_max[READABLE_ZONE_L_FOOT] == stab_max[READABLE_ZONE_R_FOOT]))
+								coverage.Remove(READABLE_ZONE_L_FOOT, READABLE_ZONE_R_FOOT)
+							else
+								coverage.Remove(READABLE_ZONE_FEET)
+						else
+							coverage.Remove(READABLE_ZONE_FEET)		
+			for(var/exposedzone in coverage_exposed)	//We also filter out redundancies from the exposed remainder. Mostly L / Rs if there's a combined flag that slipped through.
+				switch(exposedzone)
+					if(READABLE_ZONE_HANDS)
+						coverage_exposed.Remove(READABLE_ZONE_L_HAND, READABLE_ZONE_R_HAND)
+					if(READABLE_ZONE_ARMS)
+						coverage_exposed.Remove(READABLE_ZONE_L_ARM, READABLE_ZONE_R_ARM)
+					if(READABLE_ZONE_LEGS)
+						coverage_exposed.Remove(READABLE_ZONE_L_LEG, READABLE_ZONE_R_LEG)
+					if(READABLE_ZONE_FEET)
+						coverage_exposed.Remove(READABLE_ZONE_L_FOOT, READABLE_ZONE_R_FOOT)
+					if(READABLE_ZONE_HEAD)
+						coverage_exposed.Remove(READABLE_ZONE_MOUTH, READABLE_ZONE_EYES, READABLE_ZONE_NOSE)
+
+			if(!is_stupid)
+				dat += "<b><center>BODY:</center></b><br>"
+			if(length(coverage))
+				var/str
+				if(!is_smart && !is_normal)	//We get a significantly simplified printout if we don't have the stats / trait
+					coverage.Remove(READABLE_ZONE_NECK, READABLE_ZONE_MOUTH, READABLE_ZONE_EYES, READABLE_ZONE_NOSE, READABLE_ZONE_FACE, READABLE_ZONE_VITALS, READABLE_ZONE_GROIN, READABLE_ZONE_HANDS, READABLE_ZONE_FEET, READABLE_ZONE_L_FOOT, READABLE_ZONE_R_FOOT, READABLE_ZONE_L_HAND, READABLE_ZONE_R_HAND, READABLE_ZONE_L_ARM, READABLE_ZONE_R_ARM, READABLE_ZONE_L_LEG, READABLE_ZONE_R_LEG)
+				if(!is_smart && is_normal)
+					coverage.Remove(READABLE_ZONE_NECK, READABLE_ZONE_MOUTH, READABLE_ZONE_EYES, READABLE_ZONE_NOSE, READABLE_ZONE_FACE, READABLE_ZONE_VITALS, READABLE_ZONE_GROIN, READABLE_ZONE_HANDS, READABLE_ZONE_FEET, READABLE_ZONE_L_FOOT, READABLE_ZONE_R_FOOT, READABLE_ZONE_L_HAND, READABLE_ZONE_R_HAND)
+				if(!is_stupid)
+					if(is_normal || is_smart)
+						if(length(coverage_exposed))
+							for(var/exposed in coverage_exposed)
+								str += "<b>[exposed]</b>: <font color = '#770404'><b>EXPOSED!</B></font><br>"
+					for(var/thing in coverage)
+						str += "<b>[thing]</b> LAYERS: <b>[coverage[thing]]</b> | [colorgrade_rating("", blunt_max[thing], TRUE)] | [colorgrade_rating("", slash_max[thing], TRUE)] | [colorgrade_rating("", stab_max[thing], TRUE)] | [colorgrade_rating("", piercing_max[thing], TRUE)] <br><font color = '#a35252'>[crit_weakness[thing]]</font><br>"
+					dat += str
+				else
+					dat += "<b><center>I don't know! Just hit them!</center></b>"
 			else
-				dat += "<font color = '#8b1616'<b>NOTHING</b></font> <br>"
-				dat += "<br>---------------------------<br>"
-			
-			dat += "<b><font size = 4; font color = '#dddada'>TORSO</b></font><br>"
-			if(H.wear_armor)
-				dat += capitalize("[H.wear_armor.name]<br>")
-				dat += defense_report(H.wear_armor, is_stupid, is_normal, is_smart, "THE CHEST! PROBABLY GROIN TOO?")
-			else
-				dat += "<font color = '#8b1616'<b>NOTHING</b></font> <br>"
-				dat += "<br>---------------------------<br>"
-
-			dat += "<b><font size = 4; font color = '#dddada'>PANTS</b></font><br>"
-			if(H.wear_pants)
-				dat += capitalize("[H.wear_pants.name]<br>")
-				dat += defense_report(H.wear_pants, is_stupid, is_normal, is_smart, "THE IMPORTANT PARTS! LEGS AS WELL, I THINK.")
-			else
-				dat += "<font color = '#8b1616'<b>NOTHING</b></font> <br>"
-				dat += "<br>---------------------------<br>"
-
-			//Extra stuff you can assess if you match the thresholds. (Neck, gloves, shirt and shoes)
-			if((is_normal || is_smart) && !is_stupid)
-				dat += "<b><font size = 4; font color = '#dddada'>NECK</b></font><br>"
-				if(H.wear_neck)
-					dat += capitalize("[H.wear_neck.name]<br>")
-					dat += defense_report(H.wear_neck, is_stupid, is_normal, is_smart, "I shouldn't be seeing this.")
-				else
-					dat += "<font color = '#8b1616'<b>NOTHING</b></font> <br>"
-					dat += "<br>---------------------------<br>"
-
-				dat += "<b><font size = 4; font color = '#dddada'>GLOVES</b></font><br>"
-				if(H.gloves)
-					dat += capitalize("[H.gloves.name]<br>")
-					dat += defense_report(H.gloves, is_stupid, is_normal, is_smart, "I shouldn't be seeing this.")
-				else
-					dat += "<font color = '#8b1616'<b>NOTHING</b></font> <br>"
-					dat += "<br>---------------------------<br>"
-
-				dat += "<b><font size = 4; font color = '#dddada'>SHIRT</b></font><br>"
-				if(H.wear_shirt)
-					dat += capitalize("[H.wear_shirt.name]<br>")
-					dat += defense_report(H.wear_shirt, is_stupid, is_normal, is_smart, "I shouldn't be seeing this.")
-				else
-					dat += "<font color = '#8b1616'<b>NOTHING</b></font> <br>"
-					dat += "<br>---------------------------<br>"
-
-				dat += "<b><font size = 4; font color = '#dddada'>SHOES</b></font><br>"
-				if(H.shoes)
-					dat += capitalize("[H.shoes.name]<br>")
-					dat += defense_report(H.shoes, is_stupid, is_normal, is_smart, "I shouldn't be seeing this.")
-				else
-					dat += "<font color = '#8b1616'<b>NOTHING</b></font> <br>"
-
-			
+				dat += "<b><center>They're wearing nothing.</center></b>"
 			dat += "</td>"
 
 			dat += "<td style='width:40%;text-align:center;vertical-align: text-top'>"
-			if(!is_guarded && !is_stupid)	//We don't see Guarded people's skills at all.
+			if(!is_guarded && !is_stupid && (!obscured_name || H.client?.prefs.masked_examine))	//We don't see Guarded people's skills at all.
 				dat += "<b>SKILLS:</b><br><br>"
 				var/list/wornstuff = list(H.backr, H.backl, H.beltl, H.beltr)
 				if(!is_normal && !is_smart)	//At minimum we get to see the skills of the weapons the person is holding, if we have them.
@@ -346,6 +431,8 @@ GLOBAL_VAR_INIT(year_integer, text2num(year)) // = 2013???
 //Sorry colorblind folks...
 /proc/colorgrade_rating(input, rating, elaborate = FALSE)
 	var/str
+	if(isnull(rating))
+		rating = 0
 	switch(rating)
 		if(0 to 9)
 			var/color = "#f81a1a"
@@ -376,13 +463,17 @@ GLOBAL_VAR_INIT(year_integer, text2num(year)) // = 2013???
 			str = elaborate ? "<font color = '[color]'>[input] (A+)</font>" : "<font color = '[color]'>[input] (A to A+)</font>"
 		if(100)
 			var/color = "#339dff"
-			str = elaborate ? "<font color = '[color]'>[input] (S)</font>" : "<font color = '[color]'>[input] (S)</font>"
+			str = "<font color = '[color]'>[input] (S)</font>"
+		if(101 to 200)
+			var/color = "#c757af"
+			str = "<font color = '[color]'>[input] (S+)</font>"
 		else
-			str = "[input] (Above 100 or under 0! Contact coders.)"
+			str = "[input] (Under 0 or above 200! Contact coders.)"
 	return str
 
-/proc/defense_report(var/obj/item/clothing/C, var/stupid, var/normal, var/smart, var/stupid_string)
-	var/list/str = list()
+/*/proc/defense_report(var/obj/item/clothing/C, var/stupid, var/normal, var/smart, var/stupid_string)
+	var/str
+
 	if(!istype(C, /obj/item/clothing))
 		str += "<br>---------------------------<br>"
 		return str
@@ -432,7 +523,8 @@ GLOBAL_VAR_INIT(year_integer, text2num(year)) // = 2013???
 
 		str += crits
 	str += "<br>---------------------------<br>"
-	return str
+	
+	return str*/
 
 /proc/skilldiff_report(var/input)
 	switch (input)

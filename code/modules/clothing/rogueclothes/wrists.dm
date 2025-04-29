@@ -23,6 +23,7 @@
 	resistance_flags = FIRE_PROOF
 	max_integrity = 300
 	anvilrepair = /datum/skill/craft/armorsmithing
+	sewrepair = FALSE
 	smeltresult = /obj/item/ingot/steel
 
 /obj/item/clothing/wrists/roguetown/bracers/leather

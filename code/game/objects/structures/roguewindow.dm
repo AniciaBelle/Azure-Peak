@@ -73,12 +73,45 @@
 	max_integrity = 200
 	integrity_failure = 0.5
 
+/obj/structure/roguewindow/openclose/OnCrafted(dirin)
+	dir = turn(dirin, 180)
+	lockdir = dir
+
+/obj/structure/roguewindow/openclose/Initialize()
+	..()
+	lockdir = dir
+	icon_state = base_state
+
 /obj/structure/roguewindow/openclose/reinforced
 	desc = "A glass window. This one looks reinforced with a metal mesh."
 	icon_state = "reinforcedwindowdir"
 	base_state = "reinforcedwindow"
 	max_integrity = 800
 	integrity_failure = 0.1
+
+/obj/structure/roguewindow/openclose/reinforced/OnCrafted(dirin)
+	dir = turn(dirin, 180)
+	lockdir = dir
+
+/obj/structure/roguewindow/openclose/reinforced/Initialize()
+	..()
+	lockdir = dir
+	icon_state = base_state
+
+/obj/structure/roguewindow/openclose/reinforced/brick
+	desc = "A glass window. This one looks reinforced with a metal frame."
+	icon_state = "brickwindowdir"
+	base_state = "brickwindow"
+	max_integrity = 1000	//Better than reinforced by a bit; metal frame.
+
+/obj/structure/roguewindow/openclose/reinforced/brick/OnCrafted(dirin)
+	dir = turn(dirin, 180)
+	lockdir = dir
+
+/obj/structure/roguewindow/openclose/reinforced/brick/Initialize()
+	..()
+	lockdir = dir
+	icon_state = base_state
 
 /obj/structure/roguewindow/openclose/Initialize()
 	lockdir = dir
@@ -190,6 +223,7 @@
 		attacked_sound = list('sound/combat/hits/onwood/woodimpact (1).ogg','sound/combat/hits/onwood/woodimpact (2).ogg')
 		message_admins("Window broken. [ADMIN_JMP(src)]")
 		log_admin("Window broken at X:[src.x] Y:[src.y] Z:[src.z] in area: [get_area(src)]")
+		loud_message("A loud crash of a window getting broken rings out", hearing_distance = 14)
 		new /obj/item/natural/glass/shard (get_turf(src))
 		new /obj/effect/decal/cleanable/glass(get_turf(src))
 		climbable = TRUE

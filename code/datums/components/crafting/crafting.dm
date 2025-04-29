@@ -259,6 +259,8 @@
 							if(X)
 								X.OnCrafted(user.dir, user)
 								X.add_fingerprint(user)
+								if(R.loud)
+									X.loud_message("Construction sounds can be heard")
 						else
 							var/atom/movable/I = new R.result (T)
 							I.CheckParts(parts, R)

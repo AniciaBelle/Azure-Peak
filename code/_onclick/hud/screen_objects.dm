@@ -257,6 +257,7 @@
 	nomouseover =  TRUE
 	var/mutable_appearance/handcuff_overlay
 	var/static/mutable_appearance/blocked_overlay = mutable_appearance('icons/mob/screen_gen.dmi', "blocked")
+	var/static/mutable_appearance/grabbed_overlay = mutable_appearance('icons/mob/screen_gen.dmi', "grabbed")
 	var/held_index = 0
 
 /atom/movable/screen/inventory/hand/update_overlays()
@@ -275,6 +276,8 @@
 			. += handcuff_overlay
 
 		if(held_index)
+			if(C.check_arm_grabbed(held_index))
+				. += grabbed_overlay
 			if(!C.has_hand_for_held_index(held_index))
 				. += blocked_overlay
 

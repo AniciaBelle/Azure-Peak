@@ -171,8 +171,6 @@
 							to_chat(H, (span_cultsmall(pick(psydonianlines))))
 						if(HAS_TRAIT(H, TRAIT_INQUISITION))
 							H.apply_status_effect(/datum/status_effect/buff/churnerprotection)
-							if(!H.has_status_effect(/datum/status_effect/buff/churnernegative))
-								H.apply_status_effect(/datum/status_effect/buff/churnernegative)
 					if(/datum/patron/inhumen/matthios)
 						to_chat(H, (span_hypnophrase("A voice calls out from the song for you...")))
 						to_chat(H, (span_cultsmall(pick(matthioslines))))

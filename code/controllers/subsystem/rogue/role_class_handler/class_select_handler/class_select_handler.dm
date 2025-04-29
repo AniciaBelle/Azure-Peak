@@ -116,9 +116,9 @@
 			// Time to do some picking, make sure we got things in the list we dealin with
 			if(local_insert_sortlist.len)
 				// Make sure we aren't going to attempt to pick more than what we even have avail
-				if(class_cat_alloc_attempts[SORT_CAT_KEY] > local_insert_sortlist.len)
-					testing("class cat alloc attempts is greater than sortlist")
-					class_cat_alloc_attempts[SORT_CAT_KEY] = local_insert_sortlist.len
+				if(class_cat_alloc_attempts[SORT_CAT_KEY] != local_insert_sortlist.len)
+					testing("class cat alloc attempts forced to equal of local_insert_sortlist")
+					class_cat_alloc_attempts[SORT_CAT_KEY] = local_insert_sortlist.len //equivalence assures all valid rolled_classes are displayed here
 
 				for(var/i in 1 to class_cat_alloc_attempts[SORT_CAT_KEY])
 					testing("[rolled_classes[local_insert_sortlist[i]]] equals zero")
@@ -156,6 +156,7 @@
 				if(boostclass.type in forced_class_additions)
 					rolled_classes[boostclass] += 1
 
+	testing("assemble_the_CLASSES completed")
 	if(!rolled_classes.len)
 		linked_client.mob.returntolobby()
 		message_admins("CLASS_SELECT_HANDLER HAD PERSON WITH 0 CLASS SELECT OPTIONS. THIS IS REALLY BAD! RETURNED THEM TO LOBBY")
@@ -229,7 +230,7 @@
 
 				for(var/i in 1 to plus_factor)
 					plus_str += "+" */
-			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<span id='green_plussa'>[plus_str]</span><img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>"
+			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<span id='green_plussa'>[plus_str]</span><img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>\n"
 	else if(!showing_combat_classes)
 		for(var/datum/advclass/datums in rolled_classes)
 			var/plus_str = ""
@@ -238,11 +239,11 @@
 
 				for(var/i in 1 to plus_factor)
 					plus_str += "+" */
-			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<span id='green_plussa'>[plus_str]</span><img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>"
+			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<span id='green_plussa'>[plus_str]</span><img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>\n"
 
 	if(special_session_queue && special_session_queue.len)
 		for(var/datum/advclass/datums in special_session_queue)
-			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];special_selected=1;selected_special=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>"
+			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];special_selected=1;selected_special=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>\n"
 
 	if(showing_combat_classes)
 		for(var/datum/advclass/datums in rolled_classes)
@@ -254,15 +255,21 @@
 
 				for(var/i in 1 to plus_factor)
 					plus_str += "+" */
-			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<span id='green_plussa'>[plus_str]</span><img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>"
+			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='gragstar.gif' width=32 height=32>[datums.name]<span id='green_plussa'>[plus_str]</span><img class='ninetysskull' src='gragstar.gif' width=32 height=32></a></div>\n"
 	data += "</div>"
 
 	//Buttondiv Segment
-	data += "<div class='footer'>"
+	data += {"
+	<div class='footer'>
+	"}
 
 	if(H.job == "Drifter")
 		data += {"
 			<a class='mo_bottom_buttons' href='?src=\ref[src];show_combat_class=1'>[showing_combat_classes ? "Show Combat Classes" : "Show Pilgrim Classes"]</a>
+		</div>
+		"}
+	else
+		data += {"
 		</div>
 		"}
 

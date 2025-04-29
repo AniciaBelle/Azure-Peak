@@ -617,7 +617,12 @@ GLOBAL_LIST_EMPTY(asset_datums)
 		"sand.ttf" = 'interface/fonts/languages/sand.ttf',
 		"undead.ttf" = 'interface/fonts/languages/undead.ttf',
 		"draconic.ttf" = 'interface/fonts/languages/draconic.ttf',
-		"lupian.ttf" = 'interface/fonts/languages/lupian.ttf'
+		"lupian.ttf" = 'interface/fonts/languages/lupian.ttf',
+		"kazengunese.ttf" = 'interface/fonts/languages/kazengunese.ttf',
+		"otavan.ttf" = 'interface/fonts/languages/otavan.ttf',
+		"etruscan.ttf" = 'interface/fonts/languages/etruscan.ttf',
+		"gronnic.ttf" = 'interface/fonts/languages/gronnic.ttf',
+		"aavnic.ttf" = 'interface/fonts/languages/aavnic.ttf'
 	)
 
 /datum/asset/spritesheet/goonchat

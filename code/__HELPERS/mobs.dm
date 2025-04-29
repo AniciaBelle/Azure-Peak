@@ -208,7 +208,7 @@ GLOBAL_LIST_EMPTY(species_list)
 			drifting = 0
 			user_loc = user.loc
 
-		if((!drifting && user.loc != user_loc) || target.loc != target_loc || user.get_active_held_item() != holding || user.incapacitated() || (extra_checks && !extra_checks.Invoke()))
+		if((!drifting && user.loc != user_loc) || (double_progress && target.loc != target_loc) || user.get_active_held_item() != holding || user.incapacitated() || (extra_checks && !extra_checks.Invoke()))
 			. = 0
 			break
 	user.doing = 0

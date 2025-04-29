@@ -58,11 +58,11 @@
 	. = 1
 
 /datum/reagent/water/rosewater
-	name = "Rose Water"
+	name = "Rose Tea"
 	description = "Steeped rose petals with mild regeneration."
 	reagent_state = LIQUID
 	color = "#f398b6"
-	taste_description = "floral"
+	taste_description = "floral sweetness"
 	overdose_threshold = 0
 	metabolization_rate = REAGENTS_METABOLISM
 	alpha = 173
@@ -146,21 +146,23 @@
 	alpha = 173
 
 /datum/reagent/medicine/stampot/on_mob_life(mob/living/carbon/M)
-	if(!HAS_TRAIT(M,TRAIT_NOROGSTAM))
-		M.rogstam_add(30)
+	if(volume > 0.99)
+		M.rogfat_add(-20)
 	..()
+	. = 1
 
 /datum/reagent/medicine/strongstam
 	name = "Strong Stamina Potion"
 	description = "Rapidly regenerates stamina."
 	color = "#13df00"
 	taste_description = "sparkly static"
-	metabolization_rate = REAGENTS_METABOLISM * 3
+	metabolization_rate = REAGENTS_METABOLISM
 
 /datum/reagent/medicine/strongstam/on_mob_life(mob/living/carbon/M)
-	if(!HAS_TRAIT(M,TRAIT_NOROGSTAM))
-		M.rogstam_add(120)
+	if(volume > 0.99)
+		M.rogfat_add(-50)
 	..()
+	. = 1
 
 /datum/reagent/medicine/antidote
 	name = "Poison Antidote"

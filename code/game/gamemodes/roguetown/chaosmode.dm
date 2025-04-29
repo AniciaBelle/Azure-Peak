@@ -413,7 +413,7 @@
 	config_tag = "roguelite"
 	report_type = "roguelite"
 	false_report_weight = 0
-	required_players = 30 // Require at least 30 players
+	required_players = 0 // Helps it be the default mode.
 	required_enemies = 0
 	recommended_enemies = 0
 	enemy_minimum_age = 0
@@ -448,17 +448,19 @@
 	for(var/A in GLOB.special_roles_rogue)
 		allantags |= get_players_for_role(A)
 	
-	// Randomly choose between bandits or werewolves
-	if(prob(50))
-		chosen_antag = "bandits"
-		pick_bandits()
-		log_game("Antagonists: Roguelite Mode - Bandits")
-	else
-		chosen_antag = "werewolves"
-		pick_werewolves()
-		log_game("Antagonists: Roguelite Mode - Werewolves")
-	
-	return TRUE
+	if(num_players() <= 30) // Need at least a chunk of people before we start throwing ne'er-do-wells into the mix.
+		log_game("Roguelite is active, but less than 30 playercount. Antags will not be picked automatically.")
+		return TRUE
+	else // Randomly choose between bandits or werewolves
+		if(prob(50))
+			chosen_antag = "bandits"
+			pick_bandits()
+			log_game("Antagonists: Roguelite Mode - Bandits")
+		else
+			chosen_antag = "werewolves"
+			pick_werewolves()
+			log_game("Antagonists: Roguelite Mode - Werewolves")
+		return TRUE
 
 // Override after_DO to do nothing for roguelite
 /datum/game_mode/chaosmode/roguelite/after_DO()
@@ -520,7 +522,7 @@
 	required_enemies = 0
 	recommended_enemies = 0
 	enemy_minimum_age = 0
-	votable = 1
+	votable = FALSE
 	probability = 80
 
 	announce_span = "danger"

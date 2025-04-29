@@ -17,7 +17,7 @@
 	craftdiff = 0
 
 /datum/anvil_recipe/weapons/iron/messer
-	name = "Messer"
+	name = "Hunting sword (Messer)"
 	req_bar = /obj/item/ingot/iron
 	created_item = /obj/item/rogueweapon/sword/iron/messer
 	craftdiff = 0
@@ -53,6 +53,13 @@
 	additional_items = list(/obj/item/grown/log/tree/stick)
 	created_item = /obj/item/rogueweapon/stoneaxe/woodcut
 	craftdiff = 0
+
+/datum/anvil_recipe/weapons/iron/greataxe
+	name = "Iron Greataxe (+1 Iron, +1 Small Log)"
+	req_bar = /obj/item/ingot/iron
+	additional_items = list(/obj/item/ingot/steel, /obj/item/grown/log/tree/small)
+	created_item = /obj/item/rogueweapon/greataxe
+	craftdiff = 3
 
 /datum/anvil_recipe/weapons/iron/cudgel
 	name = "Cudgel (+1 Stick)"
@@ -160,6 +167,12 @@
 	created_item = /obj/item/rogueweapon/sword/falchion
 	craftdiff = 3
 
+/datum/anvil_recipe/weapons/steel/messer
+	name = "Steel Messer"
+	req_bar = /obj/item/ingot/steel
+	created_item = /obj/item/rogueweapon/sword/short/messer
+	craftdiff = 2
+
 /datum/anvil_recipe/weapons/steel/sword
 	name = "Sword"
 	req_bar = /obj/item/ingot/steel
@@ -227,13 +240,6 @@
 	created_item = /obj/item/rogueweapon/estoc
 	craftdiff = 4
 
-/datum/anvil_recipe/weapons/buckler
-	name = "Buckler (+1 Steel)"
-	req_bar = /obj/item/ingot/steel
-	additional_items = list(/obj/item/ingot/steel, /obj/item/ingot/steel)
-	created_item = /obj/item/rogueweapon/greatsword/grenz
-	craftdiff = 4
-
 /datum/anvil_recipe/weapons/steel/axe
 	name = "Axe (+1 Stick)"
 	req_bar = /obj/item/ingot/steel
@@ -246,6 +252,20 @@
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/grown/log/tree/stick)
 	created_item = /obj/item/rogueweapon/stoneaxe/woodcut/pick
+
+/datum/anvil_recipe/weapons/steel/greataxe
+	name = "Steel Greataxe (+1 Steel, +1 Small Log)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/ingot/steel, /obj/item/grown/log/tree/small)
+	created_item = /obj/item/rogueweapon/greataxe/steel
+	craftdiff = 4
+
+/datum/anvil_recipe/weapons/steel/greataxe/doublehead
+	name = "Steel Double-Headed Greataxe (+2 Steel, +1 Small Log)"
+	req_bar = /obj/item/ingot/steel
+	additional_items = list(/obj/item/ingot/steel, /obj/item/ingot/steel, /obj/item/grown/log/tree/small)
+	created_item = /obj/item/rogueweapon/greataxe/steel/doublehead
+	craftdiff = 4
 
 /datum/anvil_recipe/weapons/steel/billhook
 	name = "Billhook (+1 Small Log)"
@@ -614,7 +634,7 @@
 	name = "Psydonian Mace (+1 B. Silver, +1 Stick)"
 	req_bar = /obj/item/ingot/silverblessed
 	craftdiff = 3
-	created_item = /obj/item/rogueweapon/mace/steel/psymace
+	created_item = /obj/item/rogueweapon/mace/goden/psymace
 	additional_items = list(/obj/item/ingot/silverblessed, /obj/item/grown/log/tree/stick)
 	i_type = "Weapons"
 

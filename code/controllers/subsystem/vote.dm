@@ -9,6 +9,7 @@ SUBSYSTEM_DEF(vote)
 	var/initiator = null
 	var/started_time = null
 	var/time_remaining = 0
+	var/custom_vote_period = 0
 	var/mode = null
 	var/question = null
 	var/list/choices = list()
@@ -18,7 +19,8 @@ SUBSYSTEM_DEF(vote)
 
 /datum/controller/subsystem/vote/fire()	//called by master_controller
 	if(mode)
-		time_remaining = round((started_time + CONFIG_GET(number/vote_period) - world.time)/10)
+		var/vote_period = custom_vote_period || CONFIG_GET(number/vote_period)
+		time_remaining = round((started_time + vote_period - world.time)/10)
 
 		if(time_remaining < 0)
 			result()
@@ -37,6 +39,7 @@ SUBSYSTEM_DEF(vote)
 /datum/controller/subsystem/vote/proc/reset()
 	initiator = null
 	time_remaining = 0
+	custom_vote_period = 0
 	mode = null
 	question = null
 	choices.Cut()
@@ -197,7 +200,7 @@ SUBSYSTEM_DEF(vote)
 				return vote
 	return 0
 
-/datum/controller/subsystem/vote/proc/initiate_vote(vote_type, initiator_key)
+/datum/controller/subsystem/vote/proc/initiate_vote(vote_type, initiator_key, vote_period)
 	var/sound/vote_alert = new()
 	vote_alert.file = null
 	vote_alert.priority = 250
@@ -263,7 +266,12 @@ SUBSYSTEM_DEF(vote)
 		if(mode == "custom")
 			text += "\n[question]"
 		log_vote(text)
-		var/vp = CONFIG_GET(number/vote_period)
+		var/vp
+		if(vote_period)
+			vp = vote_period
+			custom_vote_period = vote_period
+		else
+			vp = CONFIG_GET(number/vote_period)
 		if(vote_alert.file)
 			for(var/mob/M in GLOB.player_list)
 				SEND_SOUND(M, vote_alert)
@@ -279,6 +287,16 @@ SUBSYSTEM_DEF(vote)
 //			generated_actions += V
 		return 1
 	return 0
+
+// Helper for sending an active vote to someone who has just logged in 
+/datum/controller/subsystem/vote/proc/send_vote(client/C)
+	if(!mode || !C)
+		return
+	var/text = "[capitalize(mode)] vote started by [initiator]."
+	if(mode == "custom")
+		text += "\n[question]"
+	var/remaining_time = time_remaining * 10
+	to_chat(C, "\n<font color='purple'><b>[text]</b>\nClick <a href='?src=[REF(src)]'>here</a> to place your vote.\nYou have [DisplayTimeText(remaining_time)] to vote.</font>")
 
 /datum/controller/subsystem/vote/proc/interface(client/C)
 	if(!C)
@@ -397,7 +415,6 @@ SUBSYSTEM_DEF(vote)
 /mob/verb/vote()
 	set category = "OOC"
 	set name = "Vote"
-	set hidden = 1
 	var/datum/browser/noclose/popup = new(src, "vote", "Voting Panel")
 	popup.set_window_options("can_close=0")
 	popup.set_content(SSvote.interface(client))

@@ -25,7 +25,7 @@
 				H.change_stat("speed", -2)
 				H.mind.adjust_skillrank(/datum/skill/misc/reading, 4, TRUE)
 				H.mind.adjust_skillrank(/datum/skill/craft/armorsmithing, 4, TRUE)	//Shouldn't be better than the smith (though the stats are already)
-				H.mind.adjust_skillrank(/datum/skill/craft/blacksmithing, 3, TRUE)	//But shouldn't be too low for the Soldier to be able to grind up to easily
+				H.mind.adjust_skillrank(/datum/skill/craft/blacksmithing, 3, TRUE)
 				H.mind.adjust_skillrank(/datum/skill/craft/smelting, 3, TRUE)
 				H.mind.adjust_skillrank(/datum/skill/combat/maces, 3, TRUE)
 				H.mind.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
@@ -37,6 +37,7 @@
 				cloak = /obj/item/clothing/cloak/forrestercloak/snow
 				belt = /obj/item/storage/belt/rogue/leather/black
 				beltr = /obj/item/rogueweapon/mace
+				beltl = /obj/item/flashlight/flare/torch
 				backl = /obj/item/storage/backpack/rogue/backpack
 				shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/black
 				gloves = /obj/item/clothing/gloves/roguetown/plate/dwarven
@@ -44,6 +45,7 @@
 				armor = /obj/item/clothing/suit/roguetown/armor/plate/half
 				backpack_contents = list(/obj/item/roguekey/mercenary, /obj/item/storage/belt/rogue/pouch/coins/poor, /obj/item/rogueweapon/hammer, /obj/item/paper/scroll/grudge, /obj/item/natural/feather, /obj/item/rogueweapon/tongs = 1, /obj/item/clothing/head/roguetown/helmet/heavy/dwarven)
 				ADD_TRAIT(H, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
+				ADD_TRAIT(H, TRAIT_TRAINED_SMITH, TRAIT_GENERIC)
 			if("Soldier")
 				H.change_stat("constitution", 5)
 				H.change_stat("endurance", 4)
@@ -61,6 +63,7 @@
 				shoes = /obj/item/clothing/shoes/roguetown/boots/armor/dwarven
 				cloak = /obj/item/clothing/cloak/forrestercloak/snow
 				belt = /obj/item/storage/belt/rogue/leather/black
+				beltl = /obj/item/flashlight/flare/torch
 				backl = /obj/item/storage/backpack/rogue/satchel
 				shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/black
 				gloves = /obj/item/clothing/gloves/roguetown/plate/dwarven
@@ -87,7 +90,8 @@
 	allowed_race = list(/datum/species/dwarf, /datum/species/dwarf/mountain)
 	icon_state = "dwarfchest"
 	item_state = "dwarfchest"
-	armor = list("blunt" = 100, "slash" = 100, "stab" = 100, "piercing" = 100, "fire" = 0, "acid" = 0)
+	armor = list("blunt" = 200, "slash" = 200, "stab" = 200, "piercing" = 100, "fire" = 0, "acid" = 0)
+	prevent_crits = list(BCLASS_TWIST)
 	body_parts_covered = CHEST|GROIN|VITALS|ARMS|LEGS
 	equip_delay_self = 5 SECONDS
 	unequip_delay_self = 5 SECONDS
@@ -98,14 +102,14 @@
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/dwarven/ComponentInitialize()
 	. = ..()
-	AddComponent(/datum/component/peelarmor/grudgebearer)
+	AddComponent(/datum/component/layeredarmor/grudgebearer)
 
 /obj/item/clothing/head/roguetown/helmet/heavy/dwarven
 	name = "grudgebearer dwarven helm"
 	desc = "A hardy, layered helmet. It lets one's dwarvenly beard to poke out."
 	body_parts_covered = (HEAD | MOUTH | NOSE | EYES | EARS | NECK)	//This specifically omits hair so you could hang your beard out of the helm
-	armor = list("blunt" = 100, "slash" = 100, "stab" = 100, "piercing" = 80, "fire" = 0, "acid" = 0)
-	prevent_crits = list(BCLASS_BLUNT, BCLASS_SMASH, BCLASS_TWIST, BCLASS_PICK)
+	armor = list("blunt" = 200, "slash" = 200, "stab" = 200, "piercing" = 80, "fire" = 0, "acid" = 0)
+	prevent_crits = list(BCLASS_TWIST)
 	allowed_race = list(/datum/species/dwarf, /datum/species/dwarf/mountain)
 	icon = 'icons/roguetown/clothing/special/race_armor.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/race_armor.dmi'
@@ -115,10 +119,12 @@
 	bloody_icon = 'icons/effects/blood64.dmi'
 	smeltresult = /obj/item/ingot/steel
 	max_integrity = 3000
+	experimental_inhand = FALSE
+	experimental_onhip = FALSE
 
 /obj/item/clothing/head/roguetown/helmet/heavy/dwarven/ComponentInitialize()
 	. = ..()
-	AddComponent(/datum/component/peelarmor/grudgebearer/helmet)
+	AddComponent(/datum/component/layeredarmor/grudgebearer/helmet)
 
 /obj/item/clothing/gloves/roguetown/plate/dwarven
 	name = "grudgebearer dwarven gauntlets"
@@ -126,14 +132,15 @@
 	icon = 'icons/roguetown/clothing/special/race_armor.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/race_armor.dmi'
 	allowed_race = list(/datum/species/dwarf, /datum/species/dwarf/mountain)
+	prevent_crits = list(BCLASS_TWIST)
 	icon_state = "dwarfhand"
 	item_state = "dwarfhand"
-	armor = list("blunt" = 100, "slash" = 100, "stab" = 100, "piercing" = 90, "fire" = 0, "acid" = 0)
+	armor = list("blunt" = 200, "slash" = 200, "stab" = 200, "piercing" = 90, "fire" = 0, "acid" = 0)
 	max_integrity = 3000
 
 /obj/item/clothing/gloves/roguetown/plate/dwarven/ComponentInitialize()
 	. = ..()
-	AddComponent(/datum/component/peelarmor/grudgebearer/limbs)
+	AddComponent(/datum/component/layeredarmor/grudgebearer/limbs)
 
 /obj/item/clothing/shoes/roguetown/boots/armor/dwarven
 	name = "grudgebearer dwarven boots"
@@ -141,56 +148,58 @@
 	icon = 'icons/roguetown/clothing/special/race_armor.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/race_armor.dmi'
 	allowed_race = list(/datum/species/dwarf, /datum/species/dwarf/mountain)
+	prevent_crits = list(BCLASS_TWIST)
 	icon_state = "dwarfshoe"
 	item_state = "dwarfshoe"
-	armor = list("blunt" = 100, "slash" = 100, "stab" = 100, "piercing" = 90, "fire" = 0, "acid" = 0)
+	armor = list("blunt" = 200, "slash" = 200, "stab" = 200, "piercing" = 90, "fire" = 0, "acid" = 0)
 	max_integrity = 3000
 
 /obj/item/clothing/shoes/roguetown/boots/armor/dwarven/ComponentInitialize()
 	. = ..()
-	AddComponent(/datum/component/peelarmor/grudgebearer/limbs)
+	AddComponent(/datum/component/layeredarmor/grudgebearer/limbs)
 
-/datum/component/peelarmor/grudgebearer
+/datum/component/layeredarmor/grudgebearer
 	layer_repair = 2
 
-	hits_to_peel = list(
-		"blunt" = 5,
-		"slash" = 10,
-		"stab" = 5,
-		"piercing" = 10,
+	layer_max = list(
+		"blunt" = 200,
+		"slash" = 200,
+		"stab" = 200,
+		"piercing" = 100,
 	)
 
-	damtype_peel_ratio = list(
-		"blunt" = 1,
+	hits_to_shred = list(
+		"blunt" = 3,
 		"slash" = 3,
+		"stab" = 3,
+		"piercing" = 5,
+	)
+
+	damtype_shred_ratio = list(
+		"blunt" = 1,
+		"slash" = 1,
 		"stab" = 1,
 		"piercing" = 5,
 	)
 
 	hits_per_layer = list(
-		"100" 	= 10,
-		"90" 	= 15,
-		"80" 	= 25,
-		"70" 	= 25,
-		"60" 	= 30,
-		"50"	= 30,
-		"40"	= 30,
-		"30"	= 40,
-		"20"	= 50,
-		"10"	= 100,
+		"200"	= 3,
+		"100" 	= 3,
+		"90" 	= 3,
+		"80" 	= 5,
+		"70" 	= 5,
+		"60" 	= 5,
+		"50"	= 10,
+		"40"	= 10,
+		"30"	= 20,
+		"20"	= 30,
+		"10"	= 50,
 	)
 
-	repair_items = list(
-		/obj/item/ingot/silver,
-		/obj/item/ingot/gold,
-		/obj/item/ingot/blacksteel,
-		/obj/item/ingot/steel,
-	)
+	repair_items = list(/obj/machinery/anvil)
 
 	repair_skills = list(
-		/datum/skill/craft/armorsmithing = 4,
-		/datum/skill/craft/blacksmithing = 3,
-		/datum/skill/craft/smelting = 3,
+		/datum/skill/craft/armorsmithing = 2,
 	)
 
 	race_repair = list(
@@ -198,66 +207,38 @@
 		/datum/species/dwarf/mountain,
 	)
 
-	applied_trait = TRAIT_HARDSHELL
-	trait_message_apply = span_warn("The armor weighs my limbs down. I won't be able to parry well like this.")
-	trait_message_remove = span_warn("As the weighted thing slips off, my limbs are freed. I can parry effectively again.")
+/datum/component/layeredarmor/grudgebearer/helmet
 
-/datum/component/peelarmor/grudgebearer/helmet
-	repair_skills = list(
-		/datum/skill/craft/armorsmithing = 3,
-		/datum/skill/craft/blacksmithing = 3,
-		/datum/skill/craft/smelting = 3,
-	)
-
-	applied_trait = null
-
-/datum/component/peelarmor/grudgebearer/limbs
-	hits_to_peel = list(
-		"blunt" = 6,
-		"slash" = 6,
-		"stab" = 6,
-		"piercing" = 9,
+/datum/component/layeredarmor/grudgebearer/limbs
+	hits_to_shred = list(
+		"blunt" = 2,
+		"slash" = 2,
+		"stab" = 2,
+		"piercing" = 2,
 	)
 
 	layer_max = list(
-		"blunt" = 100,
-		"slash" = 100,
-		"stab" = 100,
+		"blunt" = 200,
+		"slash" = 200,
+		"stab" = 200,
 		"piercing" = 90,
 	)
 
 	hits_per_layer = list(
-		"100" 	= 6,
-		"90" 	= 12,
-		"80" 	= 12,
-		"70" 	= 18,
-		"60" 	= 18,
-		"50"	= 24,
-		"40"	= 24,
-		"30"	= 30,
-		"20"	= 30,
-		"10"	= 40,
+		"200"	= 2,
+		"100" 	= 2,
+		"90" 	= 2,
+		"80" 	= 2,
+		"70" 	= 2,
+		"60" 	= 2,
+		"50"	= 2,
+		"40"	= 2,
+		"30"	= 4,
+		"20"	= 20,
+		"10"	= 30,
 	)
 
-	damtype_peel_ratio = list(
-		"blunt" = 2,
-		"slash" = 2,
-		"stab" = 2,
-		"piercing" = 3,
-	)
-	
-	peel_amt = 20	//Limbs lose 2 grades per layer peel, but also repair 4.
+	shred_amt = 20	//Limbs lose 2 grades per layer shred, but also repair 4.
 	layer_repair = 2
 
-	repair_items = list(
-		/obj/item/ingot/silver,
-		/obj/item/ingot/gold,
-		/obj/item/ingot/steel,
-	)
 
-	repair_skills = list(
-		/datum/skill/craft/armorsmithing = 3,
-		/datum/skill/craft/blacksmithing = 2,
-		/datum/skill/craft/smelting = 2,
-	)
-	applied_trait = null

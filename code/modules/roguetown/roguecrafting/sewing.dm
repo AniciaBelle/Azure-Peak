@@ -187,6 +187,13 @@
                 /obj/item/natural/fibers = 1)
     craftdiff = 1
 
+/datum/crafting_recipe/roguetown/sewing/clothblindfold
+	name = "cloth blindfold (1 fibers, 2 cloth)"
+	result = list(/obj/item/clothing/mask/rogue/blindfold)
+	reqs = list(/obj/item/natural/cloth = 2,
+				/obj/item/natural/fibers = 1)
+	craftdiff = 1
+
 /* craftdif of 2+ */
 
 /datum/crafting_recipe/roguetown/sewing/wrappings
@@ -901,7 +908,7 @@
 
 /datum/crafting_recipe/roguetown/sewing/otavangambeson
 	name = "otavan gambeson (5 fibers, 6 cloth)"
-	result = list(/obj/item/clothing/suit/roguetown/armor/gambeson/otavan)
+	result = list(/obj/item/clothing/suit/roguetown/armor/gambeson/heavy/otavan)
 	reqs = list(/obj/item/natural/cloth = 6,
 	            /obj/item/natural/fibers = 5)
 	tools = list(/obj/item/needle)

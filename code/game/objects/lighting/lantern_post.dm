@@ -7,6 +7,7 @@
 	density = FALSE
 	var/obj/item/flashlight/flare/torch/torchy
 	fueluse = 0 //we use the torch's fuel
+	no_refuel = TRUE
 	soundloop = null
 	crossfire = FALSE
 	plane = GAME_PLANE_UPPER

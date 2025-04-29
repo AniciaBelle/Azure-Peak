@@ -33,9 +33,9 @@
 					B = new B(user.loc)
 					user.put_in_hands(B)
 					if(HAS_TRAIT(user, TRAIT_WOODWALKER))
-						var/obj/item/C = new B(user.loc)
+						var/obj/item/C = new B.type(user.loc)
 						user.put_in_hands(C)
-					user.visible_message(span_notice("[user] finds [HAS_TRAIT(user, TRAIT_WOODWALKER) ? "two " : ""][B] in [src]."))
+					user.visible_message(span_notice("[user] finds [HAS_TRAIT(user, TRAIT_WOODWALKER) ? "two of " : ""][B] in [src]."))
 					return
 			user.visible_message(span_notice("[user] searches through [src]."))
 			if(!looty.len)

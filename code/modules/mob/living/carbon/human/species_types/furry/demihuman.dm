@@ -100,14 +100,6 @@
 /datum/species/demihuman/qualifies_for_rank(rank, list/features)
 	return TRUE
 
-/datum/species/demihuman/on_species_gain(mob/living/carbon/foreign, datum/species/old_species)
-	..()
-	languages(foreign)
-	
-/datum/species/demihuman/proc/languages(mob/living/carbon/human/foreign)
-	if(foreign.skin_tone == SKIN_COLOR_GRENZELHOFT)
-		foreign.grant_language(/datum/language/grenzelhoftian)
-
 /datum/species/demihuman/get_random_features()
 	var/list/returned = MANDATORY_FEATURE_LIST
 	var/main_color

@@ -120,7 +120,13 @@
 		/datum/language/hellspeak,
 		/datum/language/draconic,
 		/datum/language/celestial,
-		/datum/language/grenzelhoftian
+		/datum/language/canilunzt,
+		/datum/language/grenzelhoftian,
+		/datum/language/kazengunese,
+		/datum/language/otavan,
+		/datum/language/etruscan,
+		/datum/language/gronnic,
+		/datum/language/aavnic
 	)
 		
 	var/list/choices = list()
@@ -219,16 +225,18 @@
     addtimer(CALLBACK(src, .proc/performer_apply, recipient), 50)
 
 /datum/virtue/utility/performer/proc/performer_apply(mob/living/carbon/human/recipient)
-    var/list/instruments = list()
-    for(var/instrument_type in subtypesof(/obj/item/rogue/instrument))
-        var/obj/item/rogue/instrument/instr = new instrument_type()
-        instruments[instr.name] = instrument_type
-        qdel(instr)  // Clean up the temporary instance
-        
-    var/chosen_name = input(recipient, "What instrument did I stash?", "STASH") as null|anything in instruments
-    if(chosen_name)
-        var/instrument_type = instruments[chosen_name]
-        recipient.mind?.special_items[chosen_name] = instrument_type
+	var/list/instruments = list()
+	for(var/instrument_type in subtypesof(/obj/item/rogue/instrument))
+		if(instrument_type == /obj/item/rogue/instrument/harp/handcarved)
+			continue //Skip the donator personal item harp.
+		var/obj/item/rogue/instrument/instr = new instrument_type()
+		instruments[instr.name] = instrument_type
+		qdel(instr)  // Clean up the temporary instance
+
+	var/chosen_name = input(recipient, "What instrument did I stash?", "STASH") as null|anything in instruments
+	if(chosen_name)
+		var/instrument_type = instruments[chosen_name]
+		recipient.mind?.special_items[chosen_name] = instrument_type
 
 /datum/virtue/utility/larcenous
 	name = "Larcenous"

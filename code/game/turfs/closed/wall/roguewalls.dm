@@ -45,6 +45,10 @@
 	climbdiff = 3
 	damage_deflection = 10
 
+/turf/closed/wall/mineral/rogue/stone/turf_destruction()
+	loud_message("Sound of a crumbling stone wall rings out", hearing_distance = 14)
+	. = ..()
+
 /turf/closed/wall/mineral/rogue/stone/window
 	name = "stone window"
 	desc = "A window with solid and sturdy stone frame."
@@ -88,6 +92,9 @@
 	climbdiff = 3
 	damage_deflection = 10
 
+/turf/closed/wall/mineral/rogue/craftstone/turf_destruction()
+	loud_message("Sound of heavy stone bricks crumbling apart rings out", hearing_distance = 14)
+	. = ..()
 
 /turf/closed/wall/mineral/rogue/stonebrick
 	name = "brick wall"
@@ -284,8 +291,30 @@
 /turf/closed/wall/mineral/rogue/decostone/fluffstone
 	icon_state = "fluffstone"
 
+//Mildly better than stone-wall due to it being harder to make, plus not loose-stone cobbled together. Also higher climbing diff akin to stone-brick wall.
+/turf/closed/wall/mineral/rogue/brick
+	name = "brick wall"
+	desc = "Several rows of bricks form this wall, held together by motar."
+	icon = 'icons/turf/walls/brick_wall.dmi'
+	icon_state = "brick"
+	smooth = SMOOTH_MORE
+	blade_dulling = DULLING_BASH
+	max_integrity = 2000	//200 more than base stone wall
+	sheet_type = /obj/item/natural/brick
+	break_sound = 'sound/combat/hits/onstone/stonedeath.ogg'
+	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
+	canSmoothWith = list(/turf/closed/wall/mineral/rogue/brick)
+	above_floor = /turf/open/floor/rogue/tile/brick
+	baseturfs = list(/turf/open/floor/rogue/tile/brick)
+	neighborlay = "dirtedge"
+	climbdiff = 4			//Same as stone-brick wall
+	damage_deflection = 20
 
-
+/turf/closed/wall/mineral/rogue/brick/window
+	name = "brick window"
+	desc = "A window with solid and sturdy stone frame."
+	opacity = FALSE
+	max_integrity = 1500
 
 /turf/closed/wall/shroud //vines
 	name = "thick treetop"

@@ -24,8 +24,8 @@
 	var/atom/movable/weps = null
 	sewrepair = TRUE
 
-/obj/item/gwstrap/attackby(obj/A, mob/living/carbon/user, params)
-	if(istype(A, /obj/item/rogueweapon/spear) || istype(A, /obj/item/rogueweapon/eaglebeak) || istype(A, /obj/item/rogueweapon/halberd) || istype(A, /obj/item/rogueweapon/estoc) || istype(A, /obj/item/rogueweapon/greatsword))
+/obj/item/gwstrap/attackby(obj/item/A, mob/living/carbon/user, params)
+	if(istype(A, /obj/item/rogueweapon) && A.w_class >= WEIGHT_CLASS_BULKY)
 		if(weps == null)
 			for(var/obj/item/gwstrap/I in user.get_equipped_items(TRUE))
 				to_chat(loc, span_warning("I work the latches of my strap to holster [A]."))
@@ -36,6 +36,7 @@
 					getonmobprop("onback")
 					LAZYSET(I.onprop, "onback", getonmobprop("onback"))
 					user.update_inv_back()
+					name = "greatweapon strap ([A.name])"
 		else
 			to_chat(loc, span_warning("The holster already holds a weapon!"))
 		return
@@ -47,6 +48,7 @@
 			to_chat(loc, span_warning("I work the latches of my strap to unholster [weps]."))
 			if(do_after(user, 50, target = user))
 				user.put_in_active_hand(weps, user.active_hand_index)
+				name = "greatweapon strap"
 				weps = null
 				update_icon()
 				user.update_inv_back()
@@ -93,6 +95,7 @@
 
 /obj/item/gwstrap/proc/on_drop(datum/source, mob/user)
 	if(weps != null)
+		name = "greatweapon strap"
 		var/atom/movable/I = weps
 		weps = null
 		update_icon()

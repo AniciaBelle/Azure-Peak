@@ -1073,7 +1073,6 @@
 /turf/open/floor/rogue/blocks,
 /area/rogue/under/cave/orcdungeon)
 "ga" = (
-/obj/item/rogueweapon/huntingknife/idagger/silver/arcyne,
 /obj/effect/decal/cleanable/blood/splatter,
 /turf/open/floor/rogue/cobble,
 /area/rogue/under/cave/orcdungeon)
@@ -5353,7 +5352,7 @@
 /area/rogue/under/cave/dukecourt)
 "Jb" = (
 /obj/structure/bookcase,
-/obj/item/book/granter/spellbook,
+/obj/item/book/spellbook,
 /turf/open/floor/rogue/blocks,
 /area/rogue/under/cave/mazedungeon)
 "Jg" = (
@@ -6818,7 +6817,6 @@
 /area/rogue/under/cave/orcdungeon)
 "SE" = (
 /obj/structure/table/wood/fancy/black,
-/obj/item/rogueweapon/huntingknife/idagger/silver/arcyne,
 /obj/item/spellbook_unfinished/pre_arcyne,
 /turf/open/floor/rogue/blocks,
 /area/rogue/under/cave/mazedungeon)

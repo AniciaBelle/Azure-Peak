@@ -47,7 +47,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/use_skintones = 0	// does it use skintones or not? (spoiler alert this is only used by humans)
 	var/exotic_blood = ""	// If my race wants to bleed something other than bog standard blood, change this to reagent id.
 	var/exotic_bloodtype = "" //If my race uses a non standard bloodtype (A+, O-, AB-, etc)
-	var/meat = /obj/item/reagent_containers/food/snacks/meat/slab/human //What the species drops on gibbing
+	var/meat = /obj/item/reagent_containers/food/snacks/rogue/meat/steak //What the species drops on gibbing
 	var/skinned_type
 	var/liked_food = NONE
 	var/disliked_food = GROSS
@@ -1423,8 +1423,12 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 					target_table = locate(/obj/structure/table) in target_shove_turf.contents
 					shove_blocked = TRUE
 			else
-				if(stander && target.rogfat >= target.maxrogfat) //if you are kicked while fatigued, you are knocked down no matter what
-					target.Knockdown(100)
+				if((stander && target.rogfat >= target.maxrogfat) || target.IsOffBalanced()) //if you are kicked while fatigued, you are knocked down no matter what
+					target.Knockdown(target.IsOffBalanced() ? SHOVE_KNOCKDOWN_SOLID : 100)
+					target.visible_message(span_danger("[user.name] kicks [target.name], knocking them down!"),
+					span_danger("I'm knocked down from a kick by [user.name]!"), span_hear("I hear aggressive shuffling followed by a loud thud!"), COMBAT_MESSAGE_RANGE, user)
+					to_chat(user, span_danger("I kick [target.name], knocking them down!"))
+					log_combat(user, target, "kicked", "knocking them down")
 
 		if(shove_blocked && !target.is_shove_knockdown_blocked() && !target.buckled)
 			var/directional_blocked = FALSE
@@ -1549,7 +1553,13 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 //	var/armor_block = H.run_armor_check(affecting, "I.d_type", span_notice("My armor has protected my [hit_area]!"), span_warning("My armor has softened a hit to my [hit_area]!"),pen)
 
 	var/Iforce = get_complex_damage(I, user) //to avoid runtimes on the forcesay checks at the bottom. Some items might delete themselves if you drop them. (stunning yourself, ninja swords)
-	var/armor_block = H.run_armor_check(selzone, I.d_type, "", "",pen, damage = Iforce, blade_dulling=user.used_intent.blade_class)
+	if(!user.used_intent?.allow_offhand)
+		if(user.get_num_arms(FALSE) < 2 || user.get_inactive_held_item())
+			Iforce = 0
+	var/bladec = user.used_intent.blade_class
+	if(H == user && bladec == BCLASS_PEEL)
+		bladec = BCLASS_BLUNT
+	var/armor_block = H.run_armor_check(selzone, I.d_type, "", "",pen, damage = Iforce, blade_dulling=user.used_intent.blade_class, peeldivisor = user.used_intent.peel_divisor, intdamfactor = user.used_intent.masteritem?.intdamage_factor)
 
 	var/nodmg = FALSE
 

@@ -10,6 +10,7 @@
 	emote_see = list("clacks.")
 	speak_chance = 1
 	turns_per_move = 5
+	base_intents = list(/datum/intent/use)
 	maxHealth = MUDCRAB_HEALTH
 	health = MUDCRAB_HEALTH
 	butcher_results = list(/obj/item/reagent_containers/food/snacks/rogue/meat/crab = 2, /obj/item/alch/viscera = 2)
@@ -28,6 +29,7 @@
 	var/obj/item/inventory_head
 	var/obj/item/inventory_mask
 	gold_core_spawnable = FRIENDLY_SPAWN
+	rot_type = null
 
 	can_have_ai = FALSE //disable native ai
 	AIStatus = AI_OFF

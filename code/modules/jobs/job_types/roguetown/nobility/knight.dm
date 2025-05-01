@@ -102,7 +102,7 @@
 	H.change_stat("intelligence", 1)
 
 	H.adjust_blindness(-3)
-	var/weapons = list("Zweihander","Great Mace","Battle Axe","Estoc","Lucerne")
+	var/weapons = list("Zweihander","Great Mace","Battle Axe","Greataxe","Estoc","Lucerne")
 	var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 	H.set_blindness(0)
 	switch(weapon_choice)
@@ -113,6 +113,9 @@
 			r_hand = /obj/item/rogueweapon/mace/goden/steel
 		if("Battle Axe")
 			r_hand = /obj/item/rogueweapon/stoneaxe/battle
+		if("Greataxe")
+			r_hand = /obj/item/rogueweapon/greataxe/steel
+			backl = /obj/item/gwstrap
 		if("Estoc")
 			r_hand = /obj/item/rogueweapon/estoc
 			backl = /obj/item/gwstrap
@@ -341,7 +344,7 @@
 	H.change_stat("intelligence", 1)
 
 	H.adjust_blindness(-3)
-	var/weapons = list("Rapier + Longbow","Estoc + Recurve Bow","Sabre + Buckler","Whip + Crossbow")
+	var/weapons = list("Rapier + Longbow","Estoc + Recurve Bow","Sabre + Buckler","Whip + Crossbow","Greataxe + Sling")
 	var/armor_options = list("Light Armor", "Medium Armor")
 	var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 	var/armor_choice = input("Choose your armor.", "TAKE UP ARMS") as anything in armor_options
@@ -366,7 +369,14 @@
 			beltl = /obj/item/rogueweapon/whip
 			backl = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow
 			beltr = /obj/item/quiver/bolts
-
+		
+		if("Greataxe + Sling")
+			H.mind.adjust_skillrank(/datum/skill/combat/slings, 4, TRUE)
+			r_hand = /obj/item/rogueweapon/greataxe/steel
+			backl = /obj/item/gwstrap
+			beltr = /obj/item/quiver/sling/iron
+			beltl = /obj/item/gun/ballistic/revolver/grenadelauncher/sling
+	
 	switch(armor_choice)
 		if("Light Armor")
 			shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/heavy

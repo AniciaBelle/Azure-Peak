@@ -19,18 +19,19 @@
 	backl = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve
 	belt = /obj/item/storage/belt/rogue/leather
 	beltr = /obj/item/quiver/arrows
-	beltl = /obj/item/flashlight/flare/torch/lantern
+	beltl = /obj/item/rogueweapon/sword/iron/messer
 	backpack_contents = list(
 						/obj/item/flint = 1,
 						/obj/item/bait = 1,
 						/obj/item/rogueweapon/huntingknife = 1,
 						/obj/item/flashlight/flare/torch = 1,
+						/obj/item/flashlight/flare/torch/lantern = 1
 						)
 	gloves = /obj/item/clothing/gloves/roguetown/leather
 	ADD_TRAIT(H, TRAIT_OUTDOORSMAN, TRAIT_GENERIC)
 
 	if(H.mind)
-		H.mind.adjust_skillrank(/datum/skill/combat/swords, 1, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/combat/swords, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/axes, 1, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/crossbows, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/bows, 4, TRUE)

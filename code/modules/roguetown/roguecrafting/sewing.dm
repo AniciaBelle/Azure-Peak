@@ -467,8 +467,15 @@
 	result = list(/obj/item/clothing/head/roguetown/chaperon)
 	reqs = list(/obj/item/natural/cloth = 2,
 				/obj/item/natural/fibers = 1)
-	craftdiff = 4
+	craftdiff = 3
 	sellprice = 14
+
+/datum/crafting_recipe/roguetown/sewing/chaperon/noble
+    name = "noble's chaperon (1 fibers, 4 cloth)"
+    result = list(/obj/item/clothing/head/roguetown/chaperon)
+    reqs = list(/obj/item/natural/cloth = 4,
+                /obj/item/natural/fibers = 2)
+    craftdiff = 4
 
 /datum/crafting_recipe/roguetown/sewing/jupon
 	name = "jupon (1 fibers, 3 cloth)"

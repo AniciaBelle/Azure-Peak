@@ -14,7 +14,7 @@
 	invocation_type = "none"
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = TRUE
-	charge_max = 5 SECONDS 
+	recharge_time = 5 SECONDS 
 	miracle = TRUE
 	devotion_cost = 0 
 
@@ -49,7 +49,7 @@
 	invocation_type = "none"
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = TRUE
-	charge_max = 20 SECONDS
+	recharge_time = 20 SECONDS
 	miracle = TRUE
 	devotion_cost = 20
 
@@ -101,7 +101,7 @@
 	no_early_release = TRUE
 	antimagic_allowed = TRUE
 	movement_interrupt = FALSE
-	charge_max = 2 MINUTES
+	recharge_time = 2 MINUTES
 	range = 4
 	var/totalstatshift = 0
 	var/totalstatchange = 0
@@ -183,7 +183,7 @@
 	no_early_release = TRUE
 	antimagic_allowed = TRUE
 	movement_interrupt = FALSE
-	charge_max = 2 MINUTES
+	recharge_time = 2 MINUTES
 	range = 4
 
 

@@ -4,7 +4,7 @@
 	range = 5
 	overlay_state = "blesscrop"
 	releasedrain = 30
-	charge_max = 30 SECONDS
+	recharge_time = 30 SECONDS
 	req_items = list(/obj/item/clothing/neck/roguetown/psicross)
 	max_targets = 0
 	cast_without_targets = TRUE
@@ -36,7 +36,7 @@
 	range = 5
 	overlay_state = "tamebeast"
 	releasedrain = 30
-	charge_max = 30 SECONDS
+	recharge_time = 30 SECONDS
 	req_items = list(/obj/item/clothing/neck/roguetown/psicross)
 	max_targets = 0
 	cast_without_targets = TRUE
@@ -70,7 +70,7 @@
 	range = 1
 	overlay_state = "blesscrop"
 	releasedrain = 30
-	charge_max = 30 SECONDS
+	recharge_time = 30 SECONDS
 	req_items = list(/obj/item/clothing/neck/roguetown/psicross)
 	max_targets = 0
 	cast_without_targets = TRUE
@@ -94,7 +94,7 @@
 	desc = "Draw upon the the secrets of the hidden firmament to converse with the mooncursed."
 	overlay_state = "howl"
 	antimagic_allowed = FALSE
-	charge_max = 600
+	recharge_time = 600
 	ignore_cockblock = TRUE
 	use_language = TRUE
 	var/first_cast = FALSE
@@ -121,7 +121,7 @@
 	desc = "Take on the form of one of Dendor's sacred beasts."
 	overlay_state = "tamebeast"
 	releasedrain = 60
-	charge_max = 30 SECONDS
+	recharge_time = 30 SECONDS
 	invocation = "Treefather grant me your form!"
 	invocation_type = "shout"
 	associated_skill = /datum/skill/magic/holy

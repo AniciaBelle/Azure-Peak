@@ -210,7 +210,11 @@
 			return
 	if(R.structurecraft)
 		if(!(locate(R.structurecraft) in T))
-			to_chat(user, span_warning("I'm missing a structure I need."))
+			var/str
+			if(ispath(R.structurecraft, /obj/))
+				var/obj/O = R.structurecraft
+				str = initial(O.name)
+			to_chat(user, span_warning("I'm missing a structure I need: \the <b>[str]</b>"))
 			return
 	if(check_contents(R, contents))
 		if(check_tools(user, R, contents))
@@ -283,7 +287,18 @@
 //					SSblackbox.record_feedback("tally", "object_crafted", 1, I.type)
 				return 0
 			return "."
-		to_chat(usr, span_warning("I'm missing a tool."))
+		var/str
+		var/toollen = R.tools.len
+		if(toollen)
+			if(toollen > 1)
+				for(var/i = 1, i<=toollen, i++)
+					if(ispath(R.tools[i], /obj/))
+						var/obj/O = R.tools[i]
+						str += "[initial(O.name)][(i != toollen) ? ", " : ""]"
+			else
+				for(var/obj/O as anything in R.tools)
+					str += "[initial(O.name)]"
+		to_chat(usr, span_warning("I'm missing a tool. I need: <b>[str]</b>"))
 		return
 	return ", missing component."
 

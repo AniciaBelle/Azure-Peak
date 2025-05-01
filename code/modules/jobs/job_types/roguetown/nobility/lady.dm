@@ -81,7 +81,7 @@
 	recruitment_message = "Serve the crown, %RECRUIT!"
 	accept_message = "FOR THE CROWN!"
 	refuse_message = "I refuse."
-	charge_max = 100
+	recharge_time = 100
 
 /obj/effect/proc_holder/spell/self/convertrole/mercenary
 	name = "Recruit Mercenary"
@@ -90,7 +90,7 @@
 	recruitment_message = "Serve the Guild, %RECRUIT!"
 	accept_message = "FOR THE GUILD!"
 	refuse_message = "I refuse."
-	charge_max = 100
+	recharge_time = 100
 
 /obj/effect/proc_holder/spell/self/convertrole/bog
 	name = "Recruit Warden"

@@ -25,8 +25,8 @@
 	mob_overlay_icon = 'modular_azurepeak/icons/clothing/onmob/donor_clothes.dmi'
 	sleeved = 'modular_azurepeak/icons/clothing/onmob/donor_sleeves_armor.dmi'
 
-//Strudles donator item - mage vest (same as base leather)
-/obj/item/clothing/suit/roguetown/armor/leather/vest/sofiavest
+//Strudles donator item - mage vest (same as robes)
+/obj/item/clothing/suit/roguetown/shirt/robe/sofiavest
 	name = "grenzelhoftian mages vest"
 	desc = "A vest often worn by those of the Grenzelhoftian mages college."
 	icon_state = "sofiavest"
@@ -35,6 +35,8 @@
 	icon = 'modular_azurepeak/icons/clothing/donor_clothes.dmi'
 	mob_overlay_icon = 'modular_azurepeak/icons/clothing/onmob/donor_clothes.dmi'
 	sleeved = 'modular_azurepeak/icons/clothing/onmob/donor_sleeves_armor.dmi'
+	flags_inv = HIDEBOOB
+	color = null
 
 /obj/item/rogue/instrument/harp/handcarved
 	name = "handcrafted harp"

@@ -3,7 +3,7 @@
 	name = "Call to Slaughter"
 	desc = "Grants you and all allies nearby a buff to their strength, endurance, and constitution."
 	overlay_state = "call_to_slaughter"
-	charge_max = 5 MINUTES
+	recharge_time = 5 MINUTES
 	invocation = "LAMBS TO THE SLAUGHTER!"
 	invocation_type = "shout"
 	sound = 'sound/magic/timestop.ogg'
@@ -40,7 +40,7 @@
 	releasedrain = 30
 	chargedrain = 0
 	chargetime = 15
-	charge_max = 10 SECONDS
+	recharge_time = 10 SECONDS
 
 /obj/projectile/magic/unholy_grasp
 	name = "viceral organ net"
@@ -69,7 +69,7 @@
 	name = "Revel in Slaughter"
 	desc = "The blood of your enemy shall boil, their skin feeling as if it's being ripped apart! Gaggar demands their blood must FLOW!!!."
 	overlay_state = "bloodsteal"
-	charge_max = 5 MINUTES
+	recharge_time = 5 MINUTES
 	invocation = "YOUR BLOOD WILL BOIL TILL IT'S SPILLED!"
 	invocation_type = "shout"
 	sound = 'sound/magic/antimagic.ogg'

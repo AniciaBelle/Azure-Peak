@@ -370,6 +370,18 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	name = "Amulet of Eora"
 	path = /obj/item/clothing/neck/roguetown/psicross/eora
 
+/datum/loadout_item/chaperon
+    name = "Chaperon (Normal)"
+    path = /obj/item/clothing/head/roguetown/chaperon
+
+/datum/loadout_item/chaperon/alt
+    name = "Chaperon (Alt)"
+    path = /obj/item/clothing/head/roguetown/chaperon/greyscale
+
+/datum/loadout_item/chaperon/burgher
+    name = "Noble's Chaperon"
+    path = /obj/item/clothing/head/roguetown/chaperon/noble
+
 //Donator Section
 //All these items are stored in the donator_fluff.dm in the azure modular folder for simplicity.
 //All should be subtypes of existing weapons/clothes/armor/gear, whatever, to avoid balance issues I guess. Idk, I'm not your boss.
@@ -386,7 +398,7 @@ GLOBAL_LIST_EMPTY(loadout_items)
 
 /datum/loadout_item/donator_strudel
 	name = "Grenzelhoftian Mage Vest"
-	path = /obj/item/clothing/suit/roguetown/armor/leather/vest/sofiavest
+	path = /obj/item/clothing/suit/roguetown/shirt/robe/sofiavest
 	ckeywhitelist = list("toasterstrudes")
 
 /datum/loadout_item/donator_bat

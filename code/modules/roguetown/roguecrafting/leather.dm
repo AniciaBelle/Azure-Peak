@@ -87,6 +87,13 @@
 				/obj/item/natural/fibers = 2)
 	sellprice = 30
 
+/datum/crafting_recipe/roguetown/leather/belt/black
+	name = "black leather belt (2 fibers, 2 leather)"
+	result = /obj/item/storage/belt/rogue/leather/black
+	reqs = list(/obj/item/natural/hide/cured = 2,
+				/obj/item/natural/fibers = 2)
+	sellprice = 30
+
 /datum/crafting_recipe/roguetown/leather/belt/knifebelt
 	name = "leather knifebelt (2 fibers, 2 leather)"
 	result = /obj/item/storage/belt/rogue/leather/knifebelt

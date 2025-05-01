@@ -93,7 +93,7 @@
 	neck = /obj/item/clothing/neck/roguetown/gorget
 
 	H.adjust_blindness(-3)
-	var/weapons = list("Warhammer & Shield","Axe & Shield","Halberd")
+	var/weapons = list("Warhammer & Shield","Axe & Shield","Halberd","Greataxe")
 	var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 	H.set_blindness(0)
 	switch(weapon_choice)
@@ -106,7 +106,9 @@
 		if("Halberd")
 			r_hand = /obj/item/rogueweapon/halberd
 			backl = /obj/item/gwstrap
-
+		if("Greataxe")
+			r_hand = /obj/item/rogueweapon/greataxe
+			backl = /obj/item/gwstrap
 	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/rope/chain = 1, /obj/item/storage/keyring/guardcastle)
 	H.verbs |= /mob/proc/haltyell
 

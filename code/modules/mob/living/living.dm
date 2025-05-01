@@ -409,11 +409,11 @@
 			O.grabbed = C
 			O.grabbee = src
 			O.limb_grabbed = BP
+			BP.grabbedby += O
 			if(item_override)
 				O.sublimb_grabbed = item_override
 			else
 				O.sublimb_grabbed = used_limb
-			O.icon_state = zone_selected
 			put_in_hands(O)
 			O.update_hands(src)
 			if(HAS_TRAIT(src, TRAIT_STRONG_GRABBER) || item_override)

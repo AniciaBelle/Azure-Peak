@@ -48,6 +48,7 @@
 /obj/item/storage/belt/rogue/leather/black
 	name = "black belt"
 	icon_state = "blackbelt"
+	item_state = "blackbelt"
 	sellprice = 10
 
 /obj/item/storage/belt/rogue/leather/plaquesilver
@@ -77,17 +78,20 @@
 	icon_state = "rope"
 	item_state = "rope"
 	color = "#b9a286"
+	component_type = /datum/component/storage/concrete/roguetown/belt/cloth
 
 /obj/item/storage/belt/rogue/leather/cloth
 	name = "cloth sash"
 	desc = ""
 	icon_state = "cloth"
+	component_type = /datum/component/storage/concrete/roguetown/belt/cloth
 
 /obj/item/storage/belt/rogue/leather/cloth/lady
 	color = "#575160"
 
 /obj/item/storage/belt/rogue/leather/cloth/bandit
 	color = "#ff0000"
+	component_type = /datum/component/storage/concrete/roguetown/belt
 
 /obj/item/storage/belt/rogue/pouch
 	name = "pouch"

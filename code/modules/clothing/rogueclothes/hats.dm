@@ -418,7 +418,7 @@
 
 /obj/item/clothing/head/roguetown/chaperon
 	name = "chaperon hat"
-	desc = "A fancy hat worn by nobles."
+	desc = "A fashionable hat traditionally made from a hood, usually worn by the rich."
 	icon_state = "chaperon"
 	item_state = "chaperon"
 	sewrepair = TRUE
@@ -433,17 +433,34 @@
 
 /obj/item/clothing/head/roguetown/chaperon/greyscale
 	name = "chaperon hat"
-	desc = "A fancy hat worn by nobles."
+	desc = "A fashionable hat traditionally made from a hood, usually worn by the rich."
 	icon_state = "chap_alt"
 	item_state = "chap_alt"
-	color = "#cf99e3"
+	color = "#dbcde0"
 
-/obj/item/clothing/head/roguetown/chaperon/bailiff
-	name = "chaperon hat"
-	desc = "A fancy hat worn by nobles."
-	icon_state = "chap_alt"
-	item_state = "chap_alt"
-	color = "#C0392B"
+/obj/item/clothing/head/roguetown/chaperon/noble
+	name = "noble's chaperon"
+	desc = "A decorated chaperon worn by those more influential in society."
+	icon_state = "noblechaperon"
+	item_state = "noblechaperon"
+	detail_tag = "_detail"
+	color = CLOTHING_WHITE
+	detail_color = COLOR_ASSEMBLY_GOLD
+
+/obj/item/clothing/head/roguetown/chaperon/noble/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
+
+/obj/item/clothing/head/roguetown/chaperon/noble/bailiff
+	name = "Marshal's chaperon"
+	desc = "A noble's chaperon made for the local Marshal. \"How terribly unfortunate you are!\""
+	color = "#641E16"
+	detail_color = "#b68e37ff"
 
 /obj/item/clothing/head/roguetown/chaperon/councillor
 	name = "chaperon hat"
@@ -2157,6 +2174,9 @@
 	desc = "A feathered leather hat, to show them all your superiority."
 	icon_state = "duelhat"
 	sewrepair = TRUE
+	color = COLOR_ALMOST_BLACK	
+	detail_tag = "_detail"
+	detail_color = COLOR_SILVER
 	salvage_result = /obj/item/natural/hide/cured
 
 

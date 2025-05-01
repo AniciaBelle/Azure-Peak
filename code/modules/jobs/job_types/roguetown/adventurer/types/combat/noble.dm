@@ -113,7 +113,7 @@
 			H.set_blindness(0)
 			ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_NOBLE, TRAIT_GENERIC)
-			var/weapons = list("Bastard Sword","Mace + Shield","Flail + Shield","Billhook")
+			var/weapons = list("Bastard Sword","Mace + Shield","Flail + Shield","Billhook","Battle Axe","Greataxe")
 			var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 			switch(weapon_choice)
 				if("Bastard Sword")
@@ -132,6 +132,13 @@
 				if("Billhook")
 					H.mind.adjust_skillrank(/datum/skill/combat/polearms, 1, TRUE)
 					r_hand = /obj/item/rogueweapon/spear/billhook
+					backr = /obj/item/gwstrap
+				if("Battle Axe")
+					H.mind.adjust_skillrank(/datum/skill/combat/axes, 3, TRUE)
+					r_hand = /obj/item/rogueweapon/stoneaxe/battle
+				if("Greataxe")
+					H.mind.adjust_skillrank(/datum/skill/combat/axes, 3, TRUE)
+					r_hand = /obj/item/rogueweapon/greataxe
 					backr = /obj/item/gwstrap
 			H.change_stat("strength", 2)
 			H.change_stat("constitution", 1)

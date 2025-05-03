@@ -433,10 +433,10 @@
 	icon_state = "inpick"
 	blade_class = BCLASS_PICK
 	attack_verb = list("picks", "impales")
+	animname = "stab"
 	hitsound = list('sound/combat/hits/blunt/metalblunt (1).ogg', 'sound/combat/hits/blunt/metalblunt (2).ogg', 'sound/combat/hits/blunt/metalblunt (3).ogg')
-	chargetime = 14
 	misscost = 1
-	no_early_release = TRUE
+	swingdelay = 15
 	penfactor = 80
 	damfactor = 0.9
 	item_d_type = "stab"

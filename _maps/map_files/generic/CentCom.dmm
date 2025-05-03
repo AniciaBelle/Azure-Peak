@@ -103,6 +103,9 @@
 /obj/item/clothing/wrists/roguetown/bracers/leather,
 /obj/item/clothing/wrists/roguetown/bracers,
 /obj/item/clothing/wrists/roguetown/bracers,
+/obj/item/clothing/wrists/roguetown/bracers/leather/heavy,
+/obj/item/clothing/wrists/roguetown/bracers/leather/heavy,
+/obj/item/clothing/wrists/roguetown/bracers/leather/heavy,
 /turf/open/floor/rogue/carpet,
 /area/rogue)
 "ao" = (
@@ -116,6 +119,10 @@
 /obj/item/clothing/suit/roguetown/armor/leather,
 /obj/item/clothing/suit/roguetown/armor/leather,
 /obj/item/clothing/suit/roguetown/armor/leather,
+/obj/item/clothing/suit/roguetown/armor/leather/heavy,
+/obj/item/clothing/suit/roguetown/armor/leather/heavy,
+/obj/item/clothing/suit/roguetown/armor/leather/heavy/coat,
+/obj/item/clothing/suit/roguetown/armor/leather/heavy/coat,
 /turf/open/floor/rogue/carpet,
 /area/rogue)
 "ap" = (
@@ -127,6 +134,18 @@
 /obj/item/clothing/suit/roguetown/armor/plate,
 /obj/item/clothing/suit/roguetown/armor/plate,
 /obj/item/clothing/suit/roguetown/armor/plate,
+/obj/item/clothing/suit/roguetown/armor/plate/half/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/half/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/half/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/half/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted,
+/obj/item/clothing/suit/roguetown/armor/plate/full,
+/obj/item/clothing/suit/roguetown/armor/plate/full,
+/obj/item/clothing/suit/roguetown/armor/plate/full,
+/obj/item/clothing/suit/roguetown/armor/plate/full,
 /turf/open/floor/rogue/carpet,
 /area/rogue)
 "aq" = (
@@ -138,6 +157,10 @@
 /obj/item/clothing/suit/roguetown/armor/gambeson,
 /obj/item/clothing/suit/roguetown/armor/gambeson,
 /obj/item/clothing/suit/roguetown/armor/gambeson,
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy,
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy,
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy,
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy,
 /turf/open/floor/rogue/carpet,
 /area/rogue)
 "ar" = (
@@ -242,6 +265,8 @@
 	},
 /obj/item/clothing/head/roguetown/helmet/leather,
 /obj/item/clothing/head/roguetown/helmet/leather,
+/obj/item/clothing/head/roguetown/helmet/leather/advanced,
+/obj/item/clothing/head/roguetown/helmet/leather/advanced,
 /turf/open/floor/rogue/carpet,
 /area/rogue)
 "aC" = (
@@ -260,11 +285,10 @@
 	icon_state = "tablewood2";
 	dir = 10
 	},
-/obj/item/clothing/under/roguetown/trou,
-/obj/item/clothing/under/roguetown/trou,
-/obj/item/clothing/under/roguetown/trou,
-/obj/item/clothing/under/roguetown/trou,
-/obj/item/clothing/under/roguetown/trou,
+/obj/item/clothing/under/roguetown/heavy_leather_pants,
+/obj/item/clothing/under/roguetown/heavy_leather_pants,
+/obj/item/clothing/under/roguetown/heavy_leather_pants,
+/obj/item/clothing/under/roguetown/heavy_leather_pants,
 /turf/open/floor/rogue/carpet,
 /area/rogue)
 "aE" = (
@@ -347,6 +371,9 @@
 /obj/item/clothing/neck/roguetown/coif,
 /obj/item/clothing/neck/roguetown/coif,
 /obj/item/clothing/neck/roguetown/coif,
+/obj/item/clothing/neck/roguetown/leather,
+/obj/item/clothing/neck/roguetown/leather,
+/obj/item/clothing/neck/roguetown/leather,
 /turf/open/floor/rogue/carpet,
 /area/rogue)
 "aM" = (
@@ -1145,7 +1172,6 @@
 /turf/open/floor/rogue/ruinedwood,
 /area/rogue/indoors)
 "de" = (
-/obj/machinery/light/rogue/torchholder/c,
 /obj/effect/landmark/start/vampireknight,
 /turf/open/floor/rogue/blocks,
 /area/rogue/indoors)
@@ -1792,6 +1818,11 @@
 	},
 /turf/open/floor/rogue/dirt,
 /area/rogue/outdoors/banditcamp)
+"qG" = (
+/obj/structure/bars,
+/obj/machinery/light/rogue/wallfire/candle/blue/r,
+/turf/open/floor/rogue/blocks,
+/area/rogue/indoors)
 "rr" = (
 /obj/machinery/light/rogue/wallfire/candle/l,
 /turf/open/floor/rogue/herringbone,
@@ -1830,6 +1861,17 @@
 	},
 /turf/open/floor/rogue/blocks,
 /area/rogue)
+"sP" = (
+/obj/structure/table/wood{
+	icon_state = "tablewood2";
+	dir = 10
+	},
+/obj/item/rogueweapon/halberd/glaive,
+/obj/item/rogueweapon/halberd/glaive,
+/obj/item/rogueweapon/halberd/glaive,
+/obj/item/rogueweapon/halberd/glaive,
+/turf/open/floor/rogue/cobble,
+/area/rogue)
 "sQ" = (
 /obj/structure/fluff/railing/border{
 	icon_state = "border";
@@ -1837,6 +1879,20 @@
 	},
 /turf/open/floor/rogue/dirt,
 /area/rogue/outdoors/woods)
+"sX" = (
+/obj/machinery/light/rogue/wallfire/candle/blue/l,
+/turf/open/floor/rogue/blocks,
+/area/rogue/indoors)
+"tx" = (
+/obj/structure/table/wood{
+	icon_state = "tablewood2";
+	dir = 10
+	},
+/obj/item/gun/ballistic/revolver/grenadelauncher/sling,
+/obj/item/gun/ballistic/revolver/grenadelauncher/sling,
+/obj/item/gun/ballistic/revolver/grenadelauncher/sling,
+/turf/open/floor/rogue/grass,
+/area/rogue/outdoors)
 "tN" = (
 /turf/closed,
 /area/rogue/under)
@@ -2086,6 +2142,22 @@
 /obj/structure/chair/stool/rogue,
 /turf/open/floor/rogue/herringbone,
 /area/rogue/indoors/banditcamp)
+"yR" = (
+/obj/structure/table/wood{
+	icon_state = "tablewood2";
+	dir = 10
+	},
+/obj/projectile/bullet/reusable/sling_bullet/stone,
+/obj/projectile/bullet/reusable/sling_bullet/stone,
+/obj/projectile/bullet/sling_bullet,
+/obj/projectile/bullet/sling_bullet,
+/obj/projectile/bullet/sling_bullet,
+/obj/projectile/bullet/sling_bullet,
+/obj/projectile/bullet/sling_bullet,
+/obj/projectile/bullet/sling_bullet,
+/obj/projectile/bullet/sling_bullet,
+/turf/open/floor/rogue/grass,
+/area/rogue/outdoors)
 "zk" = (
 /obj/structure/table/wood{
 	icon_state = "tablewood1"
@@ -2152,6 +2224,15 @@
 /obj/machinery/light/rogue/wallfire/candle,
 /turf/open/floor/rogue/hexstone,
 /area/rogue/indoors/banditcamp)
+"AQ" = (
+/obj/structure/table/wood{
+	icon_state = "tablewood2";
+	dir = 10
+	},
+/obj/item/storage/belt/rogue/surgery_bag/full,
+/obj/item/storage/belt/rogue/surgery_bag/full,
+/turf/open/floor/rogue/cobble,
+/area/rogue)
 "AT" = (
 /obj/machinery/gear_painter,
 /turf/open/floor/rogue/herringbone,
@@ -2245,6 +2326,12 @@
 /obj/item/gun/ballistic/revolver/grenadelauncher/bow,
 /obj/item/gun/ballistic/revolver/grenadelauncher/bow,
 /obj/item/gun/ballistic/revolver/grenadelauncher/bow,
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve,
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve,
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve,
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/longbow,
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/longbow,
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/longbow,
 /turf/open/floor/rogue/cobble,
 /area/rogue/outdoors)
 "Do" = (
@@ -2304,6 +2391,11 @@
 /obj/item/rogueweapon/huntingknife/idagger/silver,
 /turf/open/floor/rogue/cobble,
 /area/rogue)
+"EO" = (
+/obj/structure/bars,
+/obj/machinery/light/rogue/wallfire/candle/blue/l,
+/turf/open/floor/rogue/blocks,
+/area/rogue/indoors)
 "EP" = (
 /obj/effect/landmark/start/banditlate,
 /turf/open/floor/rogue/tile{
@@ -2449,6 +2541,11 @@
 	icon_state = "tablewood2";
 	dir = 10
 	},
+/obj/item/rogueweapon/sword/falx,
+/obj/item/rogueweapon/sword/falx,
+/obj/item/rogueweapon/sword/falx,
+/obj/item/rogueweapon/sword/falx,
+/obj/item/rogueweapon/sword/falx,
 /turf/open/floor/rogue/cobble,
 /area/rogue)
 "JA" = (
@@ -2599,6 +2696,10 @@
 /obj/structure/roguewindow,
 /turf/open/floor/rogue/herringbone,
 /area/rogue/indoors/banditcamp)
+"Pu" = (
+/obj/machinery/light/rogue/wallfire/candle/blue/r,
+/turf/open/floor/rogue/blocks,
+/area/rogue/indoors)
 "PU" = (
 /obj/structure/fluff/railing/border{
 	dir = 5
@@ -2794,6 +2895,17 @@
 /obj/item/quiver/bolts,
 /turf/open/floor/rogue/cobble,
 /area/rogue/outdoors)
+"Vl" = (
+/obj/structure/table/wood{
+	icon_state = "tablewood2";
+	dir = 10
+	},
+/obj/item/rogueweapon/sword/gladius,
+/obj/item/rogueweapon/sword/gladius,
+/obj/item/rogueweapon/sword/gladius,
+/obj/item/rogueweapon/sword/gladius,
+/turf/open/floor/rogue/cobble,
+/area/rogue)
 "Vu" = (
 /obj/machinery/light/rogue/forge,
 /turf/open/floor/rogue/ruinedwood{
@@ -5227,7 +5339,7 @@ al
 vP
 aY
 lw
-lw
+sP
 lw
 jQ
 vP
@@ -5619,7 +5731,7 @@ bb
 lw
 Is
 lw
-Jp
+Vl
 vP
 bX
 kB
@@ -5877,7 +5989,7 @@ Ph
 lw
 lw
 lw
-lw
+AQ
 lw
 pE
 vP
@@ -6523,7 +6635,7 @@ Do
 Do
 Ph
 Ph
-Do
+yR
 bX
 bX
 bX
@@ -6653,7 +6765,7 @@ RH
 RH
 Ph
 Ph
-Do
+tx
 bX
 bX
 bX
@@ -10731,7 +10843,7 @@ WB
 Gz
 Tf
 cZ
-cZ
+sX
 dh
 WB
 WB
@@ -11120,7 +11232,7 @@ cD
 WB
 Gz
 Tf
-da
+EO
 cZ
 cZ
 dS
@@ -11250,7 +11362,7 @@ cb
 WB
 cP
 cO
-da
+qG
 dQ
 cZ
 da
@@ -11512,7 +11624,7 @@ cQ
 cN
 cN
 cZ
-cZ
+Pu
 WB
 dq
 dx

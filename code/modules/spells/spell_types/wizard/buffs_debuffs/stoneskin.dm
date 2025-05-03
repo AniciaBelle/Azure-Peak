@@ -44,7 +44,7 @@
 #define STONESKIN_FILTER "stoneskin_glow"
 /atom/movable/screen/alert/status_effect/buff/stoneskin
 	name = "Stoneskin"
-	desc = "My skin are hardened like stone (+3 Constitution, -2 Speed, Critical Resistance)"
+	desc = "My skin is hardened like stone. (+3 Constitution, -2 Speed, Critical Resistance)"
 	icon_state = "buff"
 
 /datum/status_effect/buff/stoneskin

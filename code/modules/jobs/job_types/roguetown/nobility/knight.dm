@@ -372,6 +372,7 @@
 		
 		if("Greataxe + Sling")
 			H.mind.adjust_skillrank(/datum/skill/combat/slings, 4, TRUE)
+			H.mind.adjust_skillrank_up_to(/datum/skill/combat/axes, 4, TRUE)
 			r_hand = /obj/item/rogueweapon/greataxe/steel
 			backl = /obj/item/gwstrap
 			beltr = /obj/item/quiver/sling/iron

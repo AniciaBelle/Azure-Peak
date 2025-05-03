@@ -44,7 +44,7 @@
 #define HAWKSEYES_FILTER "hawkseyes_glow"
 /atom/movable/screen/alert/status_effect/buff/hawks_eyes
 	name = "Hawk's Eyes"
-	desc = "My vision are sharpened (+3 Perception)"
+	desc = "My vision is sharpened. (+3 Perception)"
 	icon_state = "buff"
 
 /datum/status_effect/buff/hawks_eyes

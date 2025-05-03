@@ -965,6 +965,26 @@
 	icon_state = "zizobarbute"
 	max_integrity = 600
 	peel_threshold = 4
+	var/frogstyle = FALSE
+
+/obj/item/clothing/head/roguetown/helmet/heavy/zizo/MiddleClick(mob/user)
+	frogstyle = !frogstyle
+	to_chat(user, span_info("My darksteel helmet shifts into the style of [frogstyle ? "a froggemund" : "a barbute"]."))
+	if(frogstyle)
+		icon_state = "zizofrogmouth"
+		name = "darksteel froggemund"
+		desc = "A darksteel froggemund. Called forth from the edge of what should be known. In Her name."
+		flags_inv = HIDEFACE|HIDESNOUT|HIDEEARS 
+		body_parts_covered = HEAD|EARS|HAIR
+		adjustable = FALSE
+	else
+		icon_state = "zizobarbute"
+		name = "darksteel barbute"
+		desc = "A darksteel barbute. This one has an adjustable visor. Called forth from the edge of what should be known. In Her name."
+		adjustable = CAN_CADJUST
+	update_icon()
+	user.update_inv_head()
+
 
 /obj/item/clothing/head/roguetown/helmet/heavy/zizo/pickup(mob/living/user)
 	if(!HAS_TRAIT(user, TRAIT_CABAL))
@@ -976,6 +996,8 @@
 
 /obj/item/clothing/head/roguetown/helmet/heavy/zizo/AdjustClothes(mob/user)
 	if(loc == user)
+		if(frogstyle)
+			return
 		playsound(user, "sound/items/visor.ogg", 100, TRUE, -1)
 		if(adjustable == CAN_CADJUST)
 			adjustable = CADJUSTED
@@ -989,7 +1011,7 @@
 			block2add = null
 		else if(adjustable == CADJUSTED)
 			ResetAdjust(user)
-			flags_inv = HIDEFACE|HIDESNOUT
+			flags_inv = HIDEFACE|HIDESNOUT|HIDEEARS
 			if(user)
 				if(ishuman(user))
 					var/mob/living/carbon/H = user
@@ -1729,21 +1751,6 @@
 	max_integrity = 450
 	smeltresult = /obj/item/ingot/steel
 	smelt_bar_num = 2
-
-/obj/item/clothing/head/roguetown/helmet/heavy/frogmouth/zizo
-	name = "darksteel froggemund"
-	desc = "A sleek and imposing darksteel froggemund. Called forth from the edge of what should be known. In Her name."
-	max_integrity = 650
-	icon_state = "zizofrogmouth"
-
-
-/obj/item/clothing/head/roguetown/helmet/heavy/frogmouth/zizo/pickup(mob/living/user)
-	if(!HAS_TRAIT(user, TRAIT_CABAL))
-		to_chat(user, "<font color='purple'>UNWORTHY HANDS TOUCH THE HELMET, CEASE OR BE PUNISHED</font>")
-		user.adjust_fire_stacks(5)
-		user.IgniteMob()
-		user.Stun(40)
-	..()
 
 /obj/item/clothing/head/roguetown/helmet/heavy/frogmouth/attackby(obj/item/W, mob/living/user, params)
 	..()

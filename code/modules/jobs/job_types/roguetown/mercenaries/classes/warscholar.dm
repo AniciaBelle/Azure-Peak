@@ -115,6 +115,7 @@
 			H.mind.AddSpell(new/obj/effect/proc_holder/spell/invoked/projectile/repel)
 			H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/shadowstep)
 			ADD_TRAIT(H, TRAIT_DODGEEXPERT, TRAIT_GENERIC)
+			ADD_TRAIT(H, TRAIT_CIVILIZEDBARBARIAN, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_ARCYNE_T1, TRAIT_GENERIC)
 
 			head = /obj/item/clothing/head/roguetown/roguehood/pontifex

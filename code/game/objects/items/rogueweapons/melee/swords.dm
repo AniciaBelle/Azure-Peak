@@ -79,8 +79,12 @@
 	damfactor = 1.0
 	item_d_type = "slash"
 
+/datum/intent/sword/cut/falx
+	penfactor = 20
+
 /datum/intent/sword/chop/falx
 	penfactor = 40
+
 //sword objs ฅ^•ﻌ•^ฅ
 
 /obj/item/rogueweapon/sword
@@ -419,8 +423,7 @@
 
 /obj/item/rogueweapon/sword/sabre/shamshir
 	force = 24
-	minstr = 5
-	wdefense = 5
+	wdefense = 6	//Has chop mode, so slightly less defense. Slightly.
 	wbalance = 1
 	name = "shamshir"
 	desc = "A one-handed sword with elegant curves and deadly sharpness."
@@ -492,15 +495,19 @@
 			if("onbelt")
 				return list("shrink" = 0.5,"sx" = -4,"sy" = -6,"nx" = 5,"ny" = -6,"wx" = 0,"wy" = -6,"ex" = -1,"ey" = -6,"nturn" = 100,"sturn" = 156,"wturn" = 90,"eturn" = 180,"nflip" = 0,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0)
 
+//Slightly more expensive than a longsword by 1 iron, so gets to be slightly better.
 /obj/item/rogueweapon/sword/long/exe
-	possible_item_intents = list(/datum/intent/sword/strike)
-	gripped_intents = list(/datum/intent/axe/chop)
+	name = "executioners sword"
+	desc = "A longsword with extra heft to its blade, reinforced."
+	possible_item_intents = list(/datum/intent/sword/cut, /datum/intent/sword/thrust, /datum/intent/sword/peel, /datum/intent/sword/strike)
+	gripped_intents = list(/datum/intent/sword/cut, /datum/intent/sword/thrust, /datum/intent/sword/strike, /datum/intent/axe/chop)
 	icon_state = "exe"
-	name = "execution sword"
-	desc = ""
-	minstr = 10
+	minstr = 12
 	slot_flags = ITEM_SLOT_BACK //Too big for hip
 
+/datum/intent/sword/thrust/exe
+	swingdelay = 4	//Slight delay to stab; big and heavy.
+	penfactor = 30	//Slightly better pen than base longsword, which is 20. It's a heavy blade so.
 
 /obj/item/rogueweapon/sword/long/exe/astrata
 	name = "solar judge"
@@ -608,12 +615,13 @@
 	parrysound = list('sound/combat/parry/bladed/bladedthin (1).ogg', 'sound/combat/parry/bladed/bladedthin (2).ogg', 'sound/combat/parry/bladed/bladedthin (3).ogg')
 	swingsound = BLADEWOOSH_SMALL
 	minstr = 5
-	wdefense = 6
+	wdefense = 7		//Same as rapier
 	wbalance = 1
 
 /datum/intent/sword/cut/sabre
 	clickcd = 10		//Faster than sword by 2, slower than rapier stab by 2
-	damfactor = 1.15	//Opposite of rapier, 15% better than base
+	damfactor = 1.25	//Opposite of rapier, 15% better than base (Base is 1.1 for swords)
+	penfactor = 10		//Very slight buff to pen on cut mode. Still weaker then sword-chop mode.
 
 /datum/intent/sword/thrust/sabre
 	clickcd = 9			//Fast but still not as fast as rapier n' shittier.
@@ -623,17 +631,27 @@
 	icon_state = "decsaber"
 	sellprice = 140
 
+//Unique church sword - slightly better than regular sabre due to falx chop.
 /obj/item/rogueweapon/sword/sabre/nockhopesh
 	name = "moonlight khopesh"
 	icon_state = "nockhopesh"
 	desc = "Glittering moonlight upon blued steel."
-	wdefense = 7
-	force = 25
+	force = 25	//Base is 22
 	possible_item_intents = list(/datum/intent/sword/cut/sabre, /datum/intent/sword/thrust, /datum/intent/sword/chop/falx, /datum/intent/sword/peel)
 	max_integrity = 200
 
-/datum/intent/sword/cut/falx
-	penfactor = 20
+/obj/item/rogueweapon/sword/sabre/elf
+	name = "elvish saber"
+	desc = "This finely crafted saber is of elven design."
+	icon_state = "esaber"
+	item_state = "esaber"
+	lefthand_file = 'icons/mob/inhands/weapons/swords_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/weapons/swords_righthand.dmi'
+	force = 25	//Base is 22
+	last_used = 0
+	is_silver = TRUE
+	smeltresult = /obj/item/ingot/silver
+	smelt_bar_num = 2
 
 /obj/item/rogueweapon/sword/rapier
 	name = "rapier"
@@ -798,19 +816,6 @@
 	max_integrity = 200
 	dropshrink = 0.80
 	wdefense = 2
-
-/obj/item/rogueweapon/sword/sabre/elf
-	force = 25
-	name = "elvish saber"
-	desc = "This finely crafted saber is of elven design."
-	icon_state = "esaber"
-	item_state = "esaber"
-	lefthand_file = 'icons/mob/inhands/weapons/swords_lefthand.dmi'
-	righthand_file = 'icons/mob/inhands/weapons/swords_righthand.dmi'
-	last_used = 0
-	is_silver = TRUE
-	smeltresult = /obj/item/ingot/silver
-	smelt_bar_num = 2
 
 /obj/item/rogueweapon/sword/silver
 	force = 24

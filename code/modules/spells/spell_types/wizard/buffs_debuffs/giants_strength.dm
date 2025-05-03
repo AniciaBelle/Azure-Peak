@@ -44,7 +44,7 @@
 #define GIANTSSTRENGTH_FILTER "giantsstrength_glow"
 /atom/movable/screen/alert/status_effect/buff/giants_strength
 	name = "Giant's Strength"
-	desc = "My muscles are strengthened (+3 Strength)"
+	desc = "My muscles are strengthened. (+3 Strength)"
 	icon_state = "buff"
 
 /datum/status_effect/buff/giants_strength

@@ -32,15 +32,22 @@
 // calls the remove_rot which is shared with the pestra prayer to remove rot
 /datum/surgery_step/burn_rot/success(mob/user, mob/living/target, target_zone, obj/item/tool, datum/intent/intent)
 	var/burndam = 20
+	var/stinky = FALSE
 	if(user.mind)
 		burndam -= (user.mind.get_skill_level(/datum/skill/misc/medicine) * 3)
 
-	target.remove_status_effect(/datum/status_effect/debuff/rotted_zombie)	//Removes the rotted-zombie debuff if they have it.
-	target.apply_status_effect(/datum/status_effect/debuff/rotted)	//Perma debuff, needs cure - adds this on surgery.
+	var/datum/antagonist/zombie/was_zombie = target.mind?.has_antag_datum(/datum/antagonist/zombie)
+	if(target.stat == DEAD || was_zombie)											//Checks if the target is a dead rotted corpse.
+		var/datum/component/rot/rot = target.GetComponent(/datum/component/rot)
+		if(rot && rot.amount && rot.amount >= 5 MINUTES)	//Fail-safe to make sure the dead person has at least rotted for ~5 min.
+			stinky = TRUE				
 
 	if(remove_rot(target = target, user = user, method = "surgery", damage = burndam,
 		success_message = "You burn away the rot inside of [target].",
 		fail_message = "The surgery fails to remove the rot."))
+		target.remove_status_effect(/datum/status_effect/debuff/rotted_zombie)	//Removes the rotted-zombie debuff if they have it. (It's perma for zombies, NEEDS to be removed on de-zombify)
+		if(stinky)
+			target.apply_status_effect(/datum/status_effect/debuff/rotted)			//Temp debuff, needs cure - adds this on surgery.
 
 		display_results(user, target, span_notice("You burn away the rot inside of [target]."),
 		"[user] burns the rot within [target].",

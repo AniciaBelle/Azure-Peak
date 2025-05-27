@@ -300,6 +300,34 @@
 		zombie.emote("idle")
 		next_idle_sound = world.time + rand(5 SECONDS, 10 SECONDS)
 
+	// Only client-less (no player) zombies do automatic biting
+	if(!zombie.client)
+		try_bite_nearby_person(zombie)
+
+/datum/antagonist/zombie/proc/try_bite_nearby_person(mob/living/carbon/human/zombie)
+	// Check cooldown
+	if(world.time - last_bite < 10 SECONDS)
+		return FALSE
+	// If we’re already biting, chew on the target
+	var/obj/item/grabbing/bite/bite = zombie.get_item_by_slot(SLOT_MOUTH)
+	if(istype(bite))
+		bite.bitelimb(zombie)
+		last_bite = world.time
+		return TRUE
+	// Find a valid target
+	for(var/mob/living/carbon/human/human in view(1, zombie))
+		if(human.stat >= DEAD)
+			continue
+		if(human.mob_biotypes & MOB_UNDEAD)
+			continue
+		if(("undead" in human.faction) || ("zombie" in human.faction))
+			continue
+		// Bite the mob
+		human.onbite(zombie)
+		last_bite = world.time
+		return TRUE
+	return FALSE
+
 /*
 	Check for zombie infection post bite
 		Bite chance is checked here

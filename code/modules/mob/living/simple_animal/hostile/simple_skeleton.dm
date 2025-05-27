@@ -30,7 +30,6 @@
 	canparry = TRUE
 	d_intent = INTENT_PARRY
 	defprob = 50
-	defdrain = 20
 	speak_emote = list("grunts")
 	loot = list(/obj/item/natural/bone,	/obj/item/natural/bone, /obj/item/natural/bone,	/obj/item/skull)
 	faction = list("undead")
@@ -40,6 +39,7 @@
 	can_have_ai = FALSE //disable native ai
 	AIStatus = AI_OFF
 	ai_controller = /datum/ai_controller/simple_skeleton
+	melee_cooldown = SKELETON_ATTACK_SPEED
 
 /mob/living/simple_animal/hostile/rogue/skeleton/axe
 	name = "Skeleton"

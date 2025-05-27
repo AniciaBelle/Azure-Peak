@@ -87,6 +87,8 @@
 		/datum/body_marking/butt,
 		/datum/body_marking/tonage,
 		/datum/body_marking/nose,
+		/datum/body_marking/harlequin,
+		/datum/body_marking/harlequinreversed,
 	)
 	descriptor_choices = list(
 		/datum/descriptor_choice/height,
@@ -103,7 +105,6 @@
 	)
 	languages = list(
 		/datum/language/common,
-		/datum/language/canilunzt
 	)
 
 /datum/species/vulpkanin/check_roundstart_eligible()

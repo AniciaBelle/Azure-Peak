@@ -2,6 +2,7 @@
 
 /turf/open/lava
 	name = "lava"
+	desc = "Thick viscous bubbles swell and burst with sprays of molten rock. What was once locked away in the bowels of the earth now thrashes and gurgles on the surface, glowing with unimaginable heat. If you touch it, you will die."
 	icon_state = "lava"
 	icon = 'icons/turf/roguefloor.dmi'
 	gender = PLURAL //"That's some lava."
@@ -20,6 +21,9 @@
 	smooth = SMOOTH_TRUE
 	canSmoothWith = list(/turf/closed, /turf/open/floor/rogue/volcanic, /turf/open/floor/rogue/dirt, /turf/open/floor/rogue/dirt/road,/turf/open/floor/rogue/naturalstone)
 	neighborlay_override = "lavedge"
+
+/turf/open/lava/nosmooth
+	smooth = SMOOTH_FALSE
 
 /turf/open/lava/Initialize()
 	. = ..()

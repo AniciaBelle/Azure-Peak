@@ -9,9 +9,10 @@
 /datum/outfit/job/roguetown/adventurer/butcher/pre_equip(mob/living/carbon/human/H)
 	..()
 	if(H.mind)
-		H.mind.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/combat/knives, 3, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/combat/axes, 1, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/reading, 1, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/craft/cooking, 1, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/craft/cooking, 3, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/wrestling, 3, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/combat/unarmed, 2, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/craft/tanning, 1, TRUE)
@@ -26,6 +27,7 @@
 						/obj/item/kitchen/spoon,
 						/obj/item/reagent_containers/food/snacks/rogue/truffles,
 						/obj/item/flashlight/flare/torch = 1,
+						/obj/item/recipe_book/survival = 1,
 						)
 	if(H.pronouns == SHE_HER || H.pronouns == THEY_THEM_F)
 		shirt = /obj/item/clothing/suit/roguetown/shirt/dress/gen/random
@@ -34,6 +36,6 @@
 		wrists = /obj/item/clothing/wrists/roguetown/bracers/leather
 
 	if(H.mind)
-		H.change_stat("strength", 1)
-		H.change_stat("endurance", 1)
-		H.change_stat("intelligence", -1)
+		H.change_stat("strength", 1)	//Stat spread is decent; not great but decent. 
+		H.change_stat("endurance", 2)
+		H.change_stat("constitution", 2)

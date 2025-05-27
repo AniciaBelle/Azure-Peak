@@ -113,6 +113,8 @@
 		/datum/body_marking/tonage,
 		/datum/body_marking/spotted,
 		/datum/body_marking/nose,
+		/datum/body_marking/harlequin,
+		/datum/body_marking/harlequinreversed,
 	)
 	descriptor_choices = list(
 		/datum/descriptor_choice/height,

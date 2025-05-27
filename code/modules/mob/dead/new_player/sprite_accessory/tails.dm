@@ -354,3 +354,9 @@
 	color_keys = 2
 	color_key_names = list("Tail", "Tip")
 	can_wag = TRUE
+
+/datum/sprite_accessory/tail/lynx
+	name = "Lynx"
+	icon_state = "lynx"
+	color_keys = 2
+	color_key_names = list("Tail", "Tip")

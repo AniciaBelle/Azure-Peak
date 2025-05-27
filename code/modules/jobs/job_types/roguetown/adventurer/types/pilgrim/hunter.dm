@@ -25,7 +25,9 @@
 						/obj/item/bait = 1,
 						/obj/item/rogueweapon/huntingknife = 1,
 						/obj/item/flashlight/flare/torch = 1,
-						/obj/item/flashlight/flare/torch/lantern = 1
+						/obj/item/flashlight/flare/torch/lantern = 1,
+						/obj/item/recipe_book/survival = 1,
+						/obj/item/recipe_book/leatherworking = 1,
 						)
 	gloves = /obj/item/clothing/gloves/roguetown/leather
 	ADD_TRAIT(H, TRAIT_OUTDOORSMAN, TRAIT_GENERIC)
@@ -45,7 +47,7 @@
 		H.mind.adjust_skillrank(/datum/skill/craft/tanning, 3, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/labor/fishing, 1, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/sewing, 2, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/labor/butchering, 2, TRUE)
+		H.mind.adjust_skillrank(/datum/skill/labor/butchering, 3, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/craft/traps, 1, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/misc/medicine, 1, TRUE)
 		H.mind.adjust_skillrank(/datum/skill/craft/cooking, 1, TRUE)

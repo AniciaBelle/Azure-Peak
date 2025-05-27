@@ -179,6 +179,7 @@
 	is_lethal = FALSE
 
 /obj/effect/proc_holder/spell/invoked/cure_rot/cast(list/targets, mob/living/user)
+	var/stinky = FALSE
 	if(isliving(targets[1]))
 		var/mob/living/target = targets[1]
 		if(target == user)
@@ -189,12 +190,19 @@
 		for(var/obj/structure/fluff/psycross/S in oview(5, user))
 			S.AOE_flash(user, range = 8)
 
+		var/datum/antagonist/zombie/was_zombie = target.mind?.has_antag_datum(/datum/antagonist/zombie)
+		if(target.stat == DEAD || was_zombie)	//Checks if the target is a dead rotted corpse.
+			var/datum/component/rot/rot = target.GetComponent(/datum/component/rot)
+			if(rot && rot.amount && rot.amount >= 5 MINUTES)	//Fail-safe to make sure the dead person has at least rotted for ~5 min.
+				stinky = TRUE
+
 		if(remove_rot(target = target, user = user, method = "prayer",
 			success_message = "The rot leaves [target]'s body!",
 			fail_message = "Nothing happens.", lethal = is_lethal))
 			target.visible_message(span_notice("The rot leaves [target]'s body!"), span_green("I feel the rot leave my body!"))
 			target.remove_status_effect(/datum/status_effect/debuff/rotted_zombie)	//Removes the rotted-zombie debuff if they have it.
-			target.apply_status_effect(/datum/status_effect/debuff/rotted)	//Perma debuff, needs cure
+			if(stinky)
+				target.apply_status_effect(/datum/status_effect/debuff/rotted)	//Perma debuff, needs cure
 			return TRUE
 		else //Attempt failed, no rot
 			target.visible_message(span_warning("The rot fails to leave [target]'s body!"), span_warning("I feel no different..."))

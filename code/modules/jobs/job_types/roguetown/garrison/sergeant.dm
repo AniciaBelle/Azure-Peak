@@ -21,9 +21,7 @@
 	give_bank_account = 50
 	min_pq = 6
 	max_pq = null
-	cmode_music = 'sound/music/combat_guard2.ogg'
-
-
+	cmode_music = 'sound/music/combat_guard4.ogg'
 
 /datum/job/roguetown/sergeant/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
 	. = ..()
@@ -101,12 +99,12 @@
 	H.verbs |= list(/mob/living/carbon/human/proc/request_outlaw, /mob/proc/haltyell, /mob/living/carbon/human/mind/proc/setorders)
 	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/rope/chain = 1, /obj/item/storage/keyring/guardsergeant = 1)
 	H.adjust_blindness(-3)
-	var/weapons = list("Romphaia","Flail & Shield","Halberd","Sabre & Crossbow")	//Bit more unique than footsman, you are a jack-of-all-trades + slightly more 'elite'.
+	var/weapons = list("Rhomphaia","Flail & Shield","Halberd","Sabre & Crossbow")	//Bit more unique than footsman, you are a jack-of-all-trades + slightly more 'elite'.
 	var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 	H.set_blindness(0)
 	switch(weapon_choice)
-		if("Romphaia")			//Rare-ish anti-armor two hander sword. Kinda alternative of a bastard sword type. Could be cool.
-			backl = /obj/item/rogueweapon/sword/long/romphaia
+		if("Rhomphaia")			//Rare-ish anti-armor two hander sword. Kinda alternative of a bastard sword type. Could be cool.
+			backl = /obj/item/rogueweapon/sword/long/rhomphaia
 			beltr = /obj/item/rogueweapon/mace/cudgel
 		if("Flail & Shield")	//Tower-shield, higher durability wood shield w/ more coverage. Plus a steel flail; maybe.. less broken that a steel mace?
 			beltr = /obj/item/rogueweapon/flail/sflail
@@ -145,13 +143,13 @@
 		if(!msg)
 			to_chat(user, span_alert("I must say something to give an order!"))
 			return
-		if(HAS_TRAIT(user, TRAIT_GUARDSMAN))
-			if(!HAS_TRAIT(target, TRAIT_GUARDSMAN))
+		if(user.job == "Sergeant")
+			if(!target.job == "Man at Arms")
 				to_chat(user, span_alert("I cannot order one not of my ranks!"))
 				return
 		if(user.job == "Knight Captain")
-			if(!HAS_TRAIT(target, TRAIT_KNIGHTSMAN))
-				to_chat(user, span_alert("I cannot order one not of my noble ranks!"))
+			if(!(target.job in list("Knight", "Squire")))
+				to_chat(user, span_alert("I cannot order one not of my ranks!"))
 				return		
 		if(target == user)
 			to_chat(user, span_alert("I cannot order myself!"))
@@ -207,14 +205,14 @@
 		if(!msg)
 			to_chat(user, span_alert("I must say something to give an order!"))
 			return
-		if(HAS_TRAIT(user, TRAIT_GUARDSMAN)) // If we are MAA, we need to order MAA. If we are GC, we need to order RG.
-			if(!HAS_TRAIT(target, TRAIT_GUARDSMAN))
+		if(user.job == "Sergeant")
+			if(!target.job == "Man at Arms")
 				to_chat(user, span_alert("I cannot order one not of my ranks!"))
 				return
 		if(user.job == "Knight Captain")
-			if(!HAS_TRAIT(target, TRAIT_KNIGHTSMAN))
-				to_chat(user, span_alert("I cannot order one not of my noble ranks!"))
-				return
+			if(!(target.job in list("Knight", "Squire")))
+				to_chat(user, span_alert("I cannot order one not of my ranks!"))
+				return		
 		if(target == user)
 			to_chat(user, span_alert("I cannot order myself!"))
 			return
@@ -238,14 +236,14 @@
 		if(!msg)
 			to_chat(user, span_alert("I must say something to give an order!"))
 			return
-		if(HAS_TRAIT(user, TRAIT_GUARDSMAN))
-			if(!HAS_TRAIT(target, TRAIT_GUARDSMAN))
+		if(user.job == "Sergeant")
+			if(!target.job == "Man at Arms")
 				to_chat(user, span_alert("I cannot order one not of my ranks!"))
 				return
 		if(user.job == "Knight Captain")
-			if(!HAS_TRAIT(target, TRAIT_KNIGHTSMAN))
-				to_chat(user, span_alert("I cannot order one not of my noble ranks!"))
-				return
+			if(!(target.job in list("Knight", "Squire")))
+				to_chat(user, span_alert("I cannot order one not of my ranks!"))
+				return		
 		if(target == user)
 			to_chat(user, span_alert("I cannot order myself!"))
 			return
@@ -296,14 +294,14 @@
 		if(!msg)
 			to_chat(user, span_alert("I must say something to give an order!"))
 			return
-		if(HAS_TRAIT(user, TRAIT_GUARDSMAN)) // If we are MAA, we need to order MAA. If we are GC, we need to order RG.
-			if(!HAS_TRAIT(target, TRAIT_GUARDSMAN))
+		if(user.job == "Sergeant")
+			if(!target.job == "Man at Arms")
 				to_chat(user, span_alert("I cannot order one not of my ranks!"))
 				return
 		if(user.job == "Knight Captain")
-			if(!HAS_TRAIT(target, TRAIT_KNIGHTSMAN))
-				to_chat(user, span_alert("I cannot order one not of my noble ranks!"))
-				return
+			if(!(target.job in list("Knight", "Squire")))
+				to_chat(user, span_alert("I cannot order one not of my ranks!"))
+				return		
 		if(target == user)
 			to_chat(user, span_alert("I cannot order myself!"))
 			return
@@ -316,7 +314,7 @@
 
 /datum/status_effect/buff/order/hold
 	id = "hold"
-	alert_type = /atom/movable/screen/alert/status_effect/buff/order/takeaim
+	alert_type = /atom/movable/screen/alert/status_effect/buff/order/hold
 	effectedstats = list("endurance" = 2, "constitution" = 2)
 	duration = 1 MINUTES
 

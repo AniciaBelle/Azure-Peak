@@ -94,9 +94,9 @@
 	icon_state = "tablewood2";
 	dir = 10
 	},
-/obj/item/reagent_containers/glass/bucket/wooden,
-/obj/item/reagent_containers/glass/bucket/wooden,
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
+/obj/item/reagent_containers/glass/bucket,
+/obj/item/reagent_containers/glass/bucket,
 /obj/machinery/light/rogue/torchholder/c,
 /turf/open/floor/rogue/twig,
 /area/rogue/indoors)
@@ -975,7 +975,7 @@
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/under/cavewet/bogcaves)
 "adE" = (
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/under/cavewet/bogcaves)
 "adF" = (
@@ -1431,7 +1431,7 @@
 	},
 /area/rogue/indoors)
 "azl" = (
-/obj/structure/fluff/millstone,
+/obj/item/millstone,
 /turf/open/floor/rogue/tile,
 /area/rogue/indoors)
 "azC" = (
@@ -2654,7 +2654,7 @@
 /turf/open/floor/rogue/concrete,
 /area/rogue/under/town/basement)
 "bNz" = (
-/obj/item/roguegem,
+/obj/item/roguegem/ruby,
 /turf/open/floor/rogue/cobble,
 /area/rogue/under/town/basement)
 "bOh" = (
@@ -3872,7 +3872,7 @@
 /turf/open/floor/rogue/wood,
 /area/rogue/indoors/town/tavern)
 "dcz" = (
-/obj/structure/roguemachine/merchantvend,
+/obj/structure/roguemachine/goldface,
 /turf/open/floor/rogue/concrete,
 /area/rogue/indoors/town/shop)
 "dcF" = (
@@ -5976,10 +5976,10 @@
 /area/rogue/outdoors/rtfield)
 "fnw" = (
 /obj/structure/closet/crate/roguecloset,
-/obj/item/rogueweapon/hammer,
-/obj/item/rogueweapon/hammer,
-/obj/item/rogueweapon/hammer,
-/obj/item/rogueweapon/hammer,
+/obj/item/rogueweapon/hammer/iron,
+/obj/item/rogueweapon/hammer/iron,
+/obj/item/rogueweapon/hammer/iron,
+/obj/item/rogueweapon/hammer/iron,
 /turf/open/floor/rogue/blocks/stonered/tiny,
 /area/rogue/indoors/town/dwarfin)
 "fnA" = (
@@ -7349,7 +7349,7 @@
 /turf/closed/wall/mineral/rogue/craftstone,
 /area/rogue/indoors/town/bath)
 "gQx" = (
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/indoors/town/manor)
 "gRj" = (
@@ -8580,7 +8580,7 @@
 /turf/open/floor/rogue/church,
 /area/rogue/indoors/town/church/chapel)
 "hVZ" = (
-/obj/structure/fluff/millstone,
+/obj/item/millstone,
 /turf/open/floor/rogue/cobblerock,
 /area/rogue/outdoors/rtfield)
 "hWL" = (
@@ -9731,7 +9731,7 @@
 /area/rogue/indoors/town/church/chapel)
 "jiS" = (
 /obj/structure/rack/rogue,
-/obj/item/rogueweapon/hammer,
+/obj/item/rogueweapon/hammer/iron,
 /turf/open/floor/rogue/blocks,
 /area/rogue/indoors)
 "jiT" = (
@@ -11298,7 +11298,7 @@
 	},
 /area/rogue/indoors/town)
 "ldr" = (
-/obj/structure/fluff/millstone,
+/obj/item/millstone,
 /turf/open/floor/rogue/woodturned,
 /area/rogue/indoors/town/manor)
 "lec" = (
@@ -12650,7 +12650,7 @@
 /area/rogue/outdoors/town)
 "mEx" = (
 /obj/machinery/anvil/crafted,
-/obj/item/rogueweapon/hammer,
+/obj/item/rogueweapon/hammer/iron,
 /turf/open/floor/rogue/hexstone,
 /area/rogue/outdoors/bog)
 "mEz" = (
@@ -13859,7 +13859,7 @@
 /area/rogue/indoors/town/church/chapel)
 "obA" = (
 /obj/structure/rack/rogue,
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/floor/rogue/cobble,
 /area/rogue/indoors/town/dwarfin)
 "obB" = (
@@ -14158,7 +14158,7 @@
 /turf/open/floor/rogue/blocks/stonered/tiny,
 /area/rogue/indoors/town/dwarfin)
 "oqQ" = (
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/water/cleanshallow,
 /area/rogue/outdoors/bog)
 "orS" = (
@@ -15803,7 +15803,7 @@
 	},
 /area/rogue/outdoors/rtfield)
 "qiO" = (
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/floor/rogue/cobblerock,
 /area/rogue/outdoors/town)
 "qjv" = (
@@ -15898,7 +15898,7 @@
 /turf/open/floor/rogue/cobble,
 /area/rogue/indoors/town/garrison)
 "qoi" = (
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/outdoors/rtfield)
 "qpf" = (
@@ -16317,7 +16317,7 @@
 /turf/open/floor/rogue/church,
 /area/rogue/under/town/basement)
 "qLR" = (
-/obj/structure/fluff/millstone,
+/obj/item/millstone,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/outdoors/bog)
 "qMJ" = (
@@ -16460,7 +16460,7 @@
 	},
 /area/rogue/outdoors/beach)
 "qXE" = (
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/outdoors/town/roofs)
 "qYb" = (
@@ -18066,7 +18066,7 @@
 	icon_state = "longtable_mid";
 	dir = 1
 	},
-/obj/structure/fluff/millstone{
+/obj/item/millstone{
 	pixel_y = 7
 	},
 /turf/open/floor/rogue/hexstone,
@@ -18364,7 +18364,7 @@
 	},
 /area/rogue/indoors/town/church/chapel)
 "taw" = (
-/obj/item/reagent_containers/glass/bucket/wooden,
+/obj/item/reagent_containers/glass/bucket,
 /turf/open/floor/rogue/wood,
 /area/rogue/indoors/town/manor)
 "taK" = (
@@ -18878,7 +18878,7 @@
 	},
 /area/rogue/indoors/town/manor)
 "tAt" = (
-/obj/structure/fluff/millstone{
+/obj/item/millstone{
 	pixel_y = 7
 	},
 /turf/open/floor/rogue/ruinedwood{
@@ -19044,7 +19044,7 @@
 /turf/closed/wall/mineral/rogue/stone/moss,
 /area/rogue/indoors)
 "tJp" = (
-/obj/item/roguemachine/merchant,
+/obj/item/roguemachine/navigator,
 /turf/open/floor/rogue/ruinedwood{
 	icon_state = "weird1"
 	},
@@ -19377,7 +19377,7 @@
 /area/rogue/indoors/town/vault)
 "uei" = (
 /obj/structure/closet/crate/roguecloset,
-/obj/item/rogueweapon/hammer,
+/obj/item/rogueweapon/hammer/iron,
 /obj/item/rogueweapon/tongs,
 /obj/item/roguekey/blacksmith,
 /turf/open/floor/rogue/ruinedwood{
@@ -20450,7 +20450,7 @@
 	icon_state = "largetable";
 	dir = 10
 	},
-/obj/structure/fluff/millstone{
+/obj/item/millstone{
 	pixel_y = 12
 	},
 /turf/open/floor/rogue/tile{
@@ -22488,7 +22488,7 @@
 /turf/open/floor/rogue/blocks,
 /area/rogue/outdoors/town)
 "xvK" = (
-/obj/item/rogueweapon/hammer/claw,
+/obj/item/rogueweapon/hammer/iron,
 /turf/open/floor/rogue/metal/barograte,
 /area/rogue/under/cavewet/bogcaves)
 "xwu" = (
@@ -22943,10 +22943,6 @@
 "xOw" = (
 /obj/effect/landmark/mapGenerator/rogue/bog,
 /turf/closed/mineral/rogue/bedrock,
-/area/rogue/under/cavewet/bogcaves)
-"xPN" = (
-/obj/item/rogueweapon/hammer,
-/turf/open/floor/rogue/metal/barograte,
 /area/rogue/under/cavewet/bogcaves)
 "xQN" = (
 /obj/structure/closet/crate/roguecloset,
@@ -37186,7 +37182,7 @@ kFD
 tou
 vnt
 tou
-xPN
+xvK
 iuZ
 kFD
 kFD

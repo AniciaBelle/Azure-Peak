@@ -103,6 +103,8 @@
 		/datum/body_marking/front,
 		/datum/body_marking/tonage,
 		/datum/body_marking/nose,
+		/datum/body_marking/harlequin,
+		/datum/body_marking/harlequinreversed,
 	)
 	descriptor_choices = list(
 		/datum/descriptor_choice/height,
@@ -119,7 +121,6 @@
 	)
 	languages = list(
 		/datum/language/common,
-		/datum/language/canilunzt
 	)
 
 /datum/species/lupian/check_roundstart_eligible()

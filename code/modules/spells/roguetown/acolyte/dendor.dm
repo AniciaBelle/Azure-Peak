@@ -132,3 +132,31 @@
 
 	die_with_shapeshifted_form =  FALSE
 	pick_again = TRUE
+
+/obj/effect/proc_holder/spell/invoked/spiderspeak
+	name = "Spider Speak"
+	overlay_state = "tamebeast"
+	releasedrain = 15
+	chargedrain = 0
+	chargetime = 1 SECONDS
+	range = 2
+	warnie = "sydwarning"
+	movement_interrupt = FALSE
+	sound = 'sound/magic/churn.ogg'
+	invocation = "Spiders of psydonia, allow me to pass safely!"
+	invocation_type = "shout"
+	associated_skill = /datum/skill/magic/holy
+	recharge_time = 4 SECONDS
+	miracle = TRUE
+	devotion_cost = 25
+
+/obj/effect/proc_holder/spell/invoked/spiderspeak/cast(list/targets, mob/living/user)
+	. = ..()
+	if(isliving(targets[1]))
+		var/mob/living/target = targets[1]
+		user.visible_message("<font color='yellow'>[user] infuses [target] with swirling strands of spectral webs!</font>")
+		target.visible_message("<font color='yellow'>You feel your tongue shift strangely, producing odd clicking noises.</font>")
+		target.apply_status_effect(/datum/status_effect/buff/spider_speak)
+		return TRUE
+	revert_cast()
+	return FALSE

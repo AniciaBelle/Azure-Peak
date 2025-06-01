@@ -743,7 +743,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 
 /area/rogue/outdoors/exposed/bath/vault
 	name = "Bathmaster vault"
-	icon_state = "bath"
+	icon_state = "bathvault"
 
 /area/rogue/indoors/town/garrison
 	name = "Garrison"

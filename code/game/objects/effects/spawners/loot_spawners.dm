@@ -414,7 +414,6 @@
 		/obj/item/clothing/head/roguetown/helmet/bascinet/etruscan = 1,
 		//food
 		/obj/item/reagent_containers/food/snacks/fat/salo = 1,
-		/obj/item/reagent_containers/food/snacks/rogue/saltfish = 1,
 		/obj/item/reagent_containers/food/snacks/rogue/meat/coppiette = 1,
 		/obj/item/reagent_containers/food/snacks/rogue/cheddarwedge/aged = 1,
 		/obj/item/reagent_containers/food/snacks/rogue/meat/salami = 1,

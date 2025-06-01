@@ -78,8 +78,6 @@ All foods are distributed among various categories. Use common sense.
 	var/rotprocess = FALSE
 	var/become_rot_type = null
 
-	var/plateable = FALSE //if it can be plated or not
-
 	var/fertamount = 50
 
 	drop_sound = 'sound/foley/dropsound/food_drop.ogg'

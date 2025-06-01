@@ -180,7 +180,7 @@
 
 /obj/machinery/light/rogue/wallfire/candle/attack_hand(mob/user)
 	if(isliving(user) && on)
-		user.visible_message("<span class='warning'>[user] snuffs [src].</span>")
+		user.visible_message(span_warning("[user] snuffs [src]."))
 		burn_out()
 		return TRUE //fires that are on always have this interaction with lmb unless its a torch
 	. = ..()
@@ -214,6 +214,26 @@
 /obj/machinery/light/rogue/wallfire/candle/weak/r
 	pixel_x = 32
 	pixel_y = 0
+
+/obj/machinery/light/rogue/wallfire/candle/floorcandle
+	name = "candles"
+	icon = 'icons/roguetown/items/lighting.dmi'
+	icon_state = "floorcandle1"
+	base_state = "floorcandle"
+	pixel_y = 0
+	cookonme = FALSE
+
+/obj/machinery/light/rogue/wallfire/candle/floorcandle/alt
+	icon_state = "floorcandlee1"
+	base_state = "floorcandlee"
+
+/obj/machinery/light/rogue/wallfire/candle/floorcandle/pink
+	color = "#f858b5ff"
+	bulb_colour = "#ff13d8ff"
+
+/obj/machinery/light/rogue/wallfire/candle/floorcandle/alt/pink
+	color = "#f858b5ff"
+	bulb_colour = "#ff13d8ff"
 
 /obj/machinery/light/rogue/torchholder
 	name = "sconce"

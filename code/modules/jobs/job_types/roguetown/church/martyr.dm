@@ -592,7 +592,7 @@
 	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_armor.dmi'
 	sleevetype = "silverarmor"
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/martyr.dmi'
-	armor = list("blunt" = 10, "slash" = 100, "stab" = 80, "piercing" = 10, "fire" = 0, "acid" = 0)
+	armor = ARMOR_PLATE
 	sellprice = 1000
 	smeltresult = /obj/item/ingot/silver
 	smelt_bar_num = 4
@@ -606,7 +606,7 @@
 	sleevetype = "silverlegs"
 	icon_state = "silverlegs"
 	item_state = "silverlegs"
-	armor = list("blunt" = 10, "slash" = 100, "stab" = 80, "piercing" = 10, "fire" = 0, "acid" = 0)
+	armor = ARMOR_PLATE
 	sellprice = 1000
 	smeltresult = /obj/item/ingot/silver
 	smelt_bar_num = 3

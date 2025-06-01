@@ -268,6 +268,48 @@
 	passive_generation = 2
 	category = "Foodstuffs"
 
+/datum/roguestock/stockpile/cucumber
+	name = "Cucumber"
+	desc = "A refreshing, long and green vegetable."
+	item_type = /obj/item/reagent_containers/food/snacks/grown/cucumber
+	held_items = list(0, 0)
+	payout_price = 2
+	withdraw_price = 2
+	transport_fee = 1
+	export_price = 3
+	importexport_amt = 10
+	stockpile_limit = 20
+	passive_generation = 2
+	category = "Foodstuffs"
+
+/datum/roguestock/stockpile/eggplant
+	name = "Eggplant"
+	desc = "A large, purple vegetable with a mild taste."
+	item_type = /obj/item/reagent_containers/food/snacks/grown/eggplant
+	held_items = list(0, 0)
+	payout_price = 2
+	withdraw_price = 2
+	transport_fee = 1
+	export_price = 3
+	importexport_amt = 10
+	stockpile_limit = 20
+	passive_generation = 2
+	category = "Foodstuffs"
+
+/datum/roguestock/stockpile/carrot
+	name = "Carrot"
+	desc = "A long vegetable said to help with eyesight."
+	item_type = /obj/item/reagent_containers/food/snacks/grown/carrot
+	held_items = list(0, 0)
+	payout_price = 2
+	withdraw_price = 2
+	transport_fee = 1
+	export_price = 3
+	importexport_amt = 10
+	stockpile_limit = 20
+	passive_generation = 2
+	category = "Foodstuffs"
+
 /datum/roguestock/stockpile/poppy
 	name = "Poppy"
 	desc = "A seed with a sedative effect."

@@ -226,28 +226,6 @@
 		SLOT_GENERC_DEXTROUS_STORAGE
 	)
 
-/obj/item/reagent_containers/glass/bucket/alter
-	icon = 'modular/Neu_Food/icons/cooking.dmi'
-
-/* using the version in Neu_Food instead
-/obj/item/reagent_containers/glass/bucket/attackby(obj/item/I, mob/user, params)
-	if(istype(I, /obj/item/natural/cloth))
-		var/obj/item/natural/cloth/T = I
-		if(T.wet && !T.return_blood_DNA())
-			return
-		var/removereg = /datum/reagent/water
-		if(!reagents.has_reagent(/datum/reagent/water, 5))
-			removereg = /datum/reagent/water/gross
-			if(!reagents.has_reagent(/datum/reagent/water/gross, 5))
-				to_chat(user, span_warning("No water to soak in."))
-				return
-		wash_atom(T)
-		playsound(src, pick('sound/foley/waterwash (1).ogg','sound/foley/waterwash (2).ogg'), 100, FALSE)
-		reagents.remove_reagent(removereg, 5)
-		user.visible_message(span_info("[user] soaks [T] in [src]."))
-		return
-	..()
-*/
 /obj/item/reagent_containers/glass/bucket/getonmobprop(tag)
 	. = ..()
 	if(tag)
@@ -264,13 +242,13 @@
 
 	if(reagents.total_volume > 0)
 		if(reagents.total_volume <= 50)
-			var/mutable_appearance/filling = mutable_appearance('modular/Neu_Food/icons/cooking.dmi', "bucket_half")
+			var/mutable_appearance/filling = mutable_appearance(icon, "bucket_half")
 			filling.color = mix_color_from_reagents(reagents.reagent_list)
 			filling.alpha = mix_alpha_from_reagents(reagents.reagent_list)
 			add_overlay(filling)
 
 		if(reagents.total_volume > 50)
-			var/mutable_appearance/filling = mutable_appearance('modular/Neu_Food/icons/cooking.dmi', "bucket_full")
+			var/mutable_appearance/filling = mutable_appearance(icon, "bucket_full")
 			filling.color = mix_color_from_reagents(reagents.reagent_list)
 			filling.alpha = mix_alpha_from_reagents(reagents.reagent_list)
 			add_overlay(filling)

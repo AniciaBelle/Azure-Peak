@@ -10,6 +10,7 @@
 	recharge_time = 2 MINUTES
 	warnie = "spellwarning"
 	school = "transmutation"
+	overlay_state = "giants_strength"
 	spell_tier = 2
 	invocation = "Vis Gigantis"
 	invocation_type = "whisper"

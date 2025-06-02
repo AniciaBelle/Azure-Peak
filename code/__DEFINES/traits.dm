@@ -61,6 +61,7 @@
 #define TRAIT_PURITAN "Puritan"
 #define TRAIT_MIRROR_MAGIC "Mirror Magic"
 #define TRAIT_WITCH "They fear me, but I am useful to them."
+#define TRAIT_NOFATIGUE "Boundless Energy" //infinite fatigue (blue bar) but not infinite stamina
 
 
 //Hearthstone port (Tracking)
@@ -276,6 +277,7 @@ GLOBAL_LIST_INIT(roguetraits, list(
 	TRAIT_ARCYNE_T2 = span_notice("I have received advanced training in the Arcyne arts, allowing me to learn basic combat spells"),
 	TRAIT_ARCYNE_T3 = span_notice("I am a full-fledged mage, and have access to devastating spells that affects a wide area."),
 	TRAIT_ARCYNE_T4 = span_notice("I'm a master of the Arcyne arts, and has access to some of the most powerful spells ever devised."),
+	TRAIT_NOFATIGUE = span_notice ("I don't need rest; I won't ever feel fatigue.")
 ))
 
 // trait accessor defines

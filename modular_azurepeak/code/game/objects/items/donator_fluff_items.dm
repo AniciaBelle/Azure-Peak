@@ -51,7 +51,6 @@
 	desc = "A steel helmet with gilded trim which protects the ears, nose, and eyes."
 	icon_state = "gildedsallet_visor"
 	item_state = "gildedsallet_visor"
-	flags_inv = HIDEFACE|HIDESNOUT|HIDEHAIR		//Normal visored-sallet hides hair. This one doesn't.
 	icon = 'modular_azurepeak/icons/clothing/donor_clothes.dmi'
 	mob_overlay_icon = 'modular_azurepeak/icons/clothing/onmob/donor_clothes.dmi'
 

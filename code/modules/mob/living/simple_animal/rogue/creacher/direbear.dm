@@ -4,6 +4,7 @@
 	icon_state = "direbear"
 	icon_living = "direbear"
 	icon_dead = "direbear_dead"
+	pixel_x = -16
 	base_intents = list(/datum/intent/simple/bite/bear)
 	botched_butcher_results = list(/obj/item/reagent_containers/food/snacks/rogue/meat/steak = 1, 
 									/obj/item/natural/hide = 1, 

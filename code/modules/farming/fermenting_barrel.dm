@@ -40,7 +40,7 @@
 	if(istype(I,/obj/item/reagent_containers/glass))
 		..()
 		return TRUE
-	if(user.mind.get_skill_level(/datum/skill/craft/cooking) <= 3)
+	if(user.mind.get_skill_level(/datum/skill/craft/cooking) < 3)
 		to_chat(user, span_notice("I am not knowledgable enough to brew."))
 		return FALSE
 	if(istype(I,/obj/item/reagent_containers/food/snacks/grown))

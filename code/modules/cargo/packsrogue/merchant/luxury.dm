@@ -25,6 +25,15 @@
 	cost = 30
 	contains = list(/obj/item/reagent_containers/powder/spice)
 
+/datum/supply_pack/rogue/luxury/fancyteaset
+	name = "Fancy Tea Set"
+	cost = 110
+	contains = list(/obj/item/reagent_containers/glass/bucket/pot/teapot/fancy, 
+	/obj/item/reagent_containers/glass/cup/ceramic/fancy,
+	/obj/item/reagent_containers/glass/cup/ceramic/fancy,
+	/obj/item/reagent_containers/glass/cup/ceramic/fancy,
+	/obj/item/reagent_containers/glass/cup/ceramic/fancy)
+
 /datum/supply_pack/rogue/luxury/silverdagger
 	name = "Silver Dagger"
 	cost = 150

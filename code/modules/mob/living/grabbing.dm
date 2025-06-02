@@ -685,7 +685,9 @@
 							var/datum/antagonist/vampirelord/lesser/new_antag = new /datum/antagonist/vampirelord/lesser()
 							new_antag.sired = TRUE
 							C.mind.add_antag_datum(new_antag)
-							sleep(20)
+							sleep(10 SECONDS)
 							C.fully_heal()
+							C.rogstam = C.maxrogstam
+							C.update_health_hud()
 					if("No")
 						to_chat(user, span_warning("I decide [C] is unworthy."))

@@ -38,14 +38,22 @@
 			H.mind.adjust_skillrank(/datum/skill/misc/riding, 4, TRUE)
 			H.mind.adjust_skillrank(/datum/skill/misc/reading, 3, TRUE)
 			H.dna.species.soundpack_m = new /datum/voicepack/male/warrior()
-			var/weapons = list("Estoc","Mace + Shield","Flail + Shield","Bastard Sword + Shield", "Lucerne","Battle Axe")
+			var/weapons = list(
+				"Estoc",
+				"Mace + Shield",
+				"Flail + Shield",
+				"Longsword + Shield", 
+				"Lucerne",
+				"Battle Axe",
+				"Lance + Kite Shield"
+			)
 			var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 			H.set_blindness(0)
 			switch(weapon_choice)
 				if("Estoc")
 					r_hand = /obj/item/rogueweapon/estoc
 					backr = /obj/item/gwstrap
-				if("Bastard Sword + Shield")
+				if("Longsword + Shield")
 					beltr = /obj/item/rogueweapon/sword/long
 					backr = /obj/item/rogueweapon/shield/tower/metal
 				if("Mace + Shield")
@@ -59,6 +67,9 @@
 					backr = /obj/item/gwstrap
 				if("Battle Axe")
 					backr = /obj/item/rogueweapon/stoneaxe/battle
+				if("Lance + Kite Shield")
+					r_hand = /obj/item/rogueweapon/spear/lance
+					backl = /obj/item/rogueweapon/shield/tower/metal
 			var/helmets = list(
 				"Pigface Bascinet" 	= /obj/item/clothing/head/roguetown/helmet/bascinet/pigface,
 				"Guard Helmet"		= /obj/item/clothing/head/roguetown/helmet/heavy/guard,

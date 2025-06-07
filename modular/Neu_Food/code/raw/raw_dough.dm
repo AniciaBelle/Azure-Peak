@@ -82,6 +82,7 @@
 	icon_state = "doughslice"
 	slices_num = 0
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/bun
+	cooked_smell = /datum/pollutant/food/bun
 	w_class = WEIGHT_CLASS_NORMAL
 	tastes = list("dough" = 1)
 
@@ -174,6 +175,7 @@
 	slices_num = 0
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/frybread
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/pastry
+	cooked_smell = /datum/pollutant/food/pastry
 	w_class = WEIGHT_CLASS_NORMAL
 
 // Dough + rolling pin on table = flat dough. RT got some similar proc for this.
@@ -225,6 +227,7 @@
 	icon = 'modular/Neu_Food/icons/raw/raw_dough.dmi'
 	icon_state = "piedough"
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/foodbase/piebottom
+	cooked_smell = /datum/pollutant/food/pie_base
 	w_class = WEIGHT_CLASS_NORMAL
 
 /obj/item/reagent_containers/food/snacks/rogue/piedough/attackby(obj/item/I, mob/living/user, params)

@@ -100,7 +100,10 @@ SUBSYSTEM_DEF(adjacent_air)
 /turf/proc/GetAtmosAdjacentTurfs(alldir = 0)
 	var/adjacent_turfs
 	air_update_turf(TRUE) // since no atmos subsystem, we need to generate turf atmos adjacency manually
-	adjacent_turfs = atmos_adjacent_turfs.Copy()
+	if(length(atmos_adjacent_turfs))
+		adjacent_turfs = atmos_adjacent_turfs.Copy()
+	else
+		return null
 	if (!alldir)
 		return adjacent_turfs
 	var/turf/curloc = src

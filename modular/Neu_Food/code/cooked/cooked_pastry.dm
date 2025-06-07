@@ -2,7 +2,7 @@
 /*	.................   Pastry   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/pastry
 	name = "pastry"
-	desc = "Favored among children and sweetlovers."
+	desc = "Crispy, buttery, and delightfully flaky. A favorite treat among children and sweetlovers."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_pastry.dmi'
 	icon_state = "pastry"
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_DECENT)
@@ -23,8 +23,8 @@
 	eat_effect = null
 
 /obj/item/reagent_containers/food/snacks/rogue/biscuit
-	name = "biscuit"
-	desc = "A treat made for a wretched dog like you."
+	name = "raisin biscuit"
+	desc = "A crispy buttery pastry with chewy raisins inside."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_pastry.dmi'
 	icon_state = "biscuit"
 	faretype = FARE_POOR
@@ -38,6 +38,7 @@
 // MISSING RECIPE
 /obj/item/reagent_containers/food/snacks/rogue/cookie		//It's a biscuit.......
 	name = "cookie of smiles"
+	desc = "It looks less like a happy smile and more like a tortured grimace."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_pastry.dmi'
 	icon_state = "cookie"
 	color = "#ecce61"
@@ -54,7 +55,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/prezzel
 	name = "prezzel"
-	desc = "The next best thing since sliced bread, naturally, made by a dwarf."
+	desc = "The next best thing after sliced bread. The recipe is a closely guarded secret among the dwarves. So dire is their conviction that not even the Inquisition's most agonizing methods could force them to reveal it."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_pastry.dmi'
 	icon_state = "prezzel"
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_DECENT)
@@ -66,7 +67,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/foodbase/handpieraw
 	name = "raw handpie"
-	desc = "The dwarven take on pies, called pierogi in their dialect. A fistfull of food to stand the test of time."
+	desc = "To the oven with you!"
 	icon = 'modular/Neu_Food/icons/cooked/cooked_pastry.dmi'
 	icon_state = "handpie_raw"
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/handpie
@@ -98,7 +99,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/handpie
 	name = "handpie"
-	desc = "The dwarven take on pies, called pierogi in their dialect. A fistfull of food to stand the test of time."
+	desc = "The dwarves call this 'pierogi' in their dialect. It'll stay fresh for a good long while until the crust is bitten."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_pastry.dmi'
 	icon_state = "handpie"
 	eat_effect = /datum/status_effect/buff/foodbuff

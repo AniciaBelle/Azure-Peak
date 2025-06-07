@@ -221,6 +221,7 @@
 	icon_state = "floorcandle1"
 	base_state = "floorcandle"
 	pixel_y = 0
+	layer = TABLE_LAYER
 	cookonme = FALSE
 
 /obj/machinery/light/rogue/wallfire/candle/floorcandle/alt
@@ -239,6 +240,7 @@
 	name = "sconce"
 	desc = "A wall-mounted fixture that allows a torch to illuminate the area while freeing the hands for other tasks."
 	icon_state = "torchwall1"
+	var/torch_off_state = "torchwall0"
 	base_state = "torchwall"
 	density = FALSE
 	light_outer_range = 5 //same as the held torch, if you put a torch into a sconce, it shouldn't magically become twice as bright, it's inconsistent.
@@ -318,9 +320,9 @@
 		if(on)
 			icon_state = "[base_state]1"
 		else
-			icon_state = "[base_state]0"
+			icon_state = "[torch_off_state]"
 	else
-		icon_state = "torchwall"
+		icon_state = "[base_state]"
 
 /obj/machinery/light/rogue/torchholder/burn_out()
 	if(torchy && torchy.on)

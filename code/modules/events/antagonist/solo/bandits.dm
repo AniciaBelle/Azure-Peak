@@ -1,12 +1,13 @@
 /datum/round_event_control/antagonist/solo/bandits
 	name = "Bandits"
 	tags = list(
+		TAG_COMBAT,
 		TAG_VILLIAN,
+		TAG_LOOT
 	)
 	roundstart = TRUE
 	antag_flag = ROLE_BANDIT
 	shared_occurence_type = SHARED_MINOR_THREAT
-	minor_roleset = TRUE
 
 	restricted_roles = list(
 		"Grand Duke",
@@ -48,6 +49,7 @@
 	weight = 16
 
 	typepath = /datum/round_event/antagonist/solo/bandits
+	antag_datum = /datum/antagonist/bandit
 
 /datum/round_event/antagonist/solo/bandits
 	var/leader = FALSE

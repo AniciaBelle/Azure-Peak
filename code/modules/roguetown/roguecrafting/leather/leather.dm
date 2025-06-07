@@ -15,6 +15,22 @@
 	verbage = "constructs"
 	craftdiff = 2
 
+/datum/crafting_recipe/roguetown/leather/peltbedsheet
+	name = "bedsheet, pelt (1 fibers, 1 fur)"
+	result = /obj/item/bedsheet/rogue/pelt
+	reqs = list(/obj/item/natural/fibers = 1,
+				/obj/item/natural/fur = 1)
+	tools = list(/obj/item/needle)
+	craftdiff = 1
+
+/datum/crafting_recipe/roguetown/leather/doublepeltbedsheet
+	name = "bedsheet, double pelt (1 fibers, 2 fur)"
+	result = /obj/item/bedsheet/rogue/double_pelt
+	reqs = list(/obj/item/natural/fibers = 1,
+				/obj/item/natural/fur = 2)
+	tools = list(/obj/item/needle)
+	craftdiff = 1
+
 /datum/crafting_recipe/roguetown/leather/corset
 	name = "corset (1 fibers, 1 leather)"
 	result = /obj/item/clothing/suit/roguetown/armor/corset
@@ -78,7 +94,7 @@
 	sellprice = 26
 
 /datum/crafting_recipe/roguetown/leather/hidebikini
-	name = "hide corslet (2 leather, 1 tallow)"
+	name = "hide corslet (2 leather, 1 fur)"
 	result = /obj/item/clothing/suit/roguetown/armor/leather/hide/bikini
 	reqs = list(/obj/item/natural/hide/cured = 2,
 				/obj/item/natural/fur = 1)

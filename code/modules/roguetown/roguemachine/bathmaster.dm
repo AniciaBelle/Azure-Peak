@@ -201,16 +201,14 @@ SUBSYSTEM_DEF(BMtreasury)
 	wait = 1
 	priority = FIRE_PRIORITY_WATER_LEVEL
 	var/treasury_value = 0
-	var/multiple_item_penalty = 0.66
-	var/interest_rate = 0.20 // Bit more interest, since it's gonna be much harder for the BMaster to get valuables.
+	var/multiple_item_penalty = 0.7
+	var/interest_rate = 0.15 // Bit more interest, since it's gonna be much harder for the BMaster to get valuables.
 	var/next_treasury_check = 0
 	var/list/vault_accounting = list()
 
 /datum/controller/subsystem/BMtreasury/proc/add_to_vault(var/obj/item/I)
 	if(I.get_real_price() <= 0 || istype(I, /obj/item/roguecoin))
 		return
-	if(!I.submitted_to_stockpile)
-		I.submitted_to_stockpile = TRUE
 	if(I.type in vault_accounting)
 		vault_accounting[I.type] *= multiple_item_penalty
 	else

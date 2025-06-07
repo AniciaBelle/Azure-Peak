@@ -91,7 +91,7 @@
 /obj/item/rogueweapon/huntingknife/cleaver
 	lefthand_file = 'modular/Neu_Food/icons/food_lefthand.dmi'
 	righthand_file = 'modular/Neu_Food/icons/food_righthand.dmi'
-	item_state = "cleav"
+	item_state = "cleaver"
 	experimental_inhand = FALSE
 	experimental_onhip = FALSE
 	experimental_onback = FALSE

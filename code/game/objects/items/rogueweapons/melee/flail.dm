@@ -33,6 +33,9 @@
 	icon_state = "instrike"
 	item_d_type = "blunt"
 
+/datum/intent/flail/strike/matthiosflail
+	reach = 2
+
 /datum/intent/flail/strikerange
 	name = "ranged strike"
 	blade_class = BCLASS_BLUNT
@@ -60,6 +63,9 @@
 	attack_verb = list("smashes")
 	hitsound = list('sound/combat/hits/blunt/flailhit.ogg')
 	item_d_type = "blunt"
+
+/datum/intent/flail/strike/smash/matthiosflail
+	reach = 2
 
 /datum/intent/flail/strike/smash/militia
 	damfactor = 1.35
@@ -280,6 +286,27 @@
 				return list("shrink" = 0.6,"sx" = -7,"sy" = 2,"nx" = 7,"ny" = 3,"wx" = -2,"wy" = 1,"ex" = 1,"ey" = 1,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = -38,"sturn" = 37,"wturn" = 30,"eturn" = -30,"nflip" = 0,"sflip" = 8,"wflip" = 8,"eflip" = 0)
 			if("wielded")
 				return list("shrink" = 0.6,"sx" = 5,"sy" = -3,"nx" = -5,"ny" = -2,"wx" = -5,"wy" = -1,"ex" = 3,"ey" = -2,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 7,"sturn" = -7,"wturn" = 16,"eturn" = -22,"nflip" = 8,"sflip" = 0,"wflip" = 8,"eflip" = 0)
+
+/obj/item/rogueweapon/flail/peasantwarflail/matthios
+	name = "Gilded Flail"
+	desc = "Weight of wealth in a deadly striking end."
+	icon_state = "matthiosflail"
+	sellprice = 250
+	smeltresult = /obj/item/ingot/steel
+	possible_item_intents = list(/datum/intent/flail/strike/matthiosflail)
+	gripped_intents = list(/datum/intent/flail/strike/matthiosflail, /datum/intent/flail/strike/smash/matthiosflail)
+	associated_skill = /datum/skill/combat/whipsflails
+	slot_flags = ITEM_SLOT_BACK
+	blade_dulling = DULLING_SHAFT_GRAND
+
+
+/obj/item/rogueweapon/flail/peasantwarflail/matthios/pickup(mob/living/user)
+	if(!HAS_TRAIT(user, TRAIT_COMMIE))
+		to_chat(user, "<font color='yellow'>UNWORTHY HANDS TOUCHING THIS FLAIL, CEASE OR BE PUNISHED!</font>")
+		user.adjust_fire_stacks(5)
+		user.IgniteMob()
+		user.Stun(40)
+	..()
 
 /obj/item/rogueweapon/flail/militia
 	name = "militia flail"

@@ -2,7 +2,7 @@
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_DECENT)
 	tastes = list("fried egg" = 1)
 	name = "fried egg"
-	desc = "A favorite dish among Astratans."
+	desc = "Some Astratans enjoy their eggs sunny-side up."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_egg.dmi'
 	icon_state = "friedegg"
 	portable = FALSE
@@ -93,7 +93,7 @@
 	list_reagents = list(/datum/reagent/consumable/nutriment = MEAL_MEAGRE)
 	tastes = list("fried egg" = 1, "cheese" = 1)
 	name = "valerian omelette"
-	desc = "Fried egg on a bed of half-melted cheese, a dish from distant lands."
+	desc = "Fried eggs on a bed of half-melted cheese. A dish from distant lands."
 	faretype = FARE_FINE
 	portable = FALSE
 	icon = 'modular/Neu_Food/icons/cooked/cooked_egg.dmi'
@@ -106,7 +106,7 @@
 	list_reagents = list(/datum/reagent/consumable/nutriment = MEAL_MEAGRE)
 	tastes = list("fried egg" = 1, "bacon" = 1)
 	name = "bacon and egg"
-	desc = "Egg fried with bacon, the salty tastes of the bacon complementing the egg's flavor perfectly."
+	desc = "Fried eggs with bacon. The bacon's savory salty crunch is a perfect complement to the eggs' more mellow flavors."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_egg.dmi'
 	icon_state = "baconegg"
 	eat_effect = /datum/status_effect/buff/foodbuff

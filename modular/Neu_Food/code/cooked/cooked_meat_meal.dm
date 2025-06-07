@@ -5,7 +5,7 @@
 	list_reagents = list(/datum/reagent/consumable/nutriment = MEAL_MEAGRE)
 	tastes = list("steak" = 1, "pepper" = 1)
 	name = "peppersteak"
-	desc = "Roasted flesh flanked with a generous coating of ground pepper for intense flavor."
+	desc = "Roasted meat flanked with a generous coating of ground pepper for intense flavor."
 	faretype = FARE_FINE
 	portable = FALSE
 	icon = 'modular/Neu_Food/icons/cooked/cooked_meat_meal.dmi'
@@ -19,7 +19,7 @@
 /*	..................   Onion steak   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/onionsteak
 	name = "onion steak"
-	desc = "Roasted flesh garnished with tender fried onions. Fragrant and slathered with juices of both ingredients to a perfect mouth-watering sauce."
+	desc = "Roasted meat garnished with fragrant fried onions, then slathered with the juices of both for a perfect mouth-watering sauce."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_meat_meal.dmi'
 	icon_state = "onionsteak"
 	tastes = list("steak" = 1, "onions" = 1)
@@ -51,7 +51,7 @@
 /*	..................   Carrot Steak   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/carrotsteak
 	name = "carrot steak"
-	desc = "Roasted flesh paired with savory baked carrot. Fragrant and slathered with juices of both ingredients to a perfect mouth-watering sauce."
+	desc = "Roasted meat paired with a savory baked carrot, then slathered with the juices of both for a perfect mouth-watering sauce."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_meat_meal.dmi'
 	icon_state = "carrotsteak"
 	tastes = list("steak" = 1, "carrot" = 1)
@@ -96,7 +96,7 @@
 	list_reagents = list(/datum/reagent/consumable/nutriment = MEAL_MEAGRE)
 	tastes = list("savory sausage" = 1, "cabbage" = 1)
 	name = "wiener on cabbage"
-	desc = "A rich and heavy meal, a perfect ration for a soldier on the march."
+	desc = "A rich and hearty meal, perfect for a soldier on the march."
 	faretype = FARE_NEUTRAL
 	portable = FALSE
 	icon = 'modular/Neu_Food/icons/cooked/cooked_meat_meal.dmi'
@@ -189,7 +189,7 @@
 	list_reagents = list(/datum/reagent/consumable/nutriment = MEAL_MEAGRE)
 	tastes = list("frybird" = 1, "tato" = 1)
 	name = "frybird with a tato"
-	desc = "Hearty, comforting and rich - Alleged favorite dish of Ravox."
+	desc = "Hearty, comforting, and rich - Some say it was Ravox's favorite meal."
 	faretype = FARE_FINE
 	portable = FALSE
 	icon = 'modular/Neu_Food/icons/cooked/cooked_meat_meal.dmi'

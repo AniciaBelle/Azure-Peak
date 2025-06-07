@@ -11,6 +11,7 @@
 	chopping_sound = TRUE
 	foodtype = MEAT
 	drop_sound = 'sound/foley/dropsound/gen_drop.ogg'
+	cooked_smell = /datum/pollutant/food/fried_meat
 
 /obj/item/reagent_containers/food/snacks/rogue/meat/attackby(obj/item/I, mob/living/user)
 	update_cooktime(user)
@@ -48,6 +49,7 @@
 	slices_num = 2
 	slice_path = /obj/item/reagent_containers/food/snacks/rogue/meat/bacon
 	chopping_sound = TRUE
+	cooked_smell = /datum/pollutant/food/fried_meat
 
 /* ............. Bacon ................*/
 /obj/item/reagent_containers/food/snacks/rogue/meat/bacon
@@ -58,6 +60,7 @@
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/meat/bacon/fried
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/meat/bacon/fried
 	filling_color = "#8a0000"
+	cooked_smell = /datum/pollutant/food/fried_bacon
 
 /* ............. Spider Meat ................*/
 /obj/item/reagent_containers/food/snacks/rogue/meat/spider // Low-nutrient, kind of gross. Survival food.
@@ -94,6 +97,7 @@
 	slices_num = 2
 	slice_sound = TRUE
 	ingredient_size = 4
+	cooked_smell = /datum/pollutant/food/cooked_chicken
 
 /* ............. Chicken Cutlet (Drumstick) ................*/
 /obj/item/reagent_containers/food/snacks/rogue/meat/poultry/cutlet
@@ -116,6 +120,7 @@
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/meat/crab/fried
 	slices_num = null
 	ingredient_size = 1
+	cooked_smell = /datum/pollutant/food/fried_crab
 
 /* ............. Cabbit Meat ................*/
 /obj/item/reagent_containers/food/snacks/rogue/meat/rabbit
@@ -145,6 +150,7 @@
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/meat/fish/fried
 	slices_num = 1
 	ingredient_size = 1
+	cooked_smell = /datum/pollutant/food/cooked_fish
 
 /* .........   Shellfish    ................. */
 /obj/item/reagent_containers/food/snacks/rogue/meat/shellfish
@@ -156,6 +162,7 @@
 	slices_num = 1
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/meat/shellfish/fried
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/meat/shellfish/fried
+	cooked_smell = /datum/pollutant/food/fried_shellfish
 
 // MEAT MINCE
 /*	.............   Minced meat & stuffing sausages   ................ */
@@ -216,6 +223,7 @@
 /obj/item/reagent_containers/food/snacks/rogue/meat/mince/poultry
 	name = "minced poultry"
 	icon_state = "meatmince"
+	cooked_smell = /datum/pollutant/food/cooked_chicken
 
 /obj/item/reagent_containers/food/snacks/rogue/meat/sausage
 	name = "raw sausage"
@@ -223,13 +231,7 @@
 	ingredient_size = 1
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/meat/sausage/cooked
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/meat/sausage/cooked
-
-/*	........   Fish sounds   ................ */
-/obj/item/reagent_containers/food/snacks/fish
-	chopping_sound = TRUE
-	slices_num = 2
-	/// Number representing how rare the fish is, 0 is the lowest common fish
-	var/rarity_rank = 0
+	cooked_smell = /datum/pollutant/food/fried_sausage
 
 /* ............. fish chop ................*/
 /obj/item/reagent_containers/food/snacks/rogue/meat/fish

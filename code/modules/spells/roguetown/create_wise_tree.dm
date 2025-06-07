@@ -15,13 +15,13 @@
 	var/atom/target_atom = targets[1]
 	var/obj/structure/flora/target
 
-	if(istype(target_atom, /obj/structure/flora/tree) && !istype(target_atom, /obj/structure/flora/tree/wise) && !istype(target_atom, /obj/structure/flora/roguetree/stump))
+	if(istype(target_atom, /obj/structure/flora/tree) && !istype(target_atom, /obj/structure/flora/roguetree/wise) && !istype(target_atom, /obj/structure/flora/roguetree/stump))
 		target = target_atom
 	else if(istype(target_atom, /obj/structure/flora/newtree))
 		target = target_atom
 	else if(target_atom.loc && (get_dist(user, target_atom.loc) <= 1))
 		for(var/obj/structure/flora/tree/T in target_atom.loc)
-			if(!istype(T, /obj/structure/flora/tree/wise) && !istype(T, /obj/structure/flora/roguetree/stump))
+			if(!istype(T, /obj/structure/flora/roguetree/wise) && !istype(T, /obj/structure/flora/roguetree/stump))
 				target = T
 				break
 		if(!target)
@@ -47,7 +47,7 @@
 		return
 
 	var/turf/T = get_turf(target)
-	var/obj/structure/flora/tree/wise/new_wise_tree = new(T)
+	var/obj/structure/flora/roguetree/wise/new_wise_tree = new(T)
 	new_wise_tree.activated = TRUE
 	new_wise_tree.set_light(2, 2, 2, l_color = "#66FF99")
 

@@ -4,6 +4,7 @@
 	icon = 'modular/Neu_Food/icons/raw/raw_deep_fried.dmi'
 	icon_state = "nitzel_step1"
 	process_step = 1
+	cooked_smell = /datum/pollutant/food/fried_meat
 
 /obj/item/reagent_containers/food/snacks/rogue/foodbase/nitzel/attackby(obj/item/I, mob/living/user, params)
 	update_cooktime(user)
@@ -41,6 +42,7 @@
 	icon = 'modular/Neu_Food/icons/raw/raw_deep_fried.dmi'
 	icon_state = "schnitzel_step1"
 	process_step = 1
+	cooked_smell = /datum/pollutant/food/fried_meat
 
 // copy paste code to shame my ancestors (some1 refactor this)
 /obj/item/reagent_containers/food/snacks/rogue/foodbase/schnitzel/attackby(obj/item/I, mob/living/user, params)
@@ -80,6 +82,7 @@
 	icon = 'modular/Neu_Food/icons/raw/raw_deep_fried.dmi'
 	icon_state = "squiresdelight_step1"
 	process_step = 1
+	cooked_smell = /datum/pollutant/food/fried_butter
 
 /obj/item/reagent_containers/food/snacks/rogue/foodbase/squires_delight/attackby(obj/item/I, mob/living/user, params)
 	if(istype(I, /obj/item/reagent_containers/food/snacks/rogue/toastcrumbs))

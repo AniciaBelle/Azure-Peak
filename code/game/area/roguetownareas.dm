@@ -216,6 +216,20 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	droning_sound_dusk = 'sound/music/area/septimus.ogg'
 	droning_sound_night = 'sound/music/area/sleeping.ogg'
 
+/area/rogue/outdoors/rtfield/eora
+	name = "eoran shrine"
+	icon_state = "eora"
+	soundenv = 19
+	ambush_times = list("night")
+	ambush_mobs = list(
+				/mob/living/simple_animal/hostile/retaliate/rogue/fae/glimmerwing = 20,
+				/mob/living/simple_animal/hostile/retaliate/rogue/fae/sprite = 30)
+	first_time_text = "EORAN SHRINE"
+	droning_sound = 'sound/newmusic/lovecraft2.ogg'
+	droning_sound_dusk = 'sound/newmusic/lovecraft2.ogg'
+	droning_sound_night = 'sound/newmusic/lovecraft2.ogg'
+	converted_type = /area/rogue/indoors/shelter/rtfield
+
 /area/rogue/outdoors/abisland
 	name = "abyssors grasp"
 	icon_state = "island"
@@ -562,10 +576,10 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 /area/rogue/under/cave/scarymaze
 	name = "hauntedlabyrinth"
 	icon_state = "spidercave"
-	first_time_text = "CURSED LABYRINTH"
-	droning_sound = 'sound/music/area/dungeon2.ogg'
-	droning_sound_dusk = null
-	droning_sound_night = null
+	first_time_text = "NECRAN LABYRINTH"
+	droning_sound = 'sound/music/area/underworlddrone.ogg'
+	droning_sound_dusk = 'sound/music/area/underworlddrone.ogg'
+	droning_sound_night = 'sound/music/area/underworlddrone.ogg'
 	converted_type = /area/rogue/outdoors/dungeon1
 
 /area/rogue/under/cave/undeadmanor

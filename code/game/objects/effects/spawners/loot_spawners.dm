@@ -374,7 +374,7 @@
 		/obj/item/rogueweapon/woodstaff/quarterstaff/steel = 1,
 		/obj/item/rogueweapon/greataxe/steel = 1,
 		/obj/item/rogueweapon/stoneaxe/woodcut/steel = 1,
-		/obj/item/rogueweapon/stoneaxe/silver = 1,
+		/obj/item/rogueweapon/stoneaxe/woodcut/silver = 1,
 		//tools
 		/obj/item/rogueweapon/shovel = 2,
 		/obj/item/rogueweapon/shovel/aalloy = 1,

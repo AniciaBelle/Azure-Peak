@@ -14,7 +14,7 @@
 /*	.................   Hardtack   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/crackerscooked
 	name = "hardtack"
-	desc = "Very, very hard and dry."
+	desc = "Brittle and hard, like chewing on a rock."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "tack6"
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_DECENT)
@@ -41,7 +41,7 @@
 /*	.................   Bread   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/bread
 	name = "bread loaf"
-	desc = "One of the staple foods of the world, with the decline of magic, the loss of bread-duplication has led to mass famines around Grimoria."
+	desc = "One of the staple foods of the world. With the decline of magic, the loss of bread-duplication has led to mass famines around Grimoria."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "loaf6"
 	slices_num = 6
@@ -162,7 +162,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/toastcrumbs
 	name = "toast crumbs"
-	desc = "Toast crumbs, perfect for adding a crunch to deep fried food."
+	desc = "Perfect for adding some crunch to deep-fried food."
 	icon = 'modular/Neu_Food/icons/raw/raw_deep_fried.dmi'
 	icon_state = "toastcrumbs"
 	slices_num = 0
@@ -176,7 +176,7 @@
 
 // -------------- BREAD WITH FOOD ON IT (not american sandwich) -----------------
 /obj/item/reagent_containers/food/snacks/rogue/sandwich
-	desc = "A delightful piece of heaven, in every slice."
+	desc = "A delightful piece of heaven in every slice."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_NUTRITIOUS)
 	faretype = FARE_NEUTRAL
@@ -186,6 +186,7 @@
 /obj/item/reagent_containers/food/snacks/rogue/sandwich/salami
 	tastes = list("salumoi" = 1,"bread" = 1)
 	name = "salumoi bread"
+	desc = "A piece of toast with a thin slice of salumoi on top. Often eaten by soldiers on the march. Salty!"
 	faretype = FARE_NEUTRAL
 	icon_state = "bread_salami"
 	foodtype = GRAIN | MEAT
@@ -193,6 +194,7 @@
 /obj/item/reagent_containers/food/snacks/rogue/sandwich/cheese
 	tastes = list("cheese" = 1,"bread" = 1)
 	name = "cheese bread"
+	desc = "A slice of toast with a rather thick wedge of cheese melted into the crust."
 	faretype = FARE_NEUTRAL
 	icon_state = "bread_cheese"
 	foodtype = GRAIN | DAIRY
@@ -200,6 +202,7 @@
 /obj/item/reagent_containers/food/snacks/rogue/sandwich/egg
 	tastes = list("cheese" = 1,"egg" = 1)
 	name = "egg toast"
+	desc = "A piece of toast with a fried egg on top that jiggles gently when prodded."
 	faretype = FARE_NEUTRAL
 	icon_state = "bread_egg"
 	foodtype = GRAIN | MEAT
@@ -207,6 +210,7 @@
 /obj/item/reagent_containers/food/snacks/rogue/sandwich/salo
 	tastes = list("salty fat" = 1)
 	name = "salo bread"
+	desc = "The salo's smooth consistency helps soften the rough grainy bread."
 	faretype = FARE_IMPOVERISHED
 	icon_state = "bread_salo"
 	foodtype = GRAIN | MEAT
@@ -214,7 +218,7 @@
 /obj/item/reagent_containers/food/snacks/rogue/sandwich/bacon
 	tastes = list("bacon" = 1)
 	name = "bacon bread"
-	desc = "A slice of bread with a crispy bacon on top. A perfect breakfast. Why does it look like a salo?"
+	desc = "A slice of bread with crispy bacon on top for the perfect breakfast. Why does it look like a salo?"
 	icon_state = "bread_salo" // Someone forgot the sprite for this one
 	foodtype = GRAIN | MEAT
 
@@ -222,7 +226,7 @@
 /*	.................   Bread bun   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/bun
 	name = "bun"
-	desc = "Portable, quaint and entirely consumable"
+	desc = "Portable, quaint, and entirely consumable."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "bun"
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_DECENT)
@@ -257,7 +261,7 @@
 /* 	.................   Crossbuns   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/foodbase/crossbun_raw
 	name = "raw crossbun"
-	desc = "A raw dough with the shape of Astrata's cross pressed onto it. In Her Lights."
+	desc = "A piece of raw dough with the shape of Astrata's cross pressed onto it. In Her Light."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "crossbun_raw"
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/crossbun
@@ -265,7 +269,7 @@
 // Psydon variant
 /obj/item/reagent_containers/food/snacks/rogue/foodbase/psycrossbun_raw
 	name = "raw psycrossbun"
-	desc = "A raw dough with the shape of a Psycross pressed onto it. He ENDURES."
+	desc = "A piece of raw dough with the shape of a Psycross pressed onto it. He ENDURES."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "psycrossbun_raw"
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/psycrossbun
@@ -286,7 +290,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/psycrossbun
 	name = "psycrossbun"
-	desc = "The bun endures."
+	desc = "How long will you endure the temptation to eat it?"
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "psycrossbun"
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_DECENT)
@@ -299,7 +303,7 @@
 /*	.................   Cheese bun   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/foodbase/cheesebun_raw
 	name = "raw cheese bun"
-	desc = "Portable, quaint and entirely consumable"
+	desc = "Time for the oven!"
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "cheesebun_raw"
 	color = "#ecce61"
@@ -310,7 +314,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/cheesebun
 	name = "fresh cheese bun"
-	desc = "A treat from the Grenzelhoft kitchen."
+	desc = "A quaint treat from the Grenzelhoft kitchens."
 	faretype = FARE_FINE
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "cheesebun"
@@ -323,7 +327,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/frybread
 	name = "frybread"
-	desc = "Flatbread fried at high heat with butter to give it a crispy outside. Staple of the elven kitchen."
+	desc = "Flatbread fried with butter until crispy. A staple of the elven kitchen."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "frybread"
 	faretype = FARE_FINE
@@ -336,7 +340,7 @@
 /*	.................   Raisin bread   ................... */
 /obj/item/reagent_containers/food/snacks/rogue/rbread_half
 	name = "half-done raisin dough"
-	desc = "Add more raisins!"
+	desc = "It needs more raisins!"
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "dough_raisin"
 	list_reagents = list(/datum/reagent/consumable/nutriment = 1)
@@ -362,6 +366,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/rbreaduncooked
 	name = "raw raisin loaf"
+	desc = "Into the oven you go!"
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "raisinbreaduncooked"
 	slices_num = 0
@@ -408,6 +413,7 @@
 
 /obj/item/reagent_containers/food/snacks/rogue/raisinbreadslice
 	name = "raisin loaf slice"
+	desc = "Soft and chewy. Nourishing and filling. Simple and decent."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "raisinbread_slice"
 	list_reagents = list(/datum/reagent/consumable/nutriment = SNACK_DECENT-1)
@@ -424,7 +430,7 @@
 	list_reagents = list(/datum/reagent/consumable/nutriment = SAUSAGE_NUTRITION+SMALLDOUGH_NUTRITION)
 	tastes = list("savory sausage" = 1, "bread" = 1)
 	name = "grenzelbun"
-	desc = "Originally an elven cuisine composed of mortal races flesh and bread, the classic wiener in a bun, now modified and staple food of Grenzelhoft cuisine."
+	desc = "The classic wiener in a bun, now a staple of Grenzelhoft cuisine. It is rumored that elves first invented it long ago, back when they practiced the consumption of other people..."
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "grenzbun"
 	foodtype = GRAIN | MEAT
@@ -440,6 +446,6 @@
 	icon = 'modular/Neu_Food/icons/cooked/cooked_baked.dmi'
 	icon_state = "raston"
 	name = "raston"
-	desc = ""
+	desc = "A slice of cheese melted between two lightly-toasted buns."
 	rotprocess = SHELFLIFE_EXTREME
 	eat_effect = /datum/status_effect/buff/foodbuff

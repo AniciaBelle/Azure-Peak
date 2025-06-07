@@ -97,6 +97,8 @@
 			target.equipOutfit(/datum/outfit/job/roguetown/greater_skeleton)
 		else
 			target.visible_message(span_warning("[target]'s form crumbles into dust."))
+			addtimer(CALLBACK(target, TYPE_PROC_REF(/mob/living/carbon/human, choose_name_popup), "GREATER SKELETON"), 3 SECONDS)
+			addtimer(CALLBACK(target, TYPE_PROC_REF(/mob/living/carbon/human, choose_pronouns_and_body)), 7 SECONDS)
 			qdel(target)
 			revert_cast()
 		return TRUE

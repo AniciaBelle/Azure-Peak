@@ -189,6 +189,21 @@
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/steel
 
+/obj/item/clothing/shoes/roguetown/boots/armor/graggar
+	name = "vicious boots"
+	desc = "Plated boots which stir with the same violence driving our world. They have treaded a thousand skulls."
+	max_integrity = 500
+	armor = ARMOR_ASCENDANT
+	icon_state = "graggarplateboots"
+
+/obj/item/clothing/shoes/roguetown/boots/armor/graggar/pickup(mob/living/user)
+	if(!HAS_TRAIT(user, TRAIT_HORDE))
+		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS ARMOR, CEASE OR BE RENDED ASUNDER!</font>")
+		user.adjust_fire_stacks(5)
+		user.IgniteMob()
+		user.Stun(40)
+	..()
+
 
 /obj/item/clothing/shoes/roguetown/boots/armor/matthios
 	max_integrity = 500

@@ -45,7 +45,7 @@
 		neck = /obj/item/storage/belt/rogue/pouch/coins/rich
 		belt = /obj/item/storage/belt/rogue/leather/cloth/lady
 		head = /obj/item/clothing/head/roguetown/nyle/consortcrown
-		shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/heavy/winterdress
+		shirt = /obj/item/clothing/suit/roguetown/armor/armordress/winterdress/monarch
 		pants = /obj/item/clothing/under/roguetown/tights/stockings/silk/random	//Added Silk Stockings for the female nobles
 		id = /obj/item/scomstone/garrison
 		shoes = /obj/item/clothing/shoes/roguetown/shortboots

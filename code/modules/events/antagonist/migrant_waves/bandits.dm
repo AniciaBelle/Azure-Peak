@@ -4,7 +4,7 @@
 
 	weight = 12
 
-	earliest_start = 10 MINUTES
+	earliest_start = 0 SECONDS
 
 	tags = list(
 		TAG_COMBAT,

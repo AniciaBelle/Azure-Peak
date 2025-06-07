@@ -11,12 +11,14 @@
 	max_integrity = 50
 	sellprice = 10
 	dropshrink = 0.6
-	slices_num = 1
+	slices_num = 2
 	slice_bclass = BCLASS_CHOP
 	chopping_sound = TRUE
+	var/rarity_rank = 0
 	list_reagents = list(/datum/reagent/consumable/nutriment = 3)
 	slice_path = /obj/item/reagent_containers/food/snacks/rogue/meat/fish
 	eat_effect = /datum/status_effect/debuff/uncookedfood
+	cooked_smell = /datum/pollutant/food/cooked_fish
 
 /obj/item/reagent_containers/food/snacks/fish/dead
 	dead = TRUE

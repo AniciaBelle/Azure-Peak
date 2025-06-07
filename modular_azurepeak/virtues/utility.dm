@@ -55,7 +55,7 @@
 			if(istype(A, /area/rogue/indoors/town/tavern))
 				spawn_area = A
 				break
-		
+
 		if(spawn_area)
 			var/target_z = 3 //ground floor of tavern for dun manor / world
 			var/target_y = 70 //dun manor
@@ -63,13 +63,13 @@
 
 			if(mapswitch == 2)
 				target_y = 234 //dun world huge
-			
+
 			for(var/obj/structure/chair/C in spawn_area)
 				//z-level 3, wooden chair, and Y > north of tavern backrooms
 				var/turf/T = get_turf(C)
 				if(T && T.z == target_z && T.y > target_y && istype(C, /obj/structure/chair/wood/rogue) && !T.density && !T.is_blocked_turf(FALSE))
 					possible_chairs += C
-			
+
 			if(length(possible_chairs))
 				var/obj/structure/chair/chosen_chair = pick(possible_chairs)
 				recipient.forceMove(get_turf(chosen_chair))
@@ -80,7 +80,7 @@
 				for(var/turf/T in spawn_area)
 					if(T.z == target_z && T.y > (target_y + 4) && !T.density && !T.is_blocked_turf(FALSE))
 						possible_spawns += T
-				
+
 				if(length(possible_spawns))
 					var/turf/spawn_loc = pick(possible_spawns)
 					recipient.forceMove(spawn_loc)
@@ -95,7 +95,7 @@
 		"Polishing Cream" = /obj/item/polishing_cream,
 		"Fine Brush" = /obj/item/armor_brush
 	)
-	
+
 /datum/virtue/utility/failed_squire/apply_to_human(mob/living/carbon/human/recipient)
 	to_chat(recipient, span_notice("Though you failed to become a knight, your training in equipment maintenance and repair remains useful."))
 	to_chat(recipient, span_notice("You can retrieve your hammer and polishing tools from a tree, statue, or clock."))
@@ -120,7 +120,7 @@
 	var/static/list/selectable_languages = list(
 		/datum/language/elvish,
 		/datum/language/dwarvish,
-		/datum/language/orcish, 
+		/datum/language/orcish,
 		/datum/language/hellspeak,
 		/datum/language/draconic,
 		/datum/language/celestial,
@@ -131,7 +131,7 @@
 		/datum/language/gronnic,
 		/datum/language/aavnic
 	)
-		
+
 	var/list/choices = list()
 	for(var/language_type in selectable_languages)
 		if(recipient.has_language(language_type))
@@ -188,6 +188,11 @@
 						list(/datum/skill/craft/masonry, 2, 2),
 						list(/datum/skill/craft/engineering, 2, 2),
 						list(/datum/skill/craft/smelting, 2, 2)
+	)
+	added_stashed_items = list(
+		"Hammer" = /obj/item/rogueweapon/hammer/wood,
+		"Chisel" = /obj/item/rogueweapon/chisel,
+		"Hand Saw" = /obj/item/rogueweapon/handsaw
 	)
 
 /datum/virtue/utility/physician

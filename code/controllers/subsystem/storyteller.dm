@@ -1113,6 +1113,7 @@ SUBSYSTEM_DEF(gamemode)
 	GLOB.azure_round_stats[STATS_ALIVE_CLERGY] = 0
 	GLOB.azure_round_stats[STATS_ALIVE_TRADESMEN] = 0
 	GLOB.azure_round_stats[STATS_WEREVOLVES] = 0
+	GLOB.azure_round_stats[STATS_BANDITS] = 0
 	GLOB.azure_round_stats[STATS_VAMPIRES] = 0
 	GLOB.azure_round_stats[STATS_DEADITES_ALIVE] = 0
 	GLOB.azure_round_stats[STATS_CLINGY_PEOPLE] = 0
@@ -1169,6 +1170,8 @@ SUBSYSTEM_DEF(gamemode)
 				GLOB.patron_follower_counts[living.patron.name]++
 				if(living.job == "Grand Duke")
 					GLOB.azure_round_stats[STATS_MONARCH_PATRON] = "[living.patron.name]"
+		if(living.mind.has_antag_datum(/datum/antagonist/bandit))
+			GLOB.azure_round_stats[STATS_BANDITS]++
 		if(living.mind.has_antag_datum(/datum/antagonist/werewolf))
 			GLOB.azure_round_stats[STATS_WEREVOLVES]++
 		if(living.mind.has_antag_datum(/datum/antagonist/vampire))

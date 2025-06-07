@@ -143,6 +143,7 @@
 #define STATS_SHRINE_VALUE "shrine_value"
 #define STATS_GREEDY_PEOPLE "tomb_deaths"
 #define STATS_LOCKS_PICKED "locks_picked"
+#define STATS_BANDITS "bandits"
 
 GLOBAL_LIST_INIT(azure_round_stats, list(
 	STATS_DEATHS = 0,
@@ -180,6 +181,7 @@ GLOBAL_LIST_INIT(azure_round_stats, list(
 	STATS_WOUNDS_SEWED = 0,
 	STATS_ROT_CURED = 0,
 	STATS_WEREVOLVES = 0,
+	STATS_BANDITS = 0,
 	STATS_FOREST_DEATHS = 0,
 	STATS_COMBAT_SKILLS = 0,
 	STATS_PARRIES = 0,

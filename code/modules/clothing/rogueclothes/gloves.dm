@@ -177,6 +177,20 @@
 	icon_state = "agauntlets"
 	smeltresult = /obj/item/ingot/aaslag
 
+/obj/item/clothing/gloves/roguetown/plate/graggar
+	name = "vicious gauntlets"
+	desc = "Plate gauntlets which carry the motive force of this world, violence."
+	max_integrity = 500
+	icon_state = "graggarplategloves"
+
+/obj/item/clothing/gloves/roguetown/plate/graggar/pickup(mob/living/user)
+	if(!HAS_TRAIT(user, TRAIT_HORDE))
+		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS ARMOR, CEASE OR BE RENDED ASUNDER!</font>")
+		user.adjust_fire_stacks(5)
+		user.IgniteMob()
+		user.Stun(40)
+	..()
+
 /obj/item/clothing/gloves/roguetown/plate/matthios
 	name = "gilded gauntlets"
 	desc = "Many a man his life hath sold,"

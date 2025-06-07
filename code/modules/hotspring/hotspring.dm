@@ -1,8 +1,8 @@
 /particles/hotspring_steam
 	icon = 'icons/effects/particles/smoke.dmi'
-
+	icon_state	= list("steam_cloud_1"=5, "steam_cloud_2"=5, "steam_cloud_3"=5, "steam_cloud_4"=5, "steam_cloud_5"=5)
 	color = "#FFFFFF8A"
-	count = 5
+	count = 2
 	spawning = 0.3
 	lifespan = 3 SECONDS
 	fade = 1.2 SECONDS
@@ -45,6 +45,7 @@
 		playsound(AM, pick('sound/foley/watermove (1).ogg','sound/foley/watermove (2).ogg'), 40, FALSE)
 
 /obj/structure/hotspring/border
+	name = "hotspring border"
 	icon_state = "hotspring_border_1"
 	object_slowdown = 0
 	edge = TRUE
@@ -145,14 +146,17 @@
 
 /obj/machinery/light/rogue/torchholder/hotspring
 	name = "stone lantern"
+	desc = "A stone lantern, built in Kazengunese style. It is believed these lanterns attracts spirits and guide their way."
 	icon = 'icons/obj/structures/hotspring.dmi'
 	icon_state = "stonelantern1"
-	base_state = "stonelantern"
+	torch_off_state = "stonelantern0"
+	base_state = "stonelantern0"
 
 /obj/machinery/light/rogue/torchholder/hotspring/standing
 	name = "standing stone lantern"
 	icon_state = "stonelantern_standing1"
-	base_state = "stonelantern_standing"
+	torch_off_state = "stonelantern_standing0"
+	base_state = "stonelantern_standing0"
 
 /obj/effect/lily_petal
 	name = "lily petals"

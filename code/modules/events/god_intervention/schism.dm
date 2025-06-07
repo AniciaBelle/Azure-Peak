@@ -269,10 +269,11 @@ GLOBAL_LIST_EMPTY(tennite_schisms)
 	track = EVENT_TRACK_INTERVENTION
 	typepath = /datum/round_event/schism_within_ten
 	weight = 1
-	max_occurrences = 0	//Disabled so only staff can manually trigger it. Cool as shit intervention code, just doesn't fit our server in a 'normal' round. Cheers, Vander, actual banger.
+	max_occurrences = 1	//Re-enabled since we have more interventions.
 	min_players = 60
 	earliest_start = 30 MINUTES
 	allowed_storytellers = list(/datum/storyteller/noc, /datum/storyteller/ravox, /datum/storyteller/necra, /datum/storyteller/xylix, /datum/storyteller/pestra, /datum/storyteller/abyssor, /datum/storyteller/dendor, /datum/storyteller/eora, /datum/storyteller/malum)
+	//Once more 'generic' god interventions are in, add to Psydon as well.
 
 /datum/round_event_control/schism_within_ten/canSpawnEvent(players_amt, gamemode, fake_check)
 	. = ..()

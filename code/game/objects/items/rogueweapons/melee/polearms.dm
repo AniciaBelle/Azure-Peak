@@ -133,6 +133,7 @@
 	hitsound = list('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg')
 	item_d_type = "stab"
 	no_early_release = TRUE
+	intdamage_factor = 0.6
 
 /datum/intent/partizan/peel
 	name = "armor peel"
@@ -158,6 +159,24 @@
 	penfactor = BLUNT_DEFAULT_PENFACTOR
 	damfactor = 1.3 // Adds up to be slightly stronger than an unenhanced ebeak strike.
 	chargetime = 6 // Meant to be stronger than a bash, but with a delay.
+
+/datum/intent/spear/thrust/lance
+	damfactor = 1.5 // Turns its base damage into 30 on the 2hand thrust. It keeps the spear thrust one handed.
+
+/datum/intent/lance/
+	name = "lance"
+	icon_state = "inlance"
+	attack_verb = list("lances", "runs through", "skewers")
+	animname = "stab"
+	item_d_type = "stab"
+	penfactor = BLUNT_DEFAULT_PENFACTOR // Not a mistake, to prevent it from nuking through armor.
+	chargetime = 4 SECONDS
+	damfactor = 4 // 80 damage on hit. It is gonna hurt.
+	reach = 3 // Yep! 3 tiles
+	intdamage_factor = 2 // 4 hits to break coat of plate normally.
+
+/datum/intent/lance/onehand
+	chargetime = 5 SECONDS
 
 //polearm objs ฅ^•ﻌ•^ฅ
 
@@ -228,7 +247,7 @@
 
 
 /obj/item/rogueweapon/spear
-	force = 18
+	force = 20
 	force_wielded = 30
 	possible_item_intents = list(SPEAR_THRUST, SPEAR_BASH) //bash is for nonlethal takedowns, only targets limbs
 	gripped_intents = list(SPEAR_THRUST, SPEAR_CUT, SPEAR_BASH)
@@ -1005,22 +1024,12 @@
 	gripped_intents = list(SPEAR_THRUST, PARTIZAN_REND, PARTIZAN_PEEL)
 	icon_state = "partizan"
 	icon = 'icons/roguetown/weapons/64.dmi'
-	pixel_y = -16
-	pixel_x = -16
-	inhand_x_dimension = 64
-	inhand_y_dimension = 64
-	bigboy = TRUE
-	gripsprite = TRUE
-	wlength = WLENGTH_GREAT
-	w_class = WEIGHT_CLASS_BULKY
 	minstr = 10
 	max_blade_int = 200
 	wdefense = 6
-	thrown_bclass = BCLASS_STAB
 	throwforce = 12	//Not a throwing weapon. Too heavy!
-	max_integrity = 250
 	blade_dulling = DULLING_SHAFT_REINFORCED
-	intdamage_factor = 0.6
+	icon_angle_wielded = 50
 
 /obj/item/rogueweapon/spear/partizan/getonmobprop(tag)
 	. = ..()
@@ -1030,3 +1039,29 @@
 				return list("shrink" = 0.6,"sx" = -6,"sy" = 2,"nx" = 8,"ny" = 2,"wx" = -4,"wy" = 2,"ex" = 1,"ey" = 2,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = -38,"sturn" = 300,"wturn" = 32,"eturn" = -23,"nflip" = 0,"sflip" = 100,"wflip" = 8,"eflip" = 0)
 			if("wielded")
 				return list("shrink" = 0.6,"sx" = 4,"sy" = -2,"nx" = -3,"ny" = -2,"wx" = -5,"wy" = -1,"ex" = 3,"ey" = -2,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 7,"sturn" = -7,"wturn" = 16,"eturn" = -22,"nflip" = 8,"sflip" = 0,"wflip" = 8,"eflip" = 0)
+
+/obj/item/rogueweapon/spear/boar
+	name = "boar spear"
+	desc = "A spear with a wide head and a pair of wings below the head. The wings are designed to prevent a boar from charging past the spearhead. \
+	It is also useful for parrying and stopping a charging opponent."
+	icon = 'icons/roguetown/weapons/polearms64.dmi'
+	icon_state = "boarspear"
+	force_wielded = 33 // 10% base damage increase
+	wdefense = 6 // A little bit extra
+	max_blade_int = 150 // 50% more sharpness but it barely matter lol
+
+/obj/item/rogueweapon/spear/lance
+	name = "lance"
+	desc = "A long polearm designed to be used from horseback, couched under the arm. It has a vambrace to prevent the arm sliding up \
+	the shaft on impact. "
+	icon = 'icons/roguetown/weapons/polearms64.dmi'
+	icon_state = "lance"
+	force = 15 // Its gonna sucks for 1 handed use
+	force_wielded = 20 // Lower damage because a 3 tiles thrust without full charge time still deal base damage. 
+	wdefense = 4 // 2 Lower than spear
+	max_integrity = 200
+	max_blade_int = 200 // Better sharpness
+	possible_item_intents = list(SPEAR_THRUST, /datum/intent/lance/onehand, SPEAR_BASH) //bash is for nonlethal takedowns, only targets limbs
+	gripped_intents = list(/datum/intent/spear/thrust/lance, /datum/intent/lance, SPEAR_BASH)
+	resistance_flags = null
+	blade_dulling = DULLING_SHAFT_REINFORCED

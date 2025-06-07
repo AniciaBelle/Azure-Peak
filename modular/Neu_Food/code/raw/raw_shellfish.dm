@@ -8,6 +8,7 @@
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/crab
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/crab
 	slice_path = /obj/item/reagent_containers/food/snacks/rogue/meat/crab
+	cooked_smell = /datum/pollutant/food/fried_crab
 
 /obj/item/reagent_containers/food/snacks/fish/crab/attackby(obj/item/I, mob/living/user, params)
 	var/found_table = locate(/obj/structure/table) in (loc)
@@ -32,6 +33,7 @@
 	sellprice = 15
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/clam
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/clam
+	cooked_smell = /datum/pollutant/food/fried_shellfish
 
 /obj/item/reagent_containers/food/snacks/fish/lobster
 	name = "lobster"
@@ -43,6 +45,7 @@
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/lobster
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/lobster
 	slice_path = /obj/item/reagent_containers/food/snacks/rogue/meat/shellfish
+	cooked_smell = /datum/pollutant/food/fried_shellfish
 
 /obj/item/reagent_containers/food/snacks/fish/shrimp
 	name = "shrimp"
@@ -51,6 +54,7 @@
 	sellprice = 5
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/shrimp
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/fryfish/shrimp
+	cooked_smell = /datum/pollutant/food/fried_shellfish
 
 /obj/item/reagent_containers/food/snacks/fish/oyster
 	name = "oyster"
@@ -61,6 +65,7 @@
 	var/obj/item/pearl
 	slice_path = /obj/item/reagent_containers/food/snacks/rogue/meat/shellfish
 	trash = /obj/item/oystershell
+	cooked_smell = /datum/pollutant/food/fried_shellfish
 
 /obj/item/reagent_containers/food/snacks/fish/oyster/Initialize()
 	. = ..()
@@ -131,7 +136,7 @@
 	icon_state = "crab_cake_raw"
 	cooked_type = /obj/item/reagent_containers/food/snacks/rogue/crabcake
 	fried_type = /obj/item/reagent_containers/food/snacks/rogue/crabcake
-	cooked_smell = /datum/pollutant/food/pie_base
+	cooked_smell = /datum/pollutant/food/fried_crab_cake
 	w_class = WEIGHT_CLASS_NORMAL
 	dropshrink = 0.8
 

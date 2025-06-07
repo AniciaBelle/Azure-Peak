@@ -230,6 +230,9 @@
 	icon_state = "skirt"
 	item_state = "skirt"
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/pants.dmi'
+	sleevetype = "skirt"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_pants.dmi'
+	alternate_worn_layer = (SHOESLEEVE_LAYER-1)
 
 /obj/item/clothing/under/roguetown/skirt/random
 	name = "skirt"
@@ -361,6 +364,22 @@
 	icon_state = "ancientplate_legs"
 	smeltresult = /obj/item/ingot/aaslag
 
+/obj/item/clothing/under/roguetown/platelegs/graggar
+	name = "vicious leggings"
+	desc = "Plate chausses which stir with the innate violence driving our world"
+	icon_state = "graggarplatelegs"
+	armor = ARMOR_ASCENDANT
+	max_integrity = 400 // Good good resistances, but less crit resist than the other ascendant armors. In trade, we can take off our pants to repair, and they are medium rather than heavy.
+	armor = ARMOR_CLASS_MEDIUM
+
+/obj/item/clothing/under/roguetown/platelegs/graggar/pickup(mob/living/user)
+	if(!HAS_TRAIT(user, TRAIT_HORDE))
+		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS ARMOR, CEASE OR BE RENDED ASUNDER!</font>")
+		user.adjust_fire_stacks(5)
+		user.IgniteMob()
+		user.Stun(40)
+	..()
+
 /obj/item/clothing/under/roguetown/platelegs/matthios
 	max_integrity = 600
 	name = "gilded leggings"
@@ -439,11 +458,15 @@
 	desc = "Interlinked metal rings that drape down all the way to the ankles."
 	icon_state = "chainkilt"
 	item_state = "chainkilt"
+	sleevetype = "chainkilt"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_pants.dmi'
+	alternate_worn_layer = (SHOESLEEVE_LAYER-1)
 
 /obj/item/clothing/under/roguetown/chainlegs/kilt/aalloy
 	name = "decrepit chain kilt"
 	desc = "A decrepit old kilt. Aeon's grasp is upon it."
 	icon_state = "achainkilt"
+	sleevetype = "achainkilt"
 	smeltresult = /obj/item/ingot/aalloy
 	max_integrity = 125
 
@@ -458,6 +481,9 @@
 	desc = "Interlinked metal rings that drape down all the way to the ankles."
 	icon_state = "ichainkilt"
 	item_state = "ichainkilt"
+	sleevetype = "ichainkilt"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_pants.dmi'
+	alternate_worn_layer = (SHOESLEEVE_LAYER-1)
 
 //----------------- BLACKSTEEL---------------------
 

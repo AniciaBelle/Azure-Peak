@@ -294,7 +294,7 @@
 
 	if(accessory_type)
 		var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(accessory_type)
-		var/list/appearances = accessory.get_appearance(src, bodypart, accessory_colors)
+		var/list/appearances = accessory?.get_appearance(src, bodypart, accessory_colors)
 		if(!appearances)
 			return
 		for(var/standing in appearances)

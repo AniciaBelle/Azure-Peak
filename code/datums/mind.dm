@@ -347,7 +347,7 @@ GLOBAL_LIST_EMPTY(personal_objective_minds)
 			to_chat(current, span_nicegreen("My [S.name] grows to [SSskills.level_names[known_skills[S]]]!"))
 			SEND_SIGNAL(current, COMSIG_SKILL_RANK_INCREASED, S, known_skills[S], old_level)
 			GLOB.azure_round_stats[STATS_SKILLS_LEARNED]++
-			S.skill_level_effect(src, known_skills[S])
+			S.skill_level_effect(known_skills[S], src)
 			if(istype(known_skills, /datum/skill/combat))
 				GLOB.azure_round_stats[STATS_COMBAT_SKILLS]++
 			if(istype(known_skills, /datum/skill/craft))

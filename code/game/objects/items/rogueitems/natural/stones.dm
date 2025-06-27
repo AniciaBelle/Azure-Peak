@@ -85,7 +85,6 @@ GLOBAL_LIST_INIT(stone_personalities, list(
 	"Barbarics",
 	"Fanciness",
 	"Relaxing",	
-	"Blacked",
 	"Greed",
 	"Evil",
 	"Good",

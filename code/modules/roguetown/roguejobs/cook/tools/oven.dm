@@ -14,10 +14,11 @@
 	var/need_underlay_update = TRUE
 	var/mob/living/carbon/human/lastuser
 
-/obj/machinery/light/rogue/oven/OnCrafted(dirin)
+/obj/machinery/light/rogue/oven/OnCrafted(dirin, user)
 	dirin = turn(dirin, 180)
-	. = ..(dirin)
 	update_icon()
+
+	..(dirin, user)
 
 /obj/machinery/light/rogue/oven/attackby(obj/item/W, mob/living/user, params)
 	lastuser = user

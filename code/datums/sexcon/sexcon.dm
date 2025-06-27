@@ -599,7 +599,7 @@
 /datum/sex_controller/proc/get_generic_force_adjective()
 	switch(force)
 		if(SEX_FORCE_LOW)
-			return pick(list("gently", "carefully", "tenderly", "gingerly", "delicately", "lazingly"))
+			return pick(list("gently", "carefully", "tenderly", "gingerly", "delicately", "lazily"))
 		if(SEX_FORCE_MID)
 			return pick(list("firmly", "vigorously", "eagerly", "steadily", "intently"))
 		if(SEX_FORCE_HIGH)

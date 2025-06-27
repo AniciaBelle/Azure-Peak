@@ -52,6 +52,16 @@
 	verbage_simple = "construct"
 	verbage = "constructs"
 
+/datum/crafting_recipe/roguetown/structure/zizo_shrine
+	name = "Profane Shrine"
+	always_availible = FALSE	//Has unique assign for certain roles.
+	reqs = list(
+		/obj/item/grown/log/tree/small = 1,
+		/obj/item/natural/stone = 2,
+		/obj/item/grown/log/tree/stake = 2
+	)
+	result = /obj/structure/fluff/psycross/zizocross
+
 /datum/crafting_recipe/roguetown/structure/swing_door
 	name = "swing door"
 	result = /obj/structure/mineral_door/swing_door
@@ -97,7 +107,7 @@
 
 /datum/crafting_recipe/roguetown/structure/barrel
 	name = "wooden barrel"
-	result = /obj/structure/fermenting_barrel/crafted
+	result = /obj/structure/fermentation_keg/crafted
 	reqs = list(/obj/item/grown/log/tree/small = 1)
 	verbage_simple = "make"
 	verbage = "makes"
@@ -130,7 +140,7 @@
 	craftdiff = 2
 	skillcraft = /datum/skill/craft/carpentry
 
-/obj/structure/fermenting_barrel/crafted
+/obj/structure/fermentation_keg/crafted
 	sellprice = 6
 
 /datum/crafting_recipe/roguetown/structure/meathook
@@ -544,20 +554,55 @@
 	verbage = "constructs"
 	craftdiff = 0
 
-/datum/crafting_recipe/roguetown/structure/bed
-	name = "bed"
+/datum/crafting_recipe/roguetown/structure/strawbed
+	name = "straw bed"
 	result = /obj/structure/bed/rogue/shit
 	reqs = list(/obj/item/grown/log/tree/small = 1,
 				/obj/item/natural/fibers = 1)
 	verbage_simple = "construct"
 	verbage = "constructs"
+	skillcraft = /datum/skill/craft/carpentry
 	craftdiff = 0
 
-/datum/crafting_recipe/roguetown/structure/nicebed
+/datum/crafting_recipe/roguetown/structure/bed
 	name = "nice bed"
-	result = /obj/structure/bed/rogue
+	result = /obj/structure/bed/rogue/inn
+	reqs = list(/obj/item/grown/log/tree/small = 2,
+				/obj/item/natural/cloth = 2)
+	tools = list(/obj/item/needle)
+	verbage_simple = "construct"
+	verbage = "constructs"
+	skillcraft = /datum/skill/craft/carpentry
+	craftdiff = 1
+
+/datum/crafting_recipe/roguetown/structure/woolbed
+	name = "woolbed"
+	result = /obj/structure/bed/rogue/inn/wool
 	reqs = list(/obj/item/grown/log/tree/small = 2,
 				/obj/item/natural/cloth = 1)
+	tools = list(/obj/item/needle)
+	verbage_simple = "construct"
+	verbage = "constructs"
+	skillcraft = /datum/skill/craft/carpentry
+	craftdiff = 1
+
+/datum/crafting_recipe/roguetown/structure/doublebed
+	name = "double bed"
+	result = /obj/structure/bed/rogue/inn/double
+	reqs = list(/obj/item/grown/log/tree/small = 3,
+				/obj/item/natural/cloth = 4)
+	tools = list(/obj/item/needle)
+	verbage_simple = "construct"
+	verbage = "constructs"
+	skillcraft = /datum/skill/craft/carpentry
+	craftdiff = 2
+
+
+/datum/crafting_recipe/roguetown/structure/wooldoublebed
+	name = "wool double bed"
+	result = /obj/structure/bed/rogue/inn/wooldouble
+	reqs = list(/obj/item/grown/log/tree/small = 3,
+				/obj/item/natural/cloth = 3)
 	tools = list(/obj/item/needle)
 	verbage_simple = "construct"
 	verbage = "constructs"

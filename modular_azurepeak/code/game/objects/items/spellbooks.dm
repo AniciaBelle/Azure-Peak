@@ -85,7 +85,7 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 	if(born_of_rock)
 		. += span_notice("This tome was made from a magical stone instead of a proper gem. Holding it in your hand with it open reduces spell charge time by [ROCK_CHARGE_REDUCTION * 100]%")
 	else
-		. += span_notice("This tome was made from a gem. Holding it in your hand with it open reduces spell charge time by [GEM_CHARGE_REDUCTION * 100]%") 
+		. += span_notice("This tome was made from a gem. Holding it in your hand with it open reduces spell charge time by [GEM_CHARGE_REDUCTION * 100]%")
 
 /obj/item/book/spellbook/attack_self(mob/user)
 	if(!open)
@@ -119,18 +119,22 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 	if(!resettable_spells.len)
 		to_chat(user, span_warning("I have no spells to unbind!"))
 		return
+	user_mind.has_changed_spell = TRUE //To pre-empt a halting duplication in the for loop here
+	var/unlearn_success = FALSE
 	for(var/i = 1, i <= 2, i++)
 		var/choice = input(user, "Choose up to two spells to unbind. Cancel both to not use up your daily unbinding.") as null|anything in resettable_spells
 		var/obj/effect/proc_holder/spell/item = resettable_spells[choice]
 		if(!item)
-			continue
+			break
 		if(!resettable_spells.len)
 			return
+		if(user_mind.RemoveSpell(item))
+			user_mind.used_spell_points -= item.cost
+			unlearn_success = TRUE
 		resettable_spells.Remove(choice)
-		user_mind.used_spell_points -= item.cost
-		user_mind.RemoveSpell(item)
 		user_mind.check_learnspell()
-		user_mind.has_changed_spell = TRUE
+	if(!unlearn_success)
+		user_mind.has_changed_spell = FALSE //If we didn't unlearn anything, reset
 
 /obj/item/book/spellbook/proc/get_cdr()
 	if(born_of_rock)
@@ -320,6 +324,15 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 	anchored = TRUE
 	icon = 'icons/effects/160x160.dmi'
 	icon_state = "imbuement"
+	resistance_flags = FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	layer = SIGIL_LAYER
+
+/obj/effect/roguerunelargeWall/
+	name = "The seal of Graggar"
+	desc = "Despite all their attempts, the orcs never understood how to open the gate..."
+	anchored = TRUE
+	icon = 'icons/effects/160x160.dmi'
+	icon_state = "walltest"
 	resistance_flags = FIRE_PROOF | UNACIDABLE | ACID_PROOF
 	layer = SIGIL_LAYER
 

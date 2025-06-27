@@ -68,6 +68,7 @@
 		)
 	body_marking_sets = list(
 		/datum/body_marking_set/none,
+		/datum/body_marking_set/belly,
 		/datum/body_marking_set/socks,
 		/datum/body_marking_set/tiger,
 		/datum/body_marking_set/tiger_dark,
@@ -79,6 +80,8 @@
 		/datum/body_marking/socklonger,
 		/datum/body_marking/tips,
 		/datum/body_marking/nose,
+		/datum/body_marking/bangs,
+		/datum/body_marking/bun,
 	)
 	descriptor_choices = list(
 		/datum/descriptor_choice/height,
@@ -140,5 +143,6 @@
 		"West Raneshen (Vrdaqnan)" = SKIN_COLOR_SHALVISTINE,
 		"East Raneshen (Nshkormh)" = SKIN_COLOR_LALVESTINE,
 		"Naledi" = SKIN_COLOR_NALEDI,
+		"Naledi South" = SKIN_COLOR_NALEDI_LIGHT,
 		"Kazengun" = SKIN_COLOR_KAZENGUN,
 	)

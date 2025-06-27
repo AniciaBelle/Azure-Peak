@@ -113,19 +113,19 @@ var/global/list/colorlist = list(
 
 	dat += "Item inserted: [inserted]<HR>"
 	dat += "<A href='?src=\ref[src];select=1'>Select new color.</A><BR>"
-	dat += "Color: <font color='[activecolor]'>&#9899;</font>"
+	dat += "Color: <font color='[activecolor]'>&#10070;</font>"
 	dat += "<A href='?src=\ref[src];paint=1'>Apply new color</A> | "
 	dat += "<A href='?src=\ref[src];clear=1'>Remove paintjob</A><BR><BR>"
 
 	if(inserted_item.detail_color)
 		dat += "<A href='?src=\ref[src];select_detail=1'>Select new detail color.</A><BR>"
-		dat += "Detail Color: <font color='[activecolor_detail]'>&#9899;</font>"
+		dat += "Detail Color: <font color='[activecolor_detail]'>&#10070;</font>"
 		dat += "<A href='?src=\ref[src];paint_detail=1'>Apply new color</A> | "
 		dat += "<A href='?src=\ref[src];clear_detail=1'>Remove paintjob</A><BR><BR>"
 			
 	if(inserted_item.altdetail_color)
 		dat += "<A href='?src=\ref[src];select_altdetail=1'>Select new tertiary color.</A><BR>"
-		dat += "Alt. Detail Color: <font color='[activecolor_altdetail]'>&#9899;</font>"
+		dat += "Alt. Detail Color: <font color='[activecolor_altdetail]'>&#10070;</font>"
 		dat += "<A href='?src=\ref[src];paint_altdetail=1'>Apply new color</A> | "
 		dat += "<A href='?src=\ref[src];clear_altdetail=1'>Remove paintjob</A><BR><BR>"
 
@@ -151,7 +151,7 @@ var/global/list/colorlist = list(
 				return
 			activecolor = used_colors[choice]
 		else
-			activecolor = sanitize_hexcolor(color_pick_sanitized_lumi(usr, "Choose your dye:", "Dyes", choice ? choice : activecolor_detail, 0.2, 0.8), 6, TRUE)
+			activecolor = sanitize_hexcolor(color_pick_sanitized(usr, "Choose your dye:", "Dyes", choice ? choice : activecolor_detail), 6, TRUE)
 			if(activecolor == "#000000")
 				activecolor = "#FFFFFF"
 		updateUsrDialog()
@@ -164,7 +164,7 @@ var/global/list/colorlist = list(
 				return
 			activecolor_detail = used_colors[choice]
 		else
-			activecolor_detail = sanitize_hexcolor(color_pick_sanitized_lumi(usr, "Choose your dye:", "Dyes", choice ? choice : activecolor_detail, 0.2, 0.8), 6, TRUE)
+			activecolor_detail = sanitize_hexcolor(color_pick_sanitized(usr, "Choose your dye:", "Dyes", choice ? choice : activecolor_detail), 6, TRUE)
 			if(activecolor == "#000000")
 				activecolor = "#FFFFFF"
 		updateUsrDialog()
@@ -177,7 +177,7 @@ var/global/list/colorlist = list(
 				return
 			activecolor_altdetail = used_colors[choice]
 		else
-			activecolor_altdetail = sanitize_hexcolor(color_pick_sanitized_lumi(usr, "Choose your dye:", "Dyes", choice ? choice : activecolor_detail, 0.2, 0.8), 6, TRUE)
+			activecolor_altdetail = sanitize_hexcolor(color_pick_sanitized(usr, "Choose your dye:", "Dyes", choice ? choice : activecolor_detail), 6, TRUE)
 			if(activecolor == "#000000")
 				activecolor = "#FFFFFF"
 		updateUsrDialog()
@@ -279,14 +279,15 @@ var/global/list/colorlist = list(
 	..()
 
 	var/hexdye
-	if(!dye)
-		hexdye = sanitize_hexcolor(color_pick_sanitized_lumi(usr, "Choose your dye:", "Dyes", null, 0.08, 0.09), 6, TRUE)
-		if (hexdye == "#000000")
-			return
-		dye = hexdye
-		update_icon()
+	if(dye)
+		to_chat(user, span_warning("[src] is already carrying <font color=[dye]>dye</font>. I need to wash it."))
 		return
-	to_chat(user, span_warning("[src] is already carrying <font color=[dye]>dye</font>. I need to wash it."))
+
+	hexdye = sanitize_hexcolor(color_pick_sanitized(usr, "Choose your dye:", "Dyes", null), 6, TRUE)
+	if (hexdye == "#000000")
+		return
+	dye = hexdye
+	update_icon()
 
 /obj/item/dye_brush/attack_turf(turf/T, mob/living/user)
 	if(!iswallturf(T))

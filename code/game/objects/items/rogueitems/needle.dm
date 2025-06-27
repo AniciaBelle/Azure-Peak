@@ -114,11 +114,11 @@
 			/// The minimum sewing time to prevent instant sewing at max level.
 			var/const/SEW_MIN_TIME = 0.5 SECONDS
 			/// The maximum sewing time for squires.
-			var/const/SQUIRE_MAX_TIME = BASE_SEW_TIME / 2 // always at least twice as fast as the base time
+			var/const/SQUIRE_MAX_TIME = BASE_SEW_TIME / 3 // always at least twice as fast as the base time / Apparently takes too long so dunno we will see at 2 seconds
 			/// The XP granted by failure. Scaled by INT. If 0, no XP is granted on failure.
 			var/const/XP_ON_FAIL = 0.5
 			/// The XP granted by success. Scaled by INT. If 0, no XP is granted on success.
-			var/const/XP_ON_SUCCESS = 0
+			var/const/XP_ON_SUCCESS = 1
 			/// The minimum delay between automatic sewing attempts.
 			var/const/AUTO_SEW_DELAY = CLICK_CD_MELEE
 

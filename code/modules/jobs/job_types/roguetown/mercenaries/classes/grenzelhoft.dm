@@ -6,7 +6,7 @@
 	outfit = /datum/outfit/job/roguetown/mercenary/grenzelhoft
 	category_tags = list(CTAG_MERCENARY)
 	traits_applied = list(TRAIT_OUTLANDER)
-	cmode_music = 'sound/music/combat_grenzelhoft.ogg'
+	cmode_music = 'sound/music/combat_grenzelhoft.ogg'	
 	classes = list("Doppelsoldner" = "You are a Doppelsoldner - \"Double-pay Mercenary\" - an experienced frontliner trained by the master swordsmen of the Zenitstadt fencing guild.",
 					"Halberdier" = "You're an experienced soldier skilled in the use of polearms and axes. Your equals make up the bulk of the mercenary guild's forces.")
 
@@ -45,7 +45,7 @@
 			var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 			switch(weapon_choice)
 				if("Zweihander")
-					r_hand = /obj/item/rogueweapon/greatsword/zwei
+					r_hand = /obj/item/rogueweapon/greatsword/grenz
 				if("Kriegmesser & Buckler") // Buckler cuz they have no shield skill.
 					r_hand = /obj/item/rogueweapon/sword/long/kriegmesser
 					l_hand = /obj/item/rogueweapon/shield/buckler

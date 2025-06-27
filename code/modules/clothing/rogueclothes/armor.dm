@@ -146,7 +146,7 @@
 	icon_state = "gambesonp"
 	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_CHOP)
 	armor = ARMOR_PADDED_GOOD
-	sellprice = 30
+	sellprice = 25
 	color = "#976E6B"
 	var/shiftable = TRUE
 	var/shifted = FALSE
@@ -180,13 +180,49 @@
 			return
 
 
-
 /obj/item/clothing/suit/roguetown/armor/gambeson/heavy/otavan
 	name = "fencer gambeson"
 	desc = "A large shirt with heavy padding meant to be used below armor. Will probably stop an arrow, unlikely to stop a bolt."
 	icon_state = "fancygamb"
 	allowed_race = NON_DWARVEN_RACE_TYPES
 	color = "#FFFFFF"
+	shiftable = FALSE
+	sellprice = 30
+
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy/freifechter
+	name = "padded fencing shirt"
+	desc = "A strong quilted shirt that places little weight on the arms, it's worn underneath a strong leather vest. It lasts a bit less than a regular padded gambeson and won't cover your legs."
+	max_integrity = 200		//Back to default. I think it's right if it doesn't stop you from getting legshotted.
+	body_parts_covered = COVERAGE_ALL_BUT_LEGS
+	detail_tag = "_detail"
+	altdetail_tag = "_detailalt"
+	color = "#FFFFFF"
+	detail_color = "#3b2b29"
+	altdetail_color = "#c29057"
+	icon_state = "fencingshirt"
+
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy/freifechter/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
+
+	if(get_altdetail_tag())
+		var/mutable_appearance/pic2 = mutable_appearance(icon(icon, "[icon_state][altdetail_tag]"))
+		pic2.appearance_flags = RESET_COLOR
+		if(get_altdetail_color())
+			pic2.color = get_altdetail_color()
+		add_overlay(pic2)
+
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy/chargah
+	name = "steppesman chargah robe"
+	desc = "A light yet thick robe padded with fine silks and cloth, acting as a mix of traditional gambeson and imported silks of the east. Popular among Aavnr steppesmen."
+	icon_state = "chargah"
+	color = "#864a4a"
+	boobed = TRUE
 	shiftable = FALSE
 
 /obj/item/clothing/suit/roguetown/armor/gambeson/heavy/grenzelhoft
@@ -202,7 +238,9 @@
 	max_integrity = 250 // Slightly stronger than base, a reward for unique drip
 	r_sleeve_status = SLEEVE_NORMAL
 	l_sleeve_status = SLEEVE_NORMAL
-	color = "#FFFFFF"
+	color = "#1d1d22"
+	detail_color = "#FFFFFF"
+	sellprice = 40
 	var/picked = FALSE
 	shiftable = FALSE
 
@@ -374,7 +412,7 @@
 	armor = ARMOR_LEATHER_GOOD
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_BLUNT, BCLASS_CHOP, BCLASS_SMASH)
 	max_integrity = 300
-	sellprice = 25
+	sellprice = 20
 
 /obj/item/clothing/suit/roguetown/armor/leather/heavy/coat
 	name = "hardened leather coat"
@@ -386,6 +424,12 @@
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_BLUNT, BCLASS_CHOP, BCLASS_SMASH)
 	max_integrity = 300
 	sellprice = 25
+
+/obj/item/clothing/suit/roguetown/armor/leather/heavy/coat/steppe
+	name = "fur-woven hatanga coat"
+	desc = "A finely woven hatagna coat, replacing much of its scaled armor with fine furs and reinforced padding for lighter rides."
+	icon_state = "hatangafur"
+	item_state = "hatangafur"
 
 /obj/item/clothing/suit/roguetown/armor/leather/heavy/jacket
 	name = "hardened leather jacket"
@@ -684,6 +728,16 @@
 	armor_class = ARMOR_CLASS_MEDIUM
 	smelt_bar_num = 2
 
+/obj/item/clothing/suit/roguetown/armor/plate/half/fencer
+	name = "fencer's cuirass"
+	desc = "An expertly smithed form-fitting steel cuirass that is much lighter and agile, but breaks with much more ease. It's thinner, but backed with silk and leather."
+	armor = ARMOR_LIGHTCUIRASS
+	armor_class = ARMOR_CLASS_LIGHT
+	max_integrity = 170
+	smelt_bar_num = 1
+	icon_state = "fencercuirass"
+	item_state = "fencercuirass"
+
 /obj/item/clothing/suit/roguetown/armor/plate/half/aalloy
 	name = "decrepit cuirass"
 	desc = "A withered cuirass. Aeon's grasp is upon its form."
@@ -696,7 +750,6 @@
 	desc = "A cuirass of ancient alloys. Aeon's grasp lifted from its form."
 	icon_state = "ancientcuirass"
 	smeltresult = /obj/item/ingot/aaslag
-
 
 /obj/item/clothing/suit/roguetown/armor/plate/half/fluted
 	name = "fluted cuirass"
@@ -751,6 +804,13 @@
 	equip_delay_self = 4 SECONDS
 	armor_class = ARMOR_CLASS_MEDIUM
 	smelt_bar_num = 2
+
+/obj/item/clothing/suit/roguetown/armor/plate/scale/steppe
+	name = "steel steppesman hatanga"
+	desc = "A set of steel-scaled hatanga armor hailing from the southern steppes."
+	icon_state = "hudesutu"
+	max_integrity = 250		//Grenzel gets 100+ integrity, I don't see why not give a +50 here.
+
 
 //HEAVY ARMOR//
 
@@ -1135,6 +1195,31 @@
 	armor_class = ARMOR_CLASS_MEDIUM
 	w_class = WEIGHT_CLASS_BULKY
 
+/obj/item/clothing/suit/roguetown/armor/brigandine/light/attack_right(mob/user)
+	if(detail_tag)
+		return
+	var/the_time = world.time
+	var/pickedcolor = input(user, "Select a color.","Brigandine Color") as null|anything in CLOTHING_COLOR_NAMES
+	if(!pickedcolor)
+		return
+	if(world.time > (the_time + 30 SECONDS))
+		return
+	detail_tag = "_detail"
+	detail_color = clothing_color2hex(pickedcolor)
+	update_icon()
+	if(ismob(loc))
+		var/mob/L = loc
+		L.update_inv_armor()
+
+/obj/item/clothing/suit/roguetown/armor/brigandine/light/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
+
 /obj/item/clothing/suit/roguetown/armor/plate/scale/inqcoat
 	slot_flags = ITEM_SLOT_ARMOR
 	name = "inquisitorial duster"
@@ -1211,3 +1296,63 @@
 /obj/item/clothing/suit/roguetown/armor/plate/elven_plate/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/item_equipped_movement_rustle, SFX_WOOD_ARMOR)
+
+//the following changes are apart of a kazengite content update, and uses armor values from ratwood
+//i can move the armor protection values into roguetown.dm if it's requested but i really dont think that's necessary for a bunch of custom values
+
+//explanations for armor values & whatever will be sticked at the end of each piece, and they'll be removed if the PR gets merged
+
+/obj/item/clothing/suit/roguetown/armor/basiceast
+	name = "simple dobo robe"
+	desc = "A dirty dobo robe with white lapels. Can be upgraded through the use of a tailor."
+	icon_state = "eastsuit3"
+	item_state = "eastsuit3"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_armor.dmi'
+	break_sound = 'sound/foley/cloth_rip.ogg'
+	drop_sound = 'sound/foley/dropsound/cloth_drop.ogg'
+	body_parts_covered = COVERAGE_FULL
+	armor = list("blunt" = 35, "slash" = 75, "stab" = 40, "piercing" = 20, "fire" = 0, "acid" = 0)
+	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_BLUNT, BCLASS_CHOP)
+	blocksound = SOFTHIT
+	blade_dulling = DULLING_BASHCHOP
+	sewrepair = TRUE
+	nodismemsleeves = TRUE
+	max_integrity = 175 //can be increased if it turns out that having full coverage with such a low integ. isnt worth it
+	sellprice = 20
+	armor_class = ARMOR_CLASS_LIGHT
+	allowed_race = NON_DWARVEN_RACE_TYPES
+	flags_inv = HIDEBOOB|HIDECROTCH
+
+//less integrity than a leather cuirass, incredibly weak to blunt damage - great against slash - standard leather value against stab
+//the intent for these armors is to create specific weaknesses/strengths for people to play with
+
+/obj/item/clothing/suit/roguetown/armor/basiceast/crafteast
+	name = "decorated dobo robe"
+	desc = "A dobo robe with a red tassel. Leather inlays are sewn in."
+	icon_state = "eastsuit2"
+	item_state = "eastsuit2"
+	armor = list("blunt" = 50, "slash" = 90, "stab" = 60, "piercing" = 30, "fire" = 0, "acid" = 0)
+	max_integrity = 200
+
+//craftable variation of eastsuit, essentially requiring the presence of a tailor with relevant materials
+//still weak against blunt
+
+/obj/item/clothing/suit/roguetown/armor/basiceast/mentorsuit
+	name = "old dobo robe"
+	desc = "The scars on your body were once stories of strength and bravado."
+	icon_state = "eastsuit1"
+	item_state = "eastsuit1"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_armor.dmi'
+	armor = list("blunt" = 50, "slash" = 90, "stab" = 60, "piercing" = 30, "fire" = 0, "acid" = 0)
+	max_integrity = 200
+
+/obj/item/clothing/suit/roguetown/armor/basiceast/captainrobe
+	name = "foreign robes"
+	desc = "Flower-styled robes, said to have been infused with magical protection. The Merchant Guild says that this is from the southern Kazengite region."
+	icon_state = "eastsuit4"
+	item_state = "eastsuit4"
+	armor = list("blunt" = 50, "slash" = 90, "stab" = 60, "piercing" = 30, "fire" = 0, "acid" = 0)
+	max_integrity = 300
+	sellprice = 25
+
+// this robe spawns on a role that offers no leg protection nor further upgrades to the loadout, in exchange for better roundstart gear

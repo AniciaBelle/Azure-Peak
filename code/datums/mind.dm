@@ -856,13 +856,16 @@ GLOBAL_LIST_EMPTY(personal_objective_minds)
 
 //To remove a specific spell from a mind
 /datum/mind/proc/RemoveSpell(obj/effect/proc_holder/spell/spell)
+	var/success = FALSE
 	if(!spell)
-		return
+		return FALSE
 	for(var/X in spell_list)
 		var/obj/effect/proc_holder/spell/S = X
 		if(istype(S, spell))
 			spell_list -= S
 			qdel(S)
+			success = TRUE // won't return here because of possibility of duplicate spells in spell_list
+	return success
 
 /datum/mind/proc/RemoveAllSpells()
 	for(var/obj/effect/proc_holder/S in spell_list)

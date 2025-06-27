@@ -124,9 +124,8 @@
 		var/mob/living/carbon/human/human_owner = owner
 		if(human_owner.checkcritarmor(zone_precise, bclass))
 			return FALSE
-		if(owner.mind && get_damage() < max_damage/2) //No crits except if it hits a damage threshold on players.
-			if(owner.mobility_flags & MOBILITY_STAND && !owner.buckled) //Unless they're buckled or lying down.
-				do_crit = FALSE
+		if(owner.mind && (get_damage() <= (max_damage * 0.9))) //No crits unless the damage is maxed out.
+			do_crit = FALSE // We used to check if they are buckled or lying down but being grounded is a big enough advantage.
 	if(user)
 		if(user.goodluck(2))
 			dam += 10
@@ -159,6 +158,14 @@
 					added_wound = /datum/wound/puncture
 				if(1 to 10)
 					added_wound = /datum/wound/puncture/small
+		if(BCLASS_LASHING)
+			switch(dam)
+				if(20 to INFINITY)
+					added_wound = /datum/wound/lashing/large
+				if(10 to 20)
+					added_wound = /datum/wound/lashing
+				if(1 to 10)
+					added_wound = /datum/wound/lashing/small
 		if(BCLASS_BITE)
 			switch(dam)
 				if(20 to INFINITY)
@@ -218,6 +225,14 @@
 				used += 10
 		if(prob(used))
 			attempted_wounds += /datum/wound/artery
+	if(bclass in GLOB.whipping_bclasses)
+		used = round(damage_dividend * 20 + (dam / 3) - 10 * resistance, 1)
+		if(user && istype(user.rmb_intent, /datum/rmb_intent/strong))
+			dam += 10
+		if(HAS_TRAIT(src, TRAIT_CRITICAL_WEAKNESS))
+			attempted_wounds += /datum/wound/artery		//basically does sword-tier wounds.
+		if(prob(used))
+			attempted_wounds += /datum/wound/scarring
 
 	for(var/wound_type in shuffle(attempted_wounds))
 		var/datum/wound/applied = add_wound(wound_type, silent, crit_message)
@@ -272,6 +287,16 @@
 				attempted_wounds += /datum/wound/artery/chest
 			else
 				attempted_wounds += /datum/wound/artery
+	if(bclass in GLOB.whipping_bclasses)
+		used = round(damage_dividend * 20 + (dam / 4) - 10 * resistance, 1)
+		if(user)
+			if(istype(user.rmb_intent, /datum/rmb_intent/strong))
+				dam += 10
+		if(prob(used))
+			if(HAS_TRAIT(owner, TRAIT_CRITICAL_WEAKNESS))
+				attempted_wounds += /datum/wound/artery/chest
+			else
+				attempted_wounds += /datum/wound/scarring
 
 	for(var/wound_type in shuffle(attempted_wounds))
 		var/datum/wound/applied = add_wound(wound_type, silent, crit_message)

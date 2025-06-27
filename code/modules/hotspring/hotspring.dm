@@ -150,13 +150,13 @@
 	icon = 'icons/obj/structures/hotspring.dmi'
 	icon_state = "stonelantern1"
 	torch_off_state = "stonelantern0"
-	base_state = "stonelantern0"
+	base_state = "stonelantern"
 
 /obj/machinery/light/rogue/torchholder/hotspring/standing
 	name = "standing stone lantern"
 	icon_state = "stonelantern_standing1"
 	torch_off_state = "stonelantern_standing0"
-	base_state = "stonelantern_standing0"
+	base_state = "stonelantern_standing"
 
 /obj/effect/lily_petal
 	name = "lily petals"

@@ -39,7 +39,7 @@
 	id = "foodbuff"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/foodbuff
 	effectedstats = list("constitution" = 1,"endurance" = 1)
-	duration = 10 MINUTES
+	duration = 15 MINUTES
 
 /atom/movable/screen/alert/status_effect/buff/foodbuff
 	name = "Great Meal"
@@ -293,7 +293,9 @@
 	alert_type = /atom/movable/screen/alert/status_effect/buff/darkvision
 	duration = 15 MINUTES
 
-/datum/status_effect/buff/darkvision/on_apply()
+/datum/status_effect/buff/darkvision/on_apply(mob/living/new_owner, assocskill)
+	if(assocskill)
+		duration += 5 MINUTES * assocskill
 	. = ..()
 	to_chat(owner, span_warning("The darkness fades somewhat."))
 	ADD_TRAIT(owner, TRAIT_DARKVISION, MAGIC_TRAIT)
@@ -475,6 +477,34 @@
 		owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -healing_on_tick)
 		owner.adjustCloneLoss(-healing_on_tick, 0)
 
+/datum/status_effect/buff/healing/necras_vow
+	id = "healing"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/healing
+	duration = -1
+	healing_on_tick = 3
+	outline_colour = "#bbbbbb"
+
+/datum/status_effect/buff/healing/necras_vow/on_apply()
+	healing_on_tick = max(owner.mind?.get_skill_level(/datum/skill/magic/holy), 3)
+	return TRUE
+
+/datum/status_effect/buff/healing/necras_vow/tick()
+	var/obj/effect/temp_visual/heal/H = new /obj/effect/temp_visual/heal_rogue(get_turf(owner))
+	H.color = "#a5a5a5"
+	var/list/wCount = owner.get_wounds()
+	if(!owner.construct)
+		if(owner.blood_volume < BLOOD_VOLUME_NORMAL)
+			owner.blood_volume = min(owner.blood_volume + (healing_on_tick + 10), BLOOD_VOLUME_NORMAL)
+		if(wCount.len > 0)
+			owner.heal_wounds(healing_on_tick, list(/datum/wound/slash, /datum/wound/puncture, /datum/wound/bite, /datum/wound/bruise))
+			owner.update_damage_overlays()
+		owner.adjustBruteLoss(-healing_on_tick, 0)
+		owner.adjustFireLoss(-healing_on_tick, 0)
+		owner.adjustOxyLoss(-healing_on_tick, 0)
+		owner.adjustToxLoss(-healing_on_tick, 0)
+		owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -healing_on_tick)
+		owner.adjustCloneLoss(-healing_on_tick, 0)
+
 /datum/status_effect/buff/rockmuncher
 	id = "rockmuncher"
 	duration = 10 SECONDS
@@ -637,7 +667,7 @@
 	id = "Moonsight"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/moonlightdance
 	effectedstats = list("intelligence" = 2)
-	duration = 15 MINUTES
+	duration = 25 MINUTES
 
 /atom/movable/screen/alert/status_effect/buff/moonlightdance
 	name = "Moonlight Dance"
@@ -890,6 +920,7 @@
 	effectedstats = list("intelligence" = 2, "endurance" = 4, "speed" = -3)
 	duration = 20 SECONDS
 
+
 /datum/status_effect/buff/clash
 	id = "clash"
 	duration = 6 SECONDS
@@ -924,3 +955,46 @@
 	name = "Ready to Clash"
 	desc = span_notice("I am on guard, and ready to clash. If I am hit, I will successfully defend. Attacking will make me lose my focus.")
 	icon_state = "clash"
+
+#define BLOODRAGE_FILTER "bloodrage"
+
+/atom/movable/screen/alert/status_effect/buff/graggar_bloodrage
+	name = "BLOODRAGE"
+	desc = "GRAGGAR! GRAGGAR! GRAGGAR!"
+	icon_state = "bloodrage"
+
+/datum/status_effect/buff/bloodrage
+	id = "bloodrage"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/graggar_bloodrage
+	var/outline_color = "#ad0202"
+	duration = 15 SECONDS
+
+/datum/status_effect/buff/bloodrage/on_apply()
+	ADD_TRAIT(owner, TRAIT_STRENGTH_UNCAPPED, TRAIT_MIRACLE)
+	var/holyskill = owner.mind?.get_skill_level(/datum/skill/magic/holy)
+	duration = ((15 SECONDS) * holyskill)
+	var/filter = owner.get_filter(BLOODRAGE_FILTER)
+	if(!filter)
+		owner.add_filter(BLOODRAGE_FILTER, 2, list("type" = "outline", "color" = outline_color, "alpha" = 60, "size" = 2))
+	if(!HAS_TRAIT(owner, TRAIT_DODGEEXPERT))
+		if(owner.STASTR < STRENGTH_SOFTCAP)
+			effectedstats = list("strength" = (STRENGTH_SOFTCAP - owner.STASTR))
+			. = ..()
+			return TRUE
+	if(holyskill >= SKILL_LEVEL_APPRENTICE)
+		effectedstats = list("strength" = 2)
+	else
+		effectedstats = list("strength" = 1)
+	. = ..()
+	return TRUE
+
+/datum/status_effect/buff/bloodrage/on_remove()
+	. = ..()
+	REMOVE_TRAIT(owner, TRAIT_STRENGTH_UNCAPPED, TRAIT_MIRACLE)
+	owner.visible_message(span_warning("[owner] wavers, their rage simmering down."))
+	owner.OffBalance(3 SECONDS)
+	owner.remove_filter(BLOODRAGE_FILTER)
+	owner.emote("breathgasp", forced = TRUE)
+	owner.Slowdown(3)
+
+#undef BLOODRAGE_FILTER

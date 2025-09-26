@@ -17,7 +17,7 @@
 	if(mastermob && chargetime)
 		var/newtime = 0 //value to determine charging time in deciseconds
 		newtime = (newtime + 20) //base 2.0 seconds
-		newtime = (newtime - (mastermob.mind?.get_skill_level(/datum/skill/combat/slings) * 1.5)) //each point of skill is -0.15 seconds, maximum -0.9 seconds
+		newtime = (newtime - (mastermob.get_skill_level(/datum/skill/combat/slings) * 1.5)) //each point of skill is -0.15 seconds, maximum -0.9 seconds
 		newtime = (newtime - (mastermob.STAPER / 2)) //each point of perception is -0.05 seconds, maximum -1.0 second
 		newtime = (newtime - (mastermob.STASTR / 5)) //each point of strength is -0.02 seconds, maximum -0.4 seconds
 		if(newtime > 0.5)
@@ -44,7 +44,7 @@
 	if(mastermob && chargetime)
 		var/newtime = 0 //value to determine charging time in deciseconds
 		newtime = (newtime + 22) //base 2.2 seconds
-		newtime = (newtime - (mastermob.mind?.get_skill_level(/datum/skill/combat/slings) * 1.5)) //each point of skill is -0.15 seconds, maximum -0.9 seconds
+		newtime = (newtime - (mastermob.get_skill_level(/datum/skill/combat/slings) * 1.5)) //each point of skill is -0.15 seconds, maximum -0.9 seconds
 		newtime = (newtime - (mastermob.STAPER / 2)) //each point of perception is -0.05 seconds, maximum -1.0 second
 		newtime = (newtime - (mastermob.STASTR / 5)) //each point of strength is -0.02 seconds, maximum -0.4 seconds
 		if(newtime > 0.5)
@@ -172,6 +172,10 @@
 	for(var/obj/item/ammo_casing/CB in get_ammo_list(FALSE, TRUE))
 		var/obj/projectile/BB = CB.BB
 		BB.embedchance = 0.1 //for some reason, if the embedchance is 0, the reusable projectile will not drop after hitting a mob. so it's a 1/1000 chance now
+		BB.accuracy += accfactor * (user.STAPER - 8) * 3 // 8+ PER gives +3 per level. Exponential.
+		BB.bonus_accuracy += (user.STAPER - 8) // 8+ PER gives +1 per level. Does not decrease over range.
+		BB.bonus_accuracy += (user.get_skill_level(/datum/skill/combat/slings) * 5) // +5 per Sling level.
+		BB.damage *= damfactor
 		if(user.client.chargedprog < 100)
 			BB.damage = BB.damage - (BB.damage * (user.client.chargedprog / 100))
 		else

@@ -41,7 +41,7 @@
 /obj/item/alch/examine(mob/user)
 	. = ..()
 	if(user.mind)
-		var/alch_skill = user.mind.get_skill_level(/datum/skill/craft/alchemy)
+		var/alch_skill = user.get_skill_level(/datum/skill/craft/alchemy)
 		var/perint = 0
 		if(isliving(user))
 			var/mob/living/lmob = user
@@ -233,7 +233,7 @@
 	if(alert("Do you wish to change your self?", "Dust of Self", "Yes", "No") != "Yes")
 		return
 	user.visible_message(
-		span_warn("[user] begins to use [src]."), 
+		span_warn("[user] begins to use [src]."),
 		span_warn("I begin to apply [src] on myself.")
 	)
 	if(!do_after(user, 5 SECONDS))
@@ -398,10 +398,19 @@
 	med_pot = /datum/alch_cauldron_recipe/spd_potion
 	minor_pot = /datum/alch_cauldron_recipe/health_potion
 
+/obj/item/alch/manabloompowder
+	name = "manabloom powder"
+	icon_state = "bluepowder"
+
+	major_pot = /datum/alch_cauldron_recipe/mana_potion
+	med_pot = /datum/alch_cauldron_recipe/int_potion
+	minor_pot = /datum/alch_cauldron_recipe/big_mana_potion
+
 /obj/item/alch/rosa
 	name = "rosa"
 	icon_state = "rosa"
 	item_state = "rosa"
+	desc = "It is said that these were white - until Graggar bled on its fields."
 	icon = 'icons/roguetown/misc/alchemy.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/head_items.dmi'
 	slot_flags = ITEM_SLOT_HEAD|ITEM_SLOT_MASK|ITEM_SLOT_MOUTH

@@ -209,14 +209,42 @@
 	if(lay)
 		layer = lay
 
+/obj/structure/fluff/railing/border/north
+	dir = 1
+
+/obj/structure/fluff/railing/border/east
+	dir = 4
+
+/obj/structure/fluff/railing/border/west
+	dir = 8
+
 /obj/structure/fluff/railing/corner
-	icon_state = "railing_corner"
+	icon_state = "border"
 	density = FALSE
+	dir = 9
+
+/obj/structure/fluff/railing/corner/north_east
+	dir = 5
+
+/obj/structure/fluff/railing/corner/south_west
+	dir = 10
+
+/obj/structure/fluff/railing/corner/south_east
+	dir = 6
 
 /obj/structure/fluff/railing/wood
 	icon_state = "woodrailing"
 	blade_dulling = DULLING_BASHCHOP
 	layer = ABOVE_MOB_LAYER
+
+/obj/structure/fluff/railing/wood/north
+	dir = 1
+
+/obj/structure/fluff/railing/wood/east
+	dir = 4
+
+/obj/structure/fluff/railing/wood/west
+	dir = 8
 
 /obj/structure/fluff/railing/stonehedge
 	icon_state = "stonehedge"
@@ -360,6 +388,7 @@
 	icon_state = "passage0"
 	density = TRUE
 	max_integrity = 1500
+	redstone_structure = TRUE
 
 /obj/structure/bars/passage/steel
 	name = "steel bars"
@@ -379,6 +408,7 @@
 	icon_state = "shutter0"
 	density = TRUE
 	opacity = TRUE
+	redstone_structure = TRUE
 
 /obj/structure/bars/passage/shutter/redstone_triggered()
 	if(obj_broken)
@@ -397,6 +427,29 @@
 	density = FALSE
 	opacity = FALSE
 
+/obj/structure/bars/passage/attackby(obj/item/I, mob/user, params)
+	. = ..()
+	var/obj/item = user.get_active_held_item()
+	if(user.used_intent.type == /datum/intent/chisel )
+		if (user.get_skill_level(/datum/skill/craft/engineering) <= 3)
+			to_chat(user, span_warning("I need more skill to carve a name into this passage."))
+			return
+		playsound(user, 'sound/misc/wood_saw.ogg', 100, TRUE)
+		user.visible_message("<span class='info'>[user] Carves a name into the passage.</span>")
+		if(do_after(user, 10))
+			var/passagename
+			passagename = input("What name would you like to carve into the passage?")
+			if (passagename)
+				name = passagename + "(passage)"
+				desc = "a passage with a name carved into it"
+			else
+				name = "passage"
+				desc = "a passage with a carving scratched out"
+			playsound(user, 'sound/misc/wood_saw.ogg', 100, TRUE)
+		return
+	else if(istype(item, /obj/item/rogueweapon/chisel/assembly))
+		to_chat(user, span_warning("You most use both hands to rename the passage."))
+
 /obj/structure/bars/grille
 	name = "grille"
 	desc = ""
@@ -409,6 +462,7 @@
 	obj_flags = CAN_BE_HIT | BLOCK_Z_OUT_DOWN | BLOCK_Z_IN_UP
 	attacked_sound = list('sound/combat/hits/onmetal/grille (1).ogg', 'sound/combat/hits/onmetal/grille (2).ogg', 'sound/combat/hits/onmetal/grille (3).ogg')
 	var/togg = FALSE
+	redstone_structure = TRUE
 
 /obj/structure/bars/grille/Initialize()
 	AddComponent(/datum/component/squeak, list('sound/foley/footsteps/FTMET_A1.ogg','sound/foley/footsteps/FTMET_A2.ogg','sound/foley/footsteps/FTMET_A3.ogg','sound/foley/footsteps/FTMET_A4.ogg'), 40)
@@ -438,6 +492,28 @@
 		icon_state = "floorgrille"
 		obj_flags = CAN_BE_HIT | BLOCK_Z_OUT_DOWN | BLOCK_Z_IN_UP
 
+/obj/structure/bars/grille/attackby(obj/item/I, mob/user, params)
+	. = ..()
+	var/obj/item = user.get_active_held_item()
+	if(user.used_intent.type == /datum/intent/chisel )
+		if (user.get_skill_level(/datum/skill/craft/engineering) <= 3)
+			to_chat(user, span_warning("I need more skill to carve a name into this grille."))
+			return
+		playsound(user, 'sound/misc/wood_saw.ogg', 100, TRUE)
+		user.visible_message("<span class='info'>[user] Carves a name into the grille.</span>")
+		if(do_after(user, 10))
+			var/grillename
+			grillename = input("What name would you like to carve into the grille?")
+			if (grillename)
+				name = grillename + "(grille)"
+				desc = "a grille with a name carved into it"
+			else
+				name = "grille"
+				desc = "a grille with a carving scratched out"
+			playsound(user, 'sound/misc/wood_saw.ogg', 100, TRUE)
+		return
+	else if(istype(item, /obj/item/rogueweapon/chisel/assembly))
+		to_chat(user, span_warning("You most use both hands to rename the grille."))
 
 /obj/structure/bars/pipe
 	name = "bronze pipe"
@@ -566,6 +642,19 @@
 	destroy_sound = 'sound/combat/hits/onwood/destroyfurniture.ogg'
 	attacked_sound = 'sound/combat/hits/onglass/glasshit.ogg'
 	pixel_y = 32
+
+/obj/structure/fluff/wallclock/attack_right(mob/user)
+	if(user.mind && isliving(user))
+		if(user.mind.special_items && user.mind.special_items.len)
+			var/item = input(user, "What will I take?", "STASH") as null|anything in user.mind.special_items
+			if(item)
+				if(user.Adjacent(src))
+					if(user.mind.special_items[item])
+						var/path2item = user.mind.special_items[item]
+						user.mind.special_items -= item
+						var/obj/item/I = new path2item(user.loc)
+						user.put_in_hands(I)
+			return
 
 /obj/structure/fluff/wallclock/Destroy()
 	if(soundloop)
@@ -703,7 +792,7 @@
 /obj/structure/fluff/customsign/attackby(obj/item/W, mob/user, params)
 	if(!user.cmode)
 		if(!user.is_literate())
-			to_chat(user, span_warning("I don't know any verba."))
+			to_chat(user, span_warning("I do not know how to write."))
 			return
 		if((user.used_intent.blade_class == BCLASS_STAB) && (W.wlength == WLENGTH_SHORT))
 			if(wrotesign)
@@ -714,6 +803,9 @@
 				if(inputty && !wrotesign)
 					wrotesign = inputty
 					icon_state = "signwrote"
+		else
+			to_chat(user, span_warning("Alas, this will not work. I could carve words, if I stabbed at this with something posessing a short, sharp point. A knife comes to mind."))
+			return
 	..()
 
 /obj/structure/fluff/alch
@@ -779,6 +871,9 @@
 /obj/structure/fluff/statue/gargoyle
 	icon_state = "gargoyle"
 
+/obj/structure/fluff/statue/aasimar
+	icon_state = "aasimar"
+
 /obj/structure/fluff/statue/gargoyle/candles
 	icon_state = "gargoyle_candles"
 
@@ -801,6 +896,19 @@
 	name = "ornamental astrata statue"
 	desc = "An ornamental stone statue of the sun Goddess Astrata, decorated with golden jewelry. Bless."
 	icon_state = "astrata_bling"
+
+//Why are all of these in one giant file.
+/obj/structure/fluff/statue/abyssor
+	name = "abyssor statue"
+	desc = "A slate statue of the ancient god abyssor. One of many depictions drawn from a dream no doubt. This particular one is horrifying to look at."
+	icon_state = "abyssor"
+	icon = 'icons/roguetown/misc/tallandwide.dmi'
+	pixel_x = -16
+
+/obj/structure/fluff/statue/abyssor/dolomite
+	name = "abyssor statue"
+	desc = "A rare dolomite statue of the ancient god abyssor. Hewn from bleached rock as if the shimmer makes his faceless gaze any less terrifying."
+	icon_state = "abyssor_dolomite"
 
 /obj/structure/fluff/statue/knight/r
 	icon_state = "knightstatue_r"
@@ -888,7 +996,7 @@
 					user.changeNext_move(CLICK_CD_MELEE)
 					if(W.max_blade_int)
 						W.remove_bintegrity(5)
-					L.rogfat_add(rand(4,6))
+					L.stamina_add(rand(4,6))
 					if(!(L.mobility_flags & MOBILITY_STAND))
 						probby = 0
 					if(L.STAINT < 3)
@@ -944,6 +1052,14 @@
 		/obj/item/ingot/blacksteel,
 		/obj/item/clothing/neck/roguetown/psicross,
 		/obj/item/reagent_containers/glass/cup,
+		/obj/item/candle/gold,
+		/obj/item/candle/silver,
+		/obj/item/candle/candlestick/silver,
+		/obj/item/candle/candlestick/gold,
+		/obj/item/kitchen/fork/silver,
+		/obj/item/kitchen/fork/gold,
+        /obj/item/kitchen/spoon/silver,
+		/obj/item/kitchen/spoon/gold,
 		/obj/item/roguestatue,
 		/obj/item/riddleofsteel,
 		/obj/item/listenstone,
@@ -962,6 +1078,9 @@
 	var/donatedamnt = W.get_real_price()
 	if(user.mind)
 		if(user)
+			if(W.flags_1 & HOARDMASTER_SPAWNED_1)
+				to_chat(user, span_warning("This item is from the Hoard!"))
+				return
 			if(W.sellprice <= 0)
 				to_chat(user, span_warning("This item is worthless."))
 				return
@@ -977,7 +1096,7 @@
 					if(player.mind)
 						if(player.mind.has_antag_datum(/datum/antagonist/bandit))
 							var/datum/antagonist/bandit/bandit_players = player.mind.has_antag_datum(/datum/antagonist/bandit)
-							GLOB.azure_round_stats[STATS_SHRINE_VALUE] += W.get_real_price()
+							record_round_statistic(STATS_SHRINE_VALUE, W.get_real_price()) 
 							bandit_players.favor += donatedamnt
 							bandit_players.totaldonated += donatedamnt
 							to_chat(player, ("<font color='yellow'>[user.name] donates [donatedamnt] to the shrine! You now have [bandit_players.favor] favor.</font>"))
@@ -999,7 +1118,6 @@
 	layer = BELOW_MOB_LAYER
 	max_integrity = 100
 	sellprice = 40
-	flags_1 = HEAR_1
 	var/chance2hear = 30
 	buckleverb = "crucifie"
 	can_buckle = 1
@@ -1009,7 +1127,15 @@
 	buckle_requires_restraints = 1
 	buckle_prevents_pull = 1
 	var/divine = TRUE
-	obj_flags = UNIQUE_RENAME
+	obj_flags = UNIQUE_RENAME | CAN_BE_HIT
+
+/obj/structure/fluff/psycross/Initialize()
+	. = ..()
+	become_hearing_sensitive()
+
+/obj/structure/fluff/psycross/Destroy()
+	lose_hearing_sensitivity()
+	return ..()
 
 /obj/structure/fluff/psycross/post_buckle_mob(mob/living/M)
 	..()
@@ -1048,6 +1174,28 @@
 	max_integrity = 80
 	chance2hear = 10
 
+/obj/structure/fluff/psycross/psycrucifix
+	name = "wooden psydonic crucifix"
+	desc = "A rarely seen symbol of absolute and devoted certainty, more common in Otava: HE yet lyves. HE yet breathes."
+	icon_state = "psycruci"
+	max_integrity = 80
+	chance2hear = 10
+
+/obj/structure/fluff/psycross/psycrucifix/stone
+	name = "stone psydonic crucifix"
+	desc = "Formed of stone, this great Psycross symbolises that HE is forever ENDURING. Considered a rare sight upon the Peaks."
+	icon_state = "psycruci_r"
+	max_integrity = 120
+	chance2hear = 10
+
+/obj/structure/fluff/psycross/psycrucifix/silver
+	name = "silver psydonic crucifix"
+	icon_state = "psycruci_s"
+	desc = "Constructed of Blessed Silver, this crucifix symbolises absolute faith in the ONE - For PSYDON WEEPS, for all mortal ilk. PSYDON WEEPS, for all who walk upon the soil. PSYDON WEEPS..."
+	attacked_sound = list("sound/combat/hits/onmetal/metalimpact (1).ogg", "sound/combat/hits/onmetal/metalimpact (2).ogg")
+	max_integrity = 450
+	chance2hear = 10
+
 /obj/structure/fluff/psycross/zizocross
 	name = "inverted cross"
 	desc = "An unholy symbol. Blasphemy for most, reverence for few."
@@ -1056,7 +1204,7 @@
 
 /obj/structure/fluff/psycross/attackby(obj/item/W, mob/user, params)
 	if(user.mind)
-		if(user.mind.assigned_role == "Priest")
+		if(user.mind.assigned_role == "Bishop")
 			if(istype(W, /obj/item/reagent_containers/food/snacks/grown/apple))
 				if(!istype(get_area(user), /area/rogue/indoors/town/church/chapel))
 					to_chat(user, span_warning("I need to do this in the chapel."))
@@ -1153,6 +1301,7 @@
 					return
 	return ..()
 
+
 /obj/structure/fluff/psycross/copper/Destroy()
 	addomen("psycross")
 	..()
@@ -1235,24 +1384,6 @@
 	name = "clockwork golem scrap"
 	desc = ""
 	icon_state = "clockgolem_dead"
-
-/obj/structure/fluff/statue/shisha
-	name = "shisha pipe"
-	desc = "A traditional shisha pipe, this one is broken."
-	icon = 'icons/roguetown/misc/64x64.dmi'
-	icon_state = "zbuski"
-	density = FALSE
-	anchored = TRUE
-	layer = ABOVE_MOB_LAYER
-	plane = GAME_PLANE_UPPER
-	blade_dulling = DULLING_BASH
-	max_integrity = 300
-
-/obj/structure/fluff/statue/shisha/hookah
-	name = "shisha pipe"
-	desc = "A traditional shisha pipe, this one is broken."
-	icon = 'icons/roguetown/misc/structure.dmi'
-	icon_state = "hookah"
 
 /obj/structure/fluff/headstake
 	name = "head on a stake"

@@ -9,6 +9,14 @@
 	var/list/specific_dream_costs
 	var/list/dreams
 	var/randomable_dream_xp = TRUE
+	var/expert_name
+	var/color = null
+
+	/// Any skill levelling restrictions based on traits. If the trait is present, it can level past the level.
+	var/list/trait_restrictions
+	//Example:
+	//list(TRAIT_EXAMPLE = SKILL_LEVEL_MAXIMUM_WITHOUT_THE_TRAIT)
+	//Feel free to refactor it to work more sanely, it was concepted for a specific case. - F
 
 /datum/skill/proc/get_skill_speed_modifier(level)
 	return
@@ -23,7 +31,8 @@
 	// Malum worshippers (with TRAIT_FORGEBLESSED) spend fewer dream points on craft skills
 	if(user && HAS_TRAIT(user, TRAIT_FORGEBLESSED) && (istype(src, /datum/skill/craft) || (istype(src, /datum/skill/misc/sewing))))
 		cost = max(1, FLOOR(cost * 0.5, 1)) // 50% reduction, minimum cost of 1
-	
+	else if(user && HAS_TRAIT(user, TRAIT_JACKOFALLTRADES))
+		cost = max(1, FLOOR(cost * 0.5, 1)) // Ditto for Homesteader towners
 	return cost
 
 /datum/skill/proc/skill_level_effect(level, datum/mind/mind)

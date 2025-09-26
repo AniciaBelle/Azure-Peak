@@ -9,8 +9,8 @@
 	antag_flag = ROLE_NBEAST
 	shared_occurence_type = SHARED_HIGH_THREAT
 
-	weight = 0		//Disabled cus vampires too strong
-	max_occurrences = 0
+	weight = 4
+	max_occurrences = 1
 
 	denominator = 80
 
@@ -31,7 +31,7 @@
 		"Men-at-arms",
 		"Marshal",
 		"Merchant",
-		"Priest",
+		"Bishop",
 		"Acolyte",
 		"Martyr",
 		"Templar",
@@ -42,13 +42,14 @@
 		"Hand",
 		"Steward",
 		"Court Physician",
-		"Town Elder",
+		"Town Crier",
 		"Captain",
 		"Archivist",
 		"Knight",
 		"Court Magician",
 		"Inquisitor",
 		"Orthodoxist",
+		"Absolver",
 		"Warden",
 		"Squire",
 		"Veteran",

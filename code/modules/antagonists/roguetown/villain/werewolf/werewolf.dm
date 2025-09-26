@@ -3,7 +3,34 @@
 	roundend_category = "Werewolves"
 	antagpanel_category = "Werewolf"
 	job_rank = ROLE_WEREWOLF
-	var/list/inherent_traits = list(TRAIT_NOPAIN, TRAIT_NOPAINSTUN, TRAIT_CRITICAL_RESISTANCE, TRAIT_NOFALLDAMAGE1, TRAIT_KNEESTINGER_IMMUNITY, TRAIT_SHOCKIMMUNE)
+	var/list/inherent_traits = list(
+		TRAIT_IGNORESLOWDOWN,
+		TRAIT_IGNOREDAMAGESLOWDOWN,
+		TRAIT_NOPAIN, 
+		TRAIT_NOPAINSTUN, 
+		TRAIT_CRITICAL_RESISTANCE, 
+		TRAIT_NOFALLDAMAGE1, 
+		TRAIT_KNEESTINGER_IMMUNITY, 
+		TRAIT_SHOCKIMMUNE,
+		TRAIT_SILVER_WEAK,
+		TRAIT_STRENGTH_UNCAPPED,
+		TRAIT_LONGSTRIDER,
+		TRAIT_SPELLCOCKBLOCK,
+		TRAIT_PIERCEIMMUNE,
+		TRAIT_HARDDISMEMBER,
+		TRAIT_NOSTINK,
+		TRAIT_NASTY_EATER,
+		TRAIT_ORGAN_EATER,
+		TRAIT_TOXIMMUNE,
+		TRAIT_BREADY,
+		TRAIT_STEELHEARTED,
+		TRAIT_BASHDOORS,
+		TRAIT_INFINITE_STAMINA,
+		TRAIT_ZJUMP,
+		TRAIT_NOSLEEP,
+		TRAIT_GRABIMMUNE,
+		TRAIT_STRONGBITE
+	)
 	confess_lines = list(
 		"THE BEAST INSIDE ME!",
 		"BEWARE THE BEAST!",
@@ -37,10 +64,11 @@
 				return span_boldwarning("An Ancient Vampire. I must be careful!")
 
 /datum/antagonist/werewolf/on_gain()
+	greet()
 	owner.special_role = name
 	if(increase_votepwr)
 		forge_werewolf_objectives()
-
+	
 	wolfname = "[pick(GLOB.wolf_prefixes)] [pick(GLOB.wolf_suffixes)]"
 	return ..()
 
@@ -64,9 +92,12 @@
 		return
 
 /datum/antagonist/werewolf/greet()
-	to_chat(owner.current, span_userdanger("Ever since that bite, I have been a [name]."))
-	owner.announce_objectives()
+	to_chat(owner.current, span_userdanger("Since a bite long, long ago, Dendor's Madness has welled within me. Before the Moonlight, I will sate my hallowed Hunger."))
 	return ..()
+
+/datum/antagonist/werewolf/lesser/greet()
+	// leave this empty so that lesser verevolf's dont get the greeting on bite.
+	// there is probably a better way to do this but this works until sm1 smarter inevitably rewrites WW.
 
 /mob/living/carbon/human/proc/can_werewolf()
 	if(!mind)
@@ -105,7 +136,7 @@
 /mob/living/carbon/human/proc/werewolf_feed(mob/living/carbon/human/target, healing_amount = 10)
 	if(!istype(target))
 		return
-	if(src.has_status_effect(/datum/status_effect/debuff/silver_curse))
+	if(has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder) || has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder/blessed))
 		to_chat(src, span_notice("My power is weakened, I cannot heal!"))
 		return
 	if(target.mind)
@@ -163,7 +194,6 @@
 	force = 25
 	block_chance = 0
 	wdefense = 2
-	blade_dulling = DULLING_SHAFT_GRAND
 	armor_penetration = 15
 	associated_skill = /datum/skill/combat/unarmed
 	wlength = WLENGTH_NORMAL
@@ -186,5 +216,4 @@
 
 /obj/item/rogueweapon/werewolf_claw/Initialize()
 	. = ..()
-	ADD_TRAIT(src, TRAIT_NODROP, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOEMBED, TRAIT_GENERIC)

@@ -59,6 +59,30 @@
 	sewrepair = FALSE
 	anvilrepair = /datum/skill/craft/armorsmithing
 
+/obj/item/storage/belt/rogue/leather/battleskirt
+	name = "cloth military skirt"
+	icon_state = "battleskirt"
+	sewrepair = FALSE
+	detail_tag = "_belt"
+
+/obj/item/storage/belt/rogue/leather/battleskirt/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
+
+/obj/item/storage/belt/rogue/leather/battleskirt/black
+	color = CLOTHING_BLACK
+
+/obj/item/storage/belt/rogue/leather/battleskirt/faulds
+	name = "belt with faulds"
+	icon_state = "faulds"
+	sewrepair = FALSE
+	detail_tag = "_belt"
+
 /obj/item/storage/belt/rogue/leather/steel
 	name = "steel belt"
 	icon_state = "steelplaque"
@@ -193,6 +217,12 @@
 		/obj/item/natural/feather,
 		/obj/item/paper,
 	)
+
+/obj/item/storage/backpack/rogue/satchel/otavan
+	name = "otavan leather satchel"
+	desc = "A made to last leather bag from the Psydonian heart of Otava. It's Otava's finest."
+	icon_state = "osatchel"
+	item_state = "osatchel"
 
 /obj/item/storage/backpack/rogue/satchel/mule/PopulateContents()
 	for(var/i in 1 to 3)
@@ -393,6 +423,13 @@
 		knives += K
 	update_icon()
 
+/obj/item/storage/belt/rogue/leather/knifebelt/black/kazengun/Initialize()
+	. = ..()
+	for(var/i in 1 to max_storage)
+		var/obj/item/rogueweapon/huntingknife/throwingknife/kazengun/K = new()
+		knives += K
+	update_icon()
+
 /obj/item/storage/belt/rogue/leather/exoticsilkbelt
 	name = "exotic silk belt"
 	desc = "A gold adorned belt with the softest of silks barely concealing one's bits."
@@ -435,3 +472,41 @@
 	anvilrepair = /datum/skill/craft/blacksmithing
 	smeltresult = /obj/item/ingot/bronze
 	component_type = /datum/component/storage/concrete/grid/headhook/bronze
+
+/obj/item/clothing/climbing_gear
+	name = "climbing gear"
+	desc = "Lets you do the impossible."
+	color = null
+	icon = 'icons/roguetown/clothing/storage.dmi'
+	item_state = "climbing_gear" // sprites from lfwb kitbashed with grappler for inventory sprite
+	icon_state = "climbing_gear" // sprites from lfwb kitbashed among each other for onmob sprite
+	alternate_worn_layer = UNDER_CLOAK_LAYER
+	inhand_mod = FALSE
+	slot_flags = ITEM_SLOT_BACK
+
+/obj/item/clothing/climbing_gear/equipped(mob/living/carbon/human/user, slot)
+	. = ..()
+	playsound(loc, 'sound/items/garrotegrab.ogg', 100, TRUE)
+
+/obj/item/clothing/wall_grab
+	name = "wall"
+	item_state = "grabbing"
+	icon_state = "grabbing"
+	icon = 'icons/mob/roguehudgrabs.dmi'
+	max_integrity = 10
+	w_class = WEIGHT_CLASS_HUGE
+	item_flags = ABSTRACT
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	no_effect = TRUE
+
+/obj/item/clothing/wall_grab/dropped(mob/living/carbon/human/user)
+	. = ..()
+	if(QDELETED(src))
+		return
+	qdel(src)
+	var/turf/openspace = user.loc
+	openspace.zFall(user) // slop?
+
+/obj/item/clothing/wall_grab/intercept_zImpact(atom/movable/AM, levels = 1) // with this shit it doesn't generate "X falls through open space". thank u guppyluxx
+    . = ..()
+    . |= FALL_NO_MESSAGE

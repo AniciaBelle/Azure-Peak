@@ -10,7 +10,7 @@
 
 /obj/effect/decal/cleanable/Initialize(mapload)
 	. = ..()
-	if (random_icon_states && (icon_state == initial(icon_state)) && length(random_icon_states) > 0)
+	if(random_icon_states && (icon_state == initial(icon_state)) && length(random_icon_states) > 0)
 		icon_state = pick(random_icon_states)
 	create_reagents(300)
 	if(loc && isturf(loc))
@@ -80,7 +80,7 @@
 		var/mob/living/carbon/human/H = O
 		if(H.shoes && blood_state && bloodiness && !HAS_TRAIT(H, TRAIT_LIGHT_STEP))
 			var/obj/item/clothing/shoes/S = H.shoes
-			if(!S.can_be_bloody)
+			if(!istype(S) || !S.can_be_bloody)
 				return
 			var/add_blood = 0
 			if(bloodiness >= BLOOD_GAIN_PER_STEP)

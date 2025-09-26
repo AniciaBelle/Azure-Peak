@@ -14,7 +14,7 @@
 	description = "Where has the rum gone?"
 	color = "#5f3b23" // rgb: 102, 67, 0
 	boozepwr = 40
-	taste_description = "rum"
+	taste_description = "sweetness with hint of caramel and vanilla"
 
 /datum/reagent/consumable/ethanol/cider
 	name = "Apple Cider"
@@ -120,7 +120,7 @@
 	name = "Ale"
 	description = "A dark alcoholic beverage made with malted barley and yeast."
 	color = "#664300" // rgb: 102, 67, 0
-	boozepwr = 65
+	boozepwr = 25
 	taste_description = "hearty barley ale"
 	glass_icon_state = "aleglass"
 	glass_name = "glass of ale"
@@ -140,8 +140,8 @@
 
 /datum/reagent/consumable/ethanol/gin
 	name = "Gin"
-	boozepwr = 12
-	taste_description = "fruity"
+	boozepwr = 65
+	taste_description = "strong, piney flavor"
 	color = "#809978"
 	quality = DRINK_NICE
 
@@ -167,7 +167,7 @@
 	quality = DRINK_NICE
 
 /datum/reagent/consumable/ethanol/onion
-	name = "Royal Onion Cognac"
+	name = "Onion Cognac"
 	boozepwr = 10
 	taste_description = "spicy sweet malty overtones"
 	color = "#683e00"
@@ -309,21 +309,21 @@
 /datum/reagent/consumable/ethanol/tangerine
 	name = "Tangerine Wine"
 	boozepwr = 15
-	taste_description = "bitter sweet young wine"
+	taste_description = "bittersweet, citrusy young wine"
 	color = "#e7aa59"
 	quality = DRINK_NICE
 
 /datum/reagent/consumable/ethanol/tangerine/aged
 	name = "Aged Tangerine Wine"
 	boozepwr = 30
-	taste_description = "bitter sweet aged wine"
+	taste_description = "bittersweet, citrusy aged wine"
 	color = "#d68d2d"
 	quality = DRINK_GOOD
 
 /datum/reagent/consumable/ethanol/tangerine/delectable
 	name = "Delectable Tangerine Wine"
 	boozepwr = 30
-	taste_description = "bitter sweet delectably aged wine"
+	taste_description = "bittersweet, citrusy delectably aged wine"
 	color = "#eb9321"
 	quality = DRINK_VERYGOOD
 
@@ -518,14 +518,14 @@
 
 // Special Drugs
 /datum/reagent/consumable/ethanol/murkwine // not Toilet wine
-	name = "mürkwine"
+	name = "Mürkwine"
 	boozepwr = 50  // bubba's best
 	taste_description = "hints of questionable choices--a bouqet of murkwater and pure ethanol"
 	color = "#4b1e00"
 
 /datum/reagent/consumable/ethanol/murkwine/on_mob_life(mob/living/carbon/M)
 	M.apply_status_effect(/datum/status_effect/buff/murkwine)
-	M.rogfat_add(0.1)
+	M.stamina_add(0.1)
 	..()
 	. = 1
 
@@ -533,7 +533,7 @@
 	M.remove_status_effect(/datum/status_effect/buff/murkwine)
 
 /datum/reagent/consumable/ethanol/nocshine // wait, no, NOCSHINE
-	name = "noc's shine"
+	name = "Noc's Shine"
 	boozepwr = 70  // YEEEEEHAAAWWWWWW
 	taste_description = "what might be my throat melting and nose hair burning"
 	color = "#d8fbfd63"
@@ -551,3 +551,31 @@
 
 /datum/reagent/consumable/ethanol/nocshine/on_mob_end_metabolize(mob/living/M)
 	M.remove_status_effect(/datum/status_effect/buff/nocshine)
+
+/datum/reagent/consumable/ethanol/luxwine // oh no.
+	name = "Luxintenebre" // lux left w/ sugar in a darkened place for quite some time... U could say... Light in Darkness.....
+	description = "A fermented form of vitae, highly alcoholic, and with a particularly grim taste. Often sought out by the daring, foolhardy, and heretical..."
+	boozepwr = 80 // THE END OF THE FUCKING WORLD.  
+	taste_description = "a green numbness, then a burning vigor in the heart" // heartburn (healing)
+	color = "#86cca3"
+	quality = DRINK_VERYGOOD // good stuff!
+
+/datum/reagent/consumable/ethanol/luxwine/on_mob_life(mob/living/carbon/M) // stolen healthpot code. i am shameless.
+	if(volume > 0.99) // i have no clue if this works.
+		M.adjustBruteLoss(-1*REM, 0)
+		M.adjustFireLoss(-1*REM, 0)
+	..()
+
+/datum/reagent/consumable/ethanol/whipwine // dont ask
+	name = "Magickal Whip Wine" 
+	description = "A recipe recently floated into the Peaks. Magickal Whip Wine is said to increase one's potence and stamina sevenfold."
+	boozepwr = 10 // it's a whip. it's an actual whip.
+	taste_description = "leather, bitter herbs, and regret" // what did you expect
+	color = "#3a1d18"
+
+/datum/reagent/consumable/ethanol/komuchisake // if you put this outside the lich dungeon i'll kill you
+	name = "Divine Snake Wine" 
+	description = "The True Form of the Whipwine. The Magickal Snake Wine was an exclusively produced medicinal wine from over three centures ago in the Kazengun Shogunate..."
+	boozepwr = 60 // ancient lichebrau...
+	taste_description = "bitterness, pain, iron, and ancient mistakes" // what did you expect [2]
+	color = "#553837"

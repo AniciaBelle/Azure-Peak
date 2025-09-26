@@ -93,7 +93,7 @@
 		var/exp_to_gain = 0
 		var/myskill = SKILL_LEVEL_NOVICE // default for NPCs
 		if(L.mind)
-			myskill = L.mind.get_skill_level(/datum/skill/misc/climbing)
+			myskill = L.get_skill_level(/datum/skill/misc/climbing)
 			if(HAS_TRAIT(L, TRAIT_WOODWALKER))
 				exp_to_gain = L.STAINT
 			else
@@ -124,7 +124,7 @@
 	if(.)
 		if(!was_destroyed && obj_destroyed)
 			record_featured_stat(FEATURED_STATS_TREE_FELLERS, user)
-			GLOB.azure_round_stats[STATS_TREES_CUT]++
+			record_round_statistic(STATS_TREES_CUT)
 
 /obj/structure/flora/newtree/update_icon()
 	icon_state = ""

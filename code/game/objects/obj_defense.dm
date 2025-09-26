@@ -102,7 +102,7 @@
 
 /obj/proc/attack_generic(mob/user, damage_amount = 0, damage_type = BRUTE, damage_flag = 0, sound_effect = 1, armor_penetration = 0) //used by attack_alien, attack_animal, and attack_slime
 	user.do_attack_animation(src)
-	user.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_INTENTCAP)
 	return take_damage(damage_amount, damage_type, damage_flag, sound_effect, get_dir(src, user), armor_penetration)
 
 /obj/attack_animal(mob/living/simple_animal/M)
@@ -235,11 +235,14 @@ GLOBAL_DATUM_INIT(acid_overlay, /mutable_appearance, mutable_appearance('icons/e
 		playsound(get_turf(src), break_sound, 80, TRUE)
 	if(break_message)
 		visible_message(break_message)
+	SEND_SIGNAL(src, COMSIG_ITEM_BROKEN)
+	balloon_alert_to_viewers("<font color = '#bb2b2b'>[src]<br>breaks!</font>")
 
 /// Called after obj is repaired (needle/hammer for items). Do not call unless obj_broken is true to avoid breaking armor.
 /obj/proc/obj_fix(mob/user)
 	obj_broken = FALSE
 	obj_integrity = max_integrity
+	SEND_SIGNAL(src, COMSIG_ITEM_OBJFIX)
 
 ///what happens when the obj's integrity reaches zero.
 /obj/proc/obj_destruction(damage_flag)

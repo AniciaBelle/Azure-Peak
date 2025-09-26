@@ -270,6 +270,9 @@
 	if(istype(W, /obj/item/lockpick))
 		trypicklock(W, user)
 		return
+	if(istype(W, /obj/item/melee/touch_attack/lesserknock))
+		trypicklock(W, user)
+		return
 	if(istype(W,/obj/item/lockpickring))
 		var/obj/item/lockpickring/pickring = W
 		if(pickring.picks.len)
@@ -331,7 +334,7 @@
 		var/obj/item/lockpick/P = I
 		var/mob/living/L = user
 
-		var/pickskill = user.mind.get_skill_level(/datum/skill/misc/lockpicking)
+		var/pickskill = user.get_skill_level(/datum/skill/misc/lockpicking)
 		var/perbonus = L.STAPER/5
 		var/picktime = 70
 		var/pickchance = 35
@@ -362,7 +365,7 @@
 				if(lockprogress >= locktreshold)
 					to_chat(user, "<span class='deadsay'>The locking mechanism gives.</span>")
 					record_featured_stat(FEATURED_STATS_CRIMINALS, user)
-					GLOB.azure_round_stats[STATS_LOCKS_PICKED]++
+					record_round_statistic(STATS_LOCKS_PICKED)
 					togglelock(user)
 					break
 				else
@@ -438,7 +441,7 @@
 		return
 	if(!(user.mobility_flags & MOBILITY_STAND) && get_dist(src, user) > 0)
 		return
-	user.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_INTENTCAP)
 	toggle(user)
 
 /obj/structure/closet/attack_paw(mob/user)
@@ -456,7 +459,7 @@
 	if(!usr.canUseTopic(src, BE_CLOSE) || !isturf(loc))
 		return
 
-	if(iscarbon(usr) || isdrone(usr))
+	if(iscarbon(usr))
 		return toggle(usr)
 	else
 		to_chat(usr, span_warning("This mob type can't use this verb."))
@@ -512,7 +515,7 @@
 	dive_into(user)
 
 /obj/structure/closet/proc/togglelock(mob/living/user, silent)
-	user.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_INTENTCAP)
 	if(locked)
 		user.visible_message(span_warning("[user] unlocks [src]."), \
 			span_notice("I unlock [src]."))

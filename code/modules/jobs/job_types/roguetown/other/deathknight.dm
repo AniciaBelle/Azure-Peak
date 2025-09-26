@@ -18,6 +18,8 @@
 	show_in_credits = FALSE
 	give_bank_account = FALSE
 
+	announce_latejoin = FALSE
+
 	cmode_music = 'sound/music/combat_weird.ogg'
 
 /datum/job/roguetown/deathknight/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
@@ -63,7 +65,7 @@
 		H.name = "Death Knight"
 		H.real_name = "Death Knight"
 		ADD_TRAIT(H, TRAIT_NOMOOD, TRAIT_GENERIC)
-		ADD_TRAIT(H, TRAIT_NOROGSTAM, TRAIT_GENERIC)
+		ADD_TRAIT(H, TRAIT_INFINITE_STAMINA, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_NOLIMBDISABLE, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_NOHUNGER, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_NOBREATH, TRAIT_GENERIC)
@@ -79,15 +81,15 @@
 
 /datum/outfit/job/roguetown/deathknight/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.mind.adjust_skillrank(/datum/skill/combat/polearms, 2, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/maces, 2, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/unarmed, 3, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/swords, 3, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/riding, 3, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/magic/arcane, 3, TRUE)
-	H.mind.adjust_spellpoints(18)
+	H.adjust_skillrank(/datum/skill/combat/polearms, 2, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/maces, 2, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/unarmed, 3, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/swords, 3, TRUE)
+	H.adjust_skillrank(/datum/skill/misc/riding, 3, TRUE)
+	H.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
+	H.adjust_skillrank(/datum/skill/magic/arcane, 3, TRUE)
+	H.mind?.adjust_spellpoints(18)
 
 
 	belt = /obj/item/storage/belt/rogue/leather
@@ -99,11 +101,11 @@
 	backl = /obj/item/rogueweapon/sword/long/death
 	head = /obj/item/clothing/head/roguetown/helmet/heavy/knight/black
 
-	H.change_stat("intelligence", 3)
-	H.change_stat("strength", 2)
-	H.change_stat("endurance", 2)
-	H.change_stat("constitution", 2)
-	H.change_stat("speed", -3)
+	H.change_stat(STATKEY_INT, 3)
+	H.change_stat(STATKEY_STR, 2)
+	H.change_stat(STATKEY_WIL, 2)
+	H.change_stat(STATKEY_CON, 2)
+	H.change_stat(STATKEY_SPD, -3)
 
 	H.ambushable = FALSE
 

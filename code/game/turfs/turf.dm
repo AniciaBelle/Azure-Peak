@@ -2,6 +2,10 @@
 	icon = 'icons/turf/floors.dmi'
 	level = 1
 
+	///what /mob/oranges_ear instance is already assigned to us as there should only ever be one.
+	///used for guaranteeing there is only one oranges_ear per turf when assigned, speeds up view() iteration
+	var/mob/oranges_ear/assigned_oranges_ear
+
 	var/intact = 1
 
 	// baseturfs can be either a list or a single turf type.
@@ -243,7 +247,7 @@
  * * type_list - are we checking for types of atoms to ignore and not physical atoms
  */
 /turf/proc/is_blocked_turf(exclude_mobs = FALSE, source_atom = null, list/ignore_atoms, type_list = FALSE)
-	if(density)
+	if((!isnull(source_atom) && !CanPass(source_atom, get_dir(src, source_atom))) || density)
 		return TRUE
 
 	for(var/atom/movable/movable_content as anything in contents)
@@ -399,6 +403,9 @@
 
 /turf/Entered(atom/movable/AM)
 	..()
+	SEND_SIGNAL(src, COMSIG_TURF_ENTERED, AM)
+	SEND_SIGNAL(AM, COMSIG_MOVABLE_TURF_ENTERED, src)
+
 	if(explosion_level && AM.ex_check(explosion_id))
 		AM.ex_act(explosion_level)
 
@@ -535,6 +542,11 @@
 	var/obj/structure/mineral_door/door = locate() in src
 	if(door && door.density && !door.locked && door.anchored) // door will have to be opened
 		. += 2 // try to avoid closed doors where possible
+
+	for(var/obj/structure/O in contents)
+		if(O.obj_flags & BLOCK_Z_OUT_DOWN)
+			return
+	. += path_weight
 
 // Like Distance_cardinal, but includes additional weighting to make A* prefer turfs that are easier to pass through.
 /turf/proc/Heuristic_cardinal(turf/T, mob/traverser)

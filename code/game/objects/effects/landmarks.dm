@@ -211,12 +211,12 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 	name = "Towner"
 	icon_state = "arrow"
 
-/obj/effect/landmark/start/woodsman
-	name = "Town Elder"
+/obj/effect/landmark/start/crier
+	name = "Town Crier"
 	icon_state = "arrow"
 
 /obj/effect/landmark/start/priest
-	name = "Priest"
+	name = "Bishop"
 	icon_state = "arrow"
 
 /obj/effect/landmark/start/cleric
@@ -245,6 +245,10 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 
 /obj/effect/landmark/start/orthodoxist
 	name = "Orthodoxist"
+	icon_state = "arrow"
+
+/obj/effect/landmark/start/absolver
+	name = "Absolver"
 	icon_state = "arrow"
 
 /obj/effect/landmark/start/sergeant

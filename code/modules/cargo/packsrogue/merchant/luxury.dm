@@ -85,3 +85,55 @@
 	name = "Signet"
 	cost = 220
 	contains = list(/obj/item/clothing/ring/signet)
+
+/datum/supply_pack/rogue/luxury/obsidianfragment
+	name = "Obsidian Fragments"
+	cost = 55
+	contains = list(	
+			/obj/item/magic/obsidian,
+			/obj/item/magic/obsidian,
+			/obj/item/magic/obsidian,
+			)
+
+/datum/supply_pack/rogue/luxury/manaflower
+	name = "Manabloom Flowers"
+	cost = 55
+	contains = list(	
+			/obj/item/reagent_containers/food/snacks/grown/manabloom,
+			/obj/item/reagent_containers/food/snacks/grown/manabloom,
+			/obj/item/reagent_containers/food/snacks/grown/manabloom,
+			)
+
+/datum/supply_pack/rogue/luxury/manacrystal
+	name = "Mana Crystals"
+	cost = 55
+	contains = list(	
+			/obj/item/magic/manacrystal,
+			/obj/item/magic/manacrystal,
+			/obj/item/magic/manacrystal,
+			)
+
+/datum/supply_pack/rogue/luxury/merctoken
+	name = "Writ of Commendation"
+	cost = 80
+	contains = list(/obj/item/merctoken)
+
+/datum/supply_pack/rogue/luxury/canvas
+	name = "Canvas"
+	cost = 30
+	contains = list(/obj/item/canvas)
+
+/datum/supply_pack/rogue/luxury/easel
+	name = "Easel"
+	cost = 80
+	contains = list(/obj/structure/easel)
+
+/datum/supply_pack/rogue/luxury/paintbrush
+	name = "Paint brush"
+	cost = 15
+	contains = list(/obj/item/paint_brush)
+
+/datum/supply_pack/rogue/luxury/paintpalette
+	name = "Paint palette"
+	cost = 15
+	contains = list(/obj/item/paint_palette)

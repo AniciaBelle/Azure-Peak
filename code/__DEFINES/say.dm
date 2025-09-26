@@ -58,6 +58,7 @@
 #define SPAN_SINGING "singing"
 
 #define SPAN_GEN "say"
+#define SPAN_ORATOR "orator"
 #define SPAN_DWARF "dwarf"
 #define SPAN_ELF "elf"
 #define SPAN_SAND "sandspeak"
@@ -74,6 +75,7 @@
 #define SPAN_AAVNIC "aavnic"
 #define SPAN_UNDEAD "undead" //nyi but file found
 #define SPAN_CAT "cat"		 //nyi but file found
+#define SPAN_PULSEDEATH "pulsedeath"
 
 //bitflag #defines for return value of the radio() proc.
 #define ITALICS 1

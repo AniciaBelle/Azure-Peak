@@ -7,12 +7,11 @@
 	slot_flags = ITEM_SLOT_SHOES
 	body_parts_covered = FEET
 	body_parts_inherent = FEET
-	sleeved = 'icons/roguetown/clothing/onmob/feet.dmi'
-	sleevetype = "leg"
 	bloody_icon_state = "shoeblood"
 	equip_delay_self = 30
 	resistance_flags = FIRE_PROOF
 	experimental_inhand = FALSE
+	salvage_amount = 0
 
 /obj/item/clothing/shoes/roguetown/boots
 	name = "dark boots"
@@ -25,6 +24,7 @@
 	max_integrity = 80
 	sewrepair = TRUE
 	var/atom/movable/holdingknife = null
+	salvage_amount = 1
 	armor = ARMOR_BOOTS_BAD
 
 /obj/item/clothing/shoes/roguetown/boots/attackby(obj/item/W, mob/living/carbon/user, params)
@@ -50,9 +50,10 @@
 
 /obj/item/clothing/shoes/roguetown/boots/aalloy
 	name = "decrepit boots"
-	desc = "decrepit old leather boots."
+	desc = "Frayed bronze greaves, shingled atop boots of rotted leather. The toebones of its former legionnaire remain within, rattling about with every step taken."
 	max_integrity = 40
 	icon_state = "ancientboots"
+	color = "#bb9696"
 
 /obj/item/clothing/shoes/roguetown/boots/psydonboots
 	name = "psydonian boots"
@@ -76,6 +77,13 @@
 	armor = ARMOR_BOOTS_BAD
 	salvage_amount = 2
 	salvage_result = /obj/item/natural/hide/cured
+
+/obj/item/clothing/shoes/roguetown/boots/nobleboot/steppesman
+	name = "aavnic riding boots"
+	desc = "A pair of sturdy riding boots with an iron heel and brass spurs."
+	armor = ARMOR_LEATHER_GOOD
+	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_BLUNT, BCLASS_TWIST)
+	max_integrity = ARMOR_INT_SIDE_HARDLEATHER
 
 /obj/item/clothing/shoes/roguetown/shortboots
 	name = "shortboots"
@@ -151,8 +159,9 @@
 
 /obj/item/clothing/shoes/roguetown/sandals/aalloy
 	name = "decrepit sandals"
-	desc = "Surely Psydon himself could've worn these sandals."
+	desc = "Frayed bronze platforms, curled about to cradle the feet. The beaches that these sandals once treaded are no more; pearly sands, long since turnt to glass from the Comet Syon's impact."
 	icon_state = "ancientsandals"
+	color = "#bb9696"
 
 /obj/item/clothing/shoes/roguetown/shalal
 	name = "babouche"
@@ -182,6 +191,7 @@
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_BLUNT, BCLASS_TWIST)	//Same as gloves
 	max_integrity = 100			//Half that of iron boots
 	armor = ARMOR_BOOTS			//Better than regular leather.
+	color = null
 
 /obj/item/clothing/shoes/roguetown/boots/leather/reinforced/short
 	name = "dress boots"
@@ -197,7 +207,7 @@
 	item_state = "fencerboots"
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
 	blocksound = SOFTHIT
-	max_integrity = 200
+	max_integrity = ARMOR_INT_SIDE_HARDLEATHER
 	armor = ARMOR_BOOTS
 	allowed_race = NON_DWARVEN_RACE_TYPES
 	salvage_amount = 1
@@ -237,7 +247,7 @@
 	color = null
 	blocksound = PLATEHIT
 	resistance_flags = FIRE_PROOF
-	max_integrity = 300
+	max_integrity = ARMOR_INT_SIDE_STEEL
 	armor = ARMOR_BOOTS_PLATED
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/steel
@@ -245,21 +255,17 @@
 /obj/item/clothing/shoes/roguetown/boots/armor/graggar
 	name = "vicious boots"
 	desc = "Plated boots which stir with the same violence driving our world. They have treaded a thousand skulls."
-	max_integrity = 500
+	max_integrity = ARMOR_INT_SIDE_ANTAG
 	armor = ARMOR_ASCENDANT
 	icon_state = "graggarplateboots"
 
-/obj/item/clothing/shoes/roguetown/boots/armor/graggar/pickup(mob/living/user)
-	if(!HAS_TRAIT(user, TRAIT_HORDE))
-		to_chat(user, "<font color='red'>UNWORTHY HANDS TOUCHING THIS ARMOR, CEASE OR BE RENDED ASUNDER!</font>")
-		user.adjust_fire_stacks(5)
-		user.IgniteMob()
-		user.Stun(40)
-	..()
+/obj/item/clothing/shoes/roguetown/boots/armor/graggar/Initialize()
+	. = ..()
+	AddComponent(/datum/component/cursed_item, TRAIT_HORDE, "ARMOR", "RENDERED ASUNDER")
 
 
 /obj/item/clothing/shoes/roguetown/boots/armor/matthios
-	max_integrity = 500
+	max_integrity = ARMOR_INT_SIDE_ANTAG
 	name = "gilded boots"
 	desc = "Gilded tombs do worm enfold."
 	icon_state = "matthiosboots"
@@ -276,8 +282,8 @@
 	qdel(src)
 
 /obj/item/clothing/shoes/roguetown/boots/armor/zizo
-	max_integrity = 500
-	name = "darksteel boots"
+	max_integrity = ARMOR_INT_SIDE_ANTAG
+	name = "avantyne boots"
 	desc = "Plate boots. Called forth from the edge of what should be known. In Her name."
 	icon_state = "zizoboots"
 	armor = ARMOR_ASCENDANT
@@ -296,12 +302,12 @@
 	name = "light plated boots"
 	desc = "Boots with iron for added protection."
 	body_parts_covered = FEET
-	icon_state = "armorironboots"
-	item_state = "armorironboots"
+	icon_state = "soldierboots"
+	item_state = "soldierboots"
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
 	color = null
 	blocksound = PLATEHIT
-	max_integrity = 200
+	max_integrity = ARMOR_INT_SIDE_IRON
 	armor = ARMOR_BOOTS_PLATED_IRON
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/iron
@@ -371,7 +377,7 @@
 	name = "cloth lined anklets"
 	desc = "Cloth anklets lined with fibers for warmth while leaving the feet bare."
 	gender = PLURAL
-	icon_state = "clothlinedanklets"
+	icon_state = "furlinedanklets"
 	item_state = "furlinedanklets"
 	is_barefoot = TRUE
 	sewrepair = TRUE
@@ -387,8 +393,26 @@
 
 // ----------------- BLACKSTEEL -----------------------
 
-/obj/item/clothing/shoes/roguetown/boots/blacksteel/plateboots
+/obj/item/clothing/shoes/roguetown/boots/blacksteel/modern/plateboots
 	name = "blacksteel plate boots"
+	desc = "Boots forged of durable blacksteel, using a modern design."
+	body_parts_covered = FEET
+	icon = 'icons/roguetown/clothing/special/blkknight.dmi'
+	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/blkknight.dmi'
+	sleeved = 'icons/roguetown/clothing/special/onmob/blkknight.dmi'
+	icon_state = "bplateboots"
+	item_state = "bplateboots"
+	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
+	color = null
+	blocksound = PLATEHIT
+	max_integrity = ARMOR_INT_SIDE_BLACKSTEEL
+	armor = ARMOR_PLATE_BSTEEL
+	anvilrepair = /datum/skill/craft/armorsmithing
+	smeltresult = /obj/item/ingot/blacksteel
+	resistance_flags = FIRE_PROOF
+
+/obj/item/clothing/shoes/roguetown/boots/blacksteel/plateboots
+	name = "ancient blacksteel plate boots"
 	desc = "Boots forged of durable blacksteel."
 	body_parts_covered = FEET
 	icon = 'icons/roguetown/clothing/special/blkknight.dmi'
@@ -398,8 +422,8 @@
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
 	color = null
 	blocksound = PLATEHIT
-	max_integrity = 400
-	armor = ARMOR_BOOTS_PLATED
+	max_integrity = ARMOR_INT_SIDE_BLACKSTEEL
+	armor = ARMOR_PLATE_BSTEEL
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/blacksteel
 	resistance_flags = FIRE_PROOF

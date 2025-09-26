@@ -111,6 +111,8 @@
 		return FALSE
 	else if(mob.is_shifted)
 		mob.unpixel_shift()
+	
+	mob.last_client_interact = world.time
 
 	var/mob/living/L = mob  //Already checked for isliving earlier
 	if(L.incorporeal_move)	//Move though walls
@@ -245,9 +247,18 @@
 			return FALSE
 		if (M.grab_state > GRAB_PASSIVE)
 			return FALSE
+		if (L.compliance)
+			return FALSE
 		move_delay = world.time + 10
 		to_chat(src, span_warning("[L] still has footing! I need a stronger grip!"))
 		return TRUE    
+
+	if(isanimal(mob.pulling))
+		var/mob/living/simple_animal/bound = mob.pulling
+		if(bound.binded)
+			move_delay = world.time + 10
+			to_chat(src, span_warning("[bound] is bound in a summoning circle. I can't move them!"))
+			return TRUE
 
 	if(isanimal(mob.pulling))
 		var/mob/living/simple_animal/bound = mob.pulling
@@ -453,6 +464,8 @@
 	switch(mob.zone_selected)
 		if(BODY_ZONE_HEAD)
 			next_in_line = BODY_ZONE_PRECISE_NECK
+		if(BODY_ZONE_PRECISE_NECK)
+			next_in_line = BODY_ZONE_PRECISE_SKULL
 		else
 			next_in_line = BODY_ZONE_HEAD
 
@@ -636,13 +649,17 @@
 	if(!T) //if the turf they're headed to is invalid
 		return
 
-	var/light_amount = T?.get_lumcount()
+	// This is hacky but it's the only runtime that fixing decap gives
+	// please forgive me...
+	var/light_amount = 0
+	if(T != null)
+		light_amount = T.get_lumcount()
 	var/used_time = 50
 	if(mind)
-		used_time = max(used_time - (mind.get_skill_level(/datum/skill/misc/sneaking) * 8), 0)
+		used_time = max(used_time - (get_skill_level(/datum/skill/misc/sneaking) * 8), 0)
 
 	if(rogue_sneaking || reset) //If sneaking, check if they should be revealed
-		if((stat > SOFT_CRIT) || IsSleeping() || (world.time < mob_timers[MT_FOUNDSNEAK] + 30 SECONDS) || !T || reset || (m_intent != MOVE_INTENT_SNEAK) || light_amount >= rogue_sneaking_light_threshhold + (mind?.get_skill_level(/datum/skill/misc/sneaking)/200) )
+		if((stat > SOFT_CRIT) || IsSleeping() || (world.time < mob_timers[MT_FOUNDSNEAK] + 30 SECONDS) || !T || reset || (m_intent != MOVE_INTENT_SNEAK) || light_amount >= rogue_sneaking_light_threshhold + (get_skill_level(/datum/skill/misc/sneaking)/200) )
 			used_time = round(clamp((50 - (used_time*1.75)), 5, 50),1)
 			animate(src, alpha = initial(alpha), time =	used_time) //sneak skill makes you reveal slower but not as drastic as disappearing speed
 			spawn(used_time) regenerate_icons()
@@ -650,7 +667,7 @@
 			return
 
 	else //not currently sneaking, check if we can sneak
-		if(light_amount < rogue_sneaking_light_threshhold + (mind?.get_skill_level(/datum/skill/misc/sneaking)/200) && m_intent == MOVE_INTENT_SNEAK)
+		if(light_amount < rogue_sneaking_light_threshhold + (get_skill_level(/datum/skill/misc/sneaking)/200) && m_intent == MOVE_INTENT_SNEAK)
 			animate(src, alpha = 0, time = used_time)
 			spawn(used_time + 5) regenerate_icons()
 			rogue_sneaking = TRUE
@@ -683,6 +700,12 @@
 		switch(intent)
 			if(MOVE_INTENT_SNEAK)
 				m_intent = MOVE_INTENT_SNEAK
+				if(isliving(src))
+					var/mob/living/L = src
+					if((/datum/mob_descriptor/prominent/prominent_bottom in L.mob_descriptors) || (/datum/mob_descriptor/prominent/prominent_thighs in L.mob_descriptors))
+						L.loud_sneaking = TRUE
+					else
+						L.loud_sneaking = FALSE
 				update_sneak_invis()
 
 			if(MOVE_INTENT_WALK)
@@ -693,7 +716,7 @@
 					var/mob/living/L = src
 
 					//If mob is trying to switch to run, fail if any of these are true
-					if (L.rogfat >= L.maxrogfat || L.rogstam <= 0 || HAS_TRAIT(L, TRAIT_NORUN))
+					if (L.stamina >= L.max_stamina || L.energy <= 0 || HAS_TRAIT(L, TRAIT_NORUN))
 						if (HAS_TRAIT(L, TRAIT_NORUN)) // If has trait blocker then inform them
 							to_chat(L, span_warning("My joints have decayed too much for running!"))
 						return
@@ -812,24 +835,8 @@
 	for(var/atom/movable/screen/eye_intent/eyet in hud_used.static_inventory)
 		eyet.update_icon(src)
 	playsound_local(src, 'sound/misc/click.ogg', 100)
-
-/client/proc/hearallasghost()
-	set category = "Prefs - Admin"
-	set name = "HearAllAsAdmin"
-	if(!holder)
-		return
-	if(!prefs)
-		return
-	prefs.chat_toggles ^= CHAT_GHOSTEARS
-//	prefs.chat_toggles ^= CHAT_GHOSTSIGHT
-	prefs.chat_toggles ^= CHAT_GHOSTWHISPER
-	prefs.save_preferences()
-	if(prefs.chat_toggles & CHAT_GHOSTEARS)
-		to_chat(src, span_notice("I will hear all now."))
-	else
-		to_chat(src, span_info("I will hear like a mortal."))
-
 ///Moves a mob upwards in z level
+
 /mob/proc/ghost_up()
 	if(zMove(UP, TRUE))
 		to_chat(src, span_notice("I move upwards."))

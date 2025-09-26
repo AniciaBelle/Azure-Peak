@@ -238,7 +238,8 @@
 				var/mob/M = loc
 				M.update_inv_hands()
 			START_PROCESSING(SSobj, src)
-	..()
+			return TRUE
+	return ..()
 
 /obj/item/flashlight/flare/torch/afterattack(atom/movable/A, mob/user, proximity)
 	. = ..()
@@ -301,6 +302,7 @@
 	on = FALSE
 	flags_1 = CONDUCT_1
 	slot_flags = ITEM_SLOT_HIP
+	obj_flags = CAN_BE_HIT
 	force = 1
 	on_damage = 5
 	fuel = 120 MINUTES
@@ -388,7 +390,7 @@
 	if(HAS_TRAIT(user, TRAIT_CABAL))
 		to_chat(user, "<font color='yellow'> You attempt to take the lamptern. Runic flames of creation lap up the length of your arm in defiance of your Dark Mistress! Curses!</font>")
 		user.adjust_fire_stacks(5)
-		user.IgniteMob()
+		user.ignite_mob()
 		user.Stun(40)
 		playsound(get_turf(user), 'sound/magic/ahh2.ogg', 100)
 	..()

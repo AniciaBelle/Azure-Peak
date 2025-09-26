@@ -18,7 +18,7 @@
 	if(volume >= 60)
 		M.reagents.remove_reagent(/datum/reagent/medicine/healthpot, 2) //No overhealing.
 	if(M.blood_volume < BLOOD_VOLUME_NORMAL)
-		M.blood_volume = min(M.blood_volume+20, BLOOD_VOLUME_MAXIMUM)
+		M.blood_volume = min(M.blood_volume+15, BLOOD_VOLUME_NORMAL)
 	var/list/wCount = M.get_wounds()
 	if(wCount.len > 0)
 		M.heal_wounds(3) //at a motabalism of .5 U a tick this translates to 120WHP healing with 20 U Most wounds are unsewn 15-100. This is powerful on single wounds but rapidly weakens at multi wounds.
@@ -41,10 +41,7 @@
 	if(volume >= 60)
 		M.reagents.remove_reagent(/datum/reagent/medicine/healthpot, 2) //No overhealing.
 	if(M.blood_volume < BLOOD_VOLUME_NORMAL)
-		M.blood_volume = min(M.blood_volume+80, BLOOD_VOLUME_MAXIMUM)
-	else
-		//can overfill you with blood, but at a slower rate
-		M.blood_volume = min(M.blood_volume+10, BLOOD_VOLUME_MAXIMUM)
+		M.blood_volume = min(M.blood_volume+20, BLOOD_VOLUME_NORMAL)
 	var/list/wCount = M.get_wounds()
 	if(wCount.len > 0)
 		M.heal_wounds(6) //at a motabalism of .5 U a tick this translates to 240WHP healing with 20 U Most wounds are unsewn 15-100.
@@ -57,7 +54,6 @@
 	..()
 	. = 1
 
-//Someone please remember to change this to actually do mana at some point?
 /datum/reagent/medicine/manapot
 	name = "Mana Potion"
 	description = "Gradually regenerates energy."
@@ -69,8 +65,8 @@
 	alpha = 173
 
 /datum/reagent/medicine/manapot/on_mob_life(mob/living/carbon/M)
-	if(!HAS_TRAIT(M,TRAIT_NOROGSTAM))
-		M.rogstam_add(30)
+	if(!HAS_TRAIT(M,TRAIT_INFINITE_STAMINA))
+		M.energy_add(30)
 	..()
 
 /datum/reagent/medicine/strongmana
@@ -81,8 +77,8 @@
 	metabolization_rate = REAGENTS_METABOLISM * 3
 
 /datum/reagent/medicine/strongmana/on_mob_life(mob/living/carbon/M)
-	if(!HAS_TRAIT(M,TRAIT_NOROGSTAM))
-		M.rogstam_add(120)
+	if(!HAS_TRAIT(M,TRAIT_INFINITE_STAMINA))
+		M.energy_add(120)
 	..()
 
 /datum/reagent/medicine/stampot
@@ -97,7 +93,7 @@
 
 /datum/reagent/medicine/stampot/on_mob_life(mob/living/carbon/M)
 	if(volume > 0.99)
-		M.rogfat_add(-20)
+		M.stamina_add(-20)
 	..()
 	. = 1
 
@@ -110,7 +106,7 @@
 
 /datum/reagent/medicine/strongstam/on_mob_life(mob/living/carbon/M)
 	if(volume > 0.99)
-		M.rogfat_add(-50)
+		M.stamina_add(-50)
 	..()
 	. = 1
 
@@ -161,7 +157,7 @@
 	However it meant that putting it in an alchemical vial was a trap as it sipped 9 units instead of 5 units that is the required minimum.
 	And removed any excessive potion inside the body. This has been changed to apply a 3 seconds buff to the mob, but have much lower
 	metabolization rate, so that the duration of the buff depends on how long you last. 
-	Roughly tested. At Metabolization Rate 1. 9 units sip (1/3 of a vial) last 20 seconds.
+	Roughly tested. At Metabolization Rate 1. 10 units sip (1/3 of a vial) last 20 seconds.
 	To make this somewhat equal to the old system, base metabolization rate is 0.1 - making it last 200 seconds - 600 seconds if you sip an entire vial.
 	This is 2x on weaker potions (Intelligence, Fortune). However, overdose threshold is now 30 units so you can only drink one vial at once.
 	And potion stacking is not possible without neutralizing itself.
@@ -170,7 +166,7 @@
 	description = ""
 	reagent_state = LIQUID
 	metabolization_rate = REAGENTS_METABOLISM * 0.1
-	overdose_threshold = 30
+	overdose_threshold = 33
 
 /datum/reagent/buff/overdose_process(mob/living/carbon/M)
 	. = ..()
@@ -186,7 +182,7 @@
 	..()
 
 /datum/reagent/buff/strength
-	name = "Strength"
+	name = STATKEY_STR
 	color = "#ff9000"
 	taste_description = "old meat"
 
@@ -195,7 +191,7 @@
 	return ..()
 
 /datum/reagent/buff/perception
-	name = "Perception"
+	name = STATKEY_PER
 	color = "#ffff00"
 	taste_description = "cat piss"
 	metabolization_rate = REAGENTS_METABOLISM * 0.05
@@ -205,7 +201,7 @@
 	return ..()
 
 /datum/reagent/buff/intelligence
-	name = "Intelligence"
+	name = STATKEY_INT
 	color = "#438127"
 	taste_description = "bog water"
 	metabolization_rate = REAGENTS_METABOLISM * 0.05
@@ -215,7 +211,7 @@
 	return ..()
 
 /datum/reagent/buff/constitution
-	name = "Constitution"
+	name = STATKEY_CON
 	color = "#130604"
 	taste_description = "bile"
 
@@ -224,7 +220,7 @@
 	return ..()
 
 /datum/reagent/buff/endurance
-	name = "Endurance"
+	name = STATKEY_WIL
 	color = "#ffff00"
 	taste_description = "oversweetened milk"
 
@@ -233,7 +229,7 @@
 	return ..()
 
 /datum/reagent/buff/speed
-	name = "Speed"
+	name = STATKEY_SPD
 	color = "#ffff00"
 	taste_description = "raw egg yolk"
 
@@ -242,7 +238,7 @@
 	return ..()
 
 /datum/reagent/buff/fortune
-	name = "Fortune"
+	name = STATKEY_LCK
 	color = "#ffff00"
 	taste_description = "sour lemons"
 	metabolization_rate = REAGENTS_METABOLISM * 0.05
@@ -325,8 +321,8 @@ If you want to expand on poisons theres tons of fun effects TG chemistry has tha
 
 
 /datum/reagent/stampoison/on_mob_life(mob/living/carbon/M)
-	if(!HAS_TRAIT(M,TRAIT_NOROGSTAM))
-		M.rogstam_add(-45) //Slowly leech stamina
+	if(!HAS_TRAIT(M,TRAIT_INFINITE_STAMINA))
+		M.energy_add(-45) //Slowly leech energy
 	return ..()
 
 /datum/reagent/strongstampoison
@@ -340,8 +336,8 @@ If you want to expand on poisons theres tons of fun effects TG chemistry has tha
 
 
 /datum/reagent/strongstampoison/on_mob_life(mob/living/carbon/M)
-	if(!HAS_TRAIT(M,TRAIT_NOROGSTAM))
-		M.rogstam_add(-180) //Rapidly leech stamina
+	if(!HAS_TRAIT(M,TRAIT_INFINITE_STAMINA))
+		M.energy_add(-180) //Rapidly leech energy
 	return ..()
 
 /datum/reagent/toxin/killersice
@@ -393,7 +389,12 @@ If you want to expand on poisons theres tons of fun effects TG chemistry has tha
 	required_reagents = list(/datum/reagent/stampoison = 1, /datum/reagent/additive = 1)
 	mix_message = "The cauldron glows for a moment."
 
-
+/datum/chemical_reaction/alch/vitae_essence
+	name = "Vitae Decoction"
+	id = /datum/reagent/medicine/vitae_essence
+	results = list(/datum/reagent/medicine/vitae_essence = 1)
+	required_reagents = list(/datum/reagent/vitae = 1, /datum/reagent/toxin/fyritiusnectar = 5)
+	mix_message = "The cauldron glows for a moment."
 
 /*----------\
 |Ingredients|
@@ -419,7 +420,7 @@ If you want to expand on poisons theres tons of fun effects TG chemistry has tha
 		M.add_nausea(9)
 		M.adjustFireLoss(2, 0)
 		M.adjust_fire_stacks(1)
-		M.IgniteMob()
+		M.ignite_mob()
 	return ..()
 //I'm stapling our infection reagents on the bottom, because IDEK where else to put them.
 
@@ -465,3 +466,17 @@ If you want to expand on poisons theres tons of fun effects TG chemistry has tha
 		to_chat(M, span_small("I feel even worse..."))
 	return ..()
 	
+
+/datum/reagent/medicine/vitae_essence
+	name = "Vitae Decoction"
+	description = "Decoction of essence of lyfe, used to restore one's lux humours."
+	color = "#67c7ff" // rgb: 96, 165, 132
+	overdose_threshold = 10
+	metabolization_rate = 0.1
+
+/datum/reagent/medicine/vitae_essence/on_mob_life(mob/living/carbon/M)
+	if(M.has_flaw(/datum/charflaw/addiction/junkie))
+		M.sate_addiction()
+	if(M.has_status_effect(/datum/status_effect/debuff/ritualdefiled))
+		M.remove_status_effect(/datum/status_effect/debuff/ritualdefiled)
+	return ..()

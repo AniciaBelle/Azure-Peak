@@ -25,7 +25,7 @@
 
 /datum/special_trait/thickskin/on_apply(mob/living/carbon/human/character, silent)
 	ADD_TRAIT(character, TRAIT_BREADY, "[type]")
-	character.change_stat("constitution", 2)
+	character.change_stat(STATKEY_CON, 2)
 
 /datum/special_trait/curseofcain
 	name = "Flawed Immortality"
@@ -51,7 +51,7 @@
 	weight = 25
 
 /datum/special_trait/latentmagic/on_apply(mob/living/carbon/human/character, silent)
-	character.mind.adjust_skillrank(/datum/skill/magic/arcane, 1, TRUE)
+	character.adjust_skillrank(/datum/skill/magic/arcane, 1, TRUE)
 
 /datum/special_trait/value
 	name = "Coin Counter"
@@ -93,9 +93,9 @@
 	weight = 50
 
 /datum/special_trait/duelist/on_apply(mob/living/carbon/human/character, silent)
-	character.cmode_music = 'sound/music/combat_duelist.ogg'
-	character.change_stat("speed", 2)
-	character.mind.adjust_skillrank_up_to(/datum/skill/combat/swords, 6, TRUE) //will make a unique trait later on
+	character.cmode_music = 'sound/music/cmode/adventurer/combat_outlander4.ogg'
+	character.change_stat(STATKEY_SPD, 2)
+	character.adjust_skillrank_up_to(/datum/skill/combat/swords, 6, TRUE) //will make a unique trait later on
 	character.mind.special_items["Rapier"] = /obj/item/rogueweapon/sword/rapier
 
 /datum/special_trait/eagle_eyed
@@ -104,9 +104,9 @@
 	weight = 50
 
 /datum/special_trait/eagle_eyed/on_apply(mob/living/carbon/human/character, silent)
-	character.change_stat("perception", 2)
-	character.mind.adjust_skillrank_up_to(/datum/skill/combat/crossbows, 5, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/combat/bows, 4, TRUE)
+	character.change_stat(STATKEY_PER, 2)
+	character.adjust_skillrank_up_to(/datum/skill/combat/crossbows, 5, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/combat/bows, 4, TRUE)
 	character.mind.special_items["Crossbow"] = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow
 	character.mind.special_items["Bolts"] = /obj/item/quiver/bolts
 
@@ -119,7 +119,7 @@
 	character.mind.special_items["Stash One"] = /obj/item/storage/backpack/rogue/satchel/mule
 	character.mind.special_items["Stash Two"] = /obj/item/storage/backpack/rogue/satchel/mule
 	character.mind.special_items["Dagger"] = /obj/item/rogueweapon/huntingknife/idagger
-	character.mind.adjust_skillrank_up_to(/datum/skill/combat/knives, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/combat/knives, 2, TRUE)
 
 /datum/special_trait/cunning_linguist
 	name = "Cunning Linguist"
@@ -142,8 +142,8 @@
 	weight = 100
 
 /datum/special_trait/corn_fed/on_apply(mob/living/carbon/human/character, silent)
-	character.change_stat("constitution", 2)
-	character.change_stat("intelligence", -2)
+	character.change_stat(STATKEY_CON, 2)
+	character.change_stat(STATKEY_INT, -2)
 
 /datum/special_trait/bookworm
 	name = "Bookworm"
@@ -151,7 +151,7 @@
 	weight = 100
 
 /datum/special_trait/bookworm/on_apply(mob/living/carbon/human/character, silent)
-	character.mind.adjust_skillrank_up_to(/datum/skill/misc/reading, 4, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/misc/reading, 4, TRUE)
 
 /datum/special_trait/limpdick
 	name = "Lazy Soldier"
@@ -181,7 +181,7 @@
 /datum/special_trait/arsonist/on_apply(mob/living/carbon/human/character, silent)
 	character.mind.special_items["Firebomb One"] = /obj/item/bomb
 	character.mind.special_items["Firebomb Two"] = /obj/item/bomb
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/alchemy, 1, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/alchemy, 1, TRUE)
 
 /datum/special_trait/pineapple
 	name = "The safeword is \"Pineapple\""
@@ -190,7 +190,7 @@
 
 /datum/special_trait/pineapple/on_apply(mob/living/carbon/human/character, silent)
 	character.mind.special_items["Whip"] = /obj/item/rogueweapon/whip
-	character.mind.adjust_skillrank_up_to(/datum/skill/combat/whipsflails, 6, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/combat/whipsflails, 6, TRUE)
 
 /datum/special_trait/psydons_rider
 	name = "Psydon's Drunkest Rider"
@@ -205,7 +205,7 @@
 		var/obj/item/bottle = new /obj/item/reagent_containers/glass/bottle/rogue/wine(get_turf(character))
 		character.put_in_hands(bottle, forced = TRUE)
 
-	character.mind.adjust_skillrank_up_to(/datum/skill/misc/riding, 4, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/misc/riding, 4, TRUE)
 	new /mob/living/simple_animal/hostile/retaliate/rogue/saiga/tame/saddled(get_turf(character))
 
 /datum/special_trait/spring_in_my_step
@@ -230,9 +230,9 @@
 	weight = 100
 
 /datum/special_trait/thief/on_apply(mob/living/carbon/human/character, silent)
-	character.mind.adjust_skillrank_up_to(/datum/skill/misc/stealing, 5, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/misc/sneaking, 4, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/misc/climbing, 3, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/misc/stealing, 5, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/misc/sneaking, 4, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/misc/climbing, 3, TRUE)
 
 /datum/special_trait/languagesavant
 	name = "Polyglot"
@@ -263,16 +263,16 @@
 	weight = 100
 
 /datum/special_trait/mastercraftsmen/on_apply(mob/living/carbon/human/character)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/crafting, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/weaponsmithing, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/armorsmithing, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/blacksmithing, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/carpentry, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/masonry, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/traps, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/cooking, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/engineering, 2, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/craft/tanning, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/crafting, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/weaponsmithing, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/armorsmithing, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/blacksmithing, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/carpentry, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/masonry, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/traps, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/cooking, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/engineering, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/craft/tanning, 2, TRUE)
 
 /datum/special_trait/bleublood
 	name = "Noble Lineage"
@@ -282,7 +282,7 @@
 
 /datum/special_trait/bleublood/on_apply(mob/living/carbon/human/character, silent)
 	ADD_TRAIT(character, TRAIT_NOBLE, "[type]")
-	character.mind.adjust_skillrank_up_to(/datum/skill/misc/reading, 2, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/misc/reading, 2, TRUE)
 
 /datum/special_trait/richpouch
 	name = "Rich Pouch"
@@ -300,8 +300,8 @@
 
 /datum/special_trait/swift/on_apply(mob/living/carbon/human/character, silent)
 	ADD_TRAIT(character, TRAIT_DODGEEXPERT, "[type]")
-	character.mind.adjust_skillrank(/datum/skill/misc/athletics, 6, TRUE)
-	character.change_stat("speed", 3)
+	character.adjust_skillrank(/datum/skill/misc/athletics, 6, TRUE)
+	character.change_stat(STATKEY_SPD, 3)
 
 /datum/special_trait/gourmand
 	name = "Gourmand"
@@ -330,9 +330,9 @@
 	weight = 50
 
 /datum/special_trait/backproblems/on_apply(mob/living/carbon/human/character)
-	character.change_stat("strength", 2)
-	character.change_stat("constitution", 1)
-	character.change_stat("speed", -2)
+	character.change_stat(STATKEY_STR, 2)
+	character.change_stat(STATKEY_CON, 1)
+	character.change_stat(STATKEY_SPD, -2)
 	character.transform = character.transform.Scale(1.25, 1.25)
 	character.transform = character.transform.Translate(0, (0.25 * 16))
 	character.update_transform()
@@ -354,8 +354,8 @@
 	weight = 100
 
 /datum/special_trait/nimrod/on_apply(mob/living/carbon/human/character, silent)
-	character.change_stat("speed", -2)
-	character.change_stat("intelligence", -4)
+	character.change_stat(STATKEY_SPD, -2)
+	character.change_stat(STATKEY_INT, -4)
 
 /datum/special_trait/nopouch
 	name = "No Pouch"
@@ -461,9 +461,9 @@
 	weight = 50
 
 /datum/special_trait/atrophy/on_apply(mob/living/carbon/human/character)
-	character.change_stat("strength", -2)
-	character.change_stat("constitution", -2)
-	character.change_stat("endurance", -1)
+	character.change_stat(STATKEY_STR, -2)
+	character.change_stat(STATKEY_CON, -2)
+	character.change_stat(STATKEY_WIL, -1)
 
 /datum/special_trait/lazy
 	name = "Lazy"
@@ -471,11 +471,11 @@
 	weight = 50
 
 /datum/special_trait/lazy/on_apply(mob/living/carbon/human/character)
-	character.change_stat("strength", -1)
-	character.change_stat("constitution", -1)
-	character.change_stat("endurance", -1)
-	character.change_stat("speed", -1)
-	character.change_stat("perception", -1)
+	character.change_stat(STATKEY_STR, -1)
+	character.change_stat(STATKEY_CON, -1)
+	character.change_stat(STATKEY_WIL, -1)
+	character.change_stat(STATKEY_SPD, -1)
+	character.change_stat(STATKEY_PER, -1)
 
 /datum/special_trait/bad_week
 	name = "Bad Week"
@@ -519,16 +519,16 @@
 	character.equip_to_slot_or_del(new /obj/item/storage/belt/rogue/pouch/coins/rich(character), SLOT_BELT_R)
 	character.equip_to_slot_or_del(new /obj/item/storage/backpack/rogue/satchel(character), SLOT_BACK_R)
 	character.equip_to_slot_or_del(new /obj/item/clothing/shoes/roguetown/boots/nobleboot(character), SLOT_SHOES)
-	character.mind.adjust_skillrank(/datum/skill/combat/maces, 1, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/combat/bows, 3, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/combat/crossbows, 2, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/combat/wrestling, 2, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/combat/unarmed, 2, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/combat/swords, 2, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/misc/reading, -2, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/misc/sneaking, -2, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/misc/stealing, -2, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/maces, 1, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/bows, 3, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/crossbows, 2, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/wrestling, 2, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/unarmed, 2, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/swords, 2, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
+	character.adjust_skillrank(/datum/skill/misc/reading, -2, TRUE)
+	character.adjust_skillrank(/datum/skill/misc/sneaking, -2, TRUE)
+	character.adjust_skillrank(/datum/skill/misc/stealing, -2, TRUE)
 
 /datum/special_trait/vengantbum
 	name = "Vengant Bum"
@@ -539,12 +539,12 @@
 
 /datum/special_trait/vengantbum/on_apply(mob/living/carbon/human/character, silent)
 	ADD_TRAIT(character, TRAIT_DECEIVING_MEEKNESS, "[type]")
-	character.mind.adjust_skillrank(/datum/skill/combat/wrestling, 6, TRUE)
-	character.mind.adjust_skillrank(/datum/skill/combat/unarmed, 6, TRUE)
-	character.mind.adjust_skillrank_up_to(/datum/skill/misc/reading, 3, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/wrestling, 6, TRUE)
+	character.adjust_skillrank(/datum/skill/combat/unarmed, 6, TRUE)
+	character.adjust_skillrank_up_to(/datum/skill/misc/reading, 3, TRUE)
 	character.STASTR = 20
 	character.STACON = 20
-	character.STAEND = 20
+	character.STAWIL = 20
 
 /datum/special_trait/my_precious
 	name = "My Precious"

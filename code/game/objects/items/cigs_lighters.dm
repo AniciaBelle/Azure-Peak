@@ -87,7 +87,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/match/attack(mob/living/carbon/M, mob/living/carbon/user)
 	if(!isliving(M))
 		return
-//	if(lit && M.IgniteMob())
+//	if(lit && M.ignite_mob())
 //		message_admins("[ADMIN_LOOKUPFLW(user)] set [key_name_admin(M)] on fire with [src] at [AREACOORD(user)]")
 //		log_game("[key_name(user)] set [key_name(M)] on fire with [src] at [AREACOORD(user)]")
 	var/obj/item/clothing/mask/cigarette/cig = help_light_cig(M)
@@ -182,20 +182,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	else
 		return ..()
 
-/obj/item/clothing/mask/cigarette/afterattack(obj/item/reagent_containers/glass/glass, mob/user, proximity)
-	. = ..()
-//	if(!proximity || lit) //can't dip if cigarette is lit (it will heat the reagents in the glass instead)
-//		return
-//	if(istype(glass))	//you can dip cigarettes into beakers
-//		if(glass.reagents.trans_to(src, chem_volume, transfered_by = user))	//if reagents were transfered, show the message
-//			to_chat(user, span_notice("I dip \the [src] into \the [glass]."))
-//		else			//if not, either the beaker was empty, or the cigarette was full
-//			if(!glass.reagents.total_volume)
-//				to_chat(user, span_warning("[glass] is empty!"))
-//			else
-//				to_chat(user, span_warning("[src] is full!"))
-
-
 /obj/item/clothing/mask/cigarette/proc/light(flavor_text = null)
 	if(lit)
 		return
@@ -245,7 +231,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/cigarette/extinguish()
 	if(!lit)
 		return
-	name = copytext(name,5,length(name)+1)
+	name = "[initial(name)]"
 	attack_verb = null
 	hitsound = null
 	damtype = BRUTE
@@ -288,7 +274,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/cigarette/process()
 	var/turf/location = get_turf(src)
 //	if(isliving(loc))
-//		M.IgniteMob()
+//		M.ignite_mob()
 	smoketime--
 	if(smoketime < 1)
 		if(iscarbon(loc))
@@ -512,7 +498,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			item_state = icon_off
 			M.update_inv_mouth()
 			packeditem = 0
-//			name = "empty [initial(name)]"
+			name = "empty [initial(name)]"
 		STOP_PROCESSING(SSobj, src)
 		return
 	open_flame()
@@ -695,7 +681,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		. = ..()
 
 /obj/item/lighter/attack(mob/living/carbon/M, mob/living/carbon/user)
-	if(lit && M.IgniteMob())
+	if(lit && M.ignite_mob())
 		message_admins("[ADMIN_LOOKUPFLW(user)] set [key_name_admin(M)] on fire with [src] at [AREACOORD(user)]")
 		log_game("[key_name(user)] set [key_name(M)] on fire with [src] at [AREACOORD(user)]")
 	var/obj/item/clothing/mask/cigarette/cig = help_light_cig(M)
@@ -766,31 +752,3 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/lighter/greyscale/ignition_effect(atom/A, mob/user)
 	if(get_temperature())
 		. = span_notice("After some fiddling, [user] manages to light [A] with [src].")
-
-///////////
-//ROLLING//
-///////////
-/obj/item/rollingpaper
-	name = "rolling paper"
-	desc = ""
-	icon = 'icons/obj/cigarettes.dmi'
-	icon_state = "cig_paper"
-	w_class = WEIGHT_CLASS_TINY
-
-/obj/item/rollingpaper/afterattack(atom/target, mob/user, proximity)
-	. = ..()
-	if(!proximity)
-		return
-	if(istype(target, /obj/item/reagent_containers/food/snacks/grown))
-		var/obj/item/reagent_containers/food/snacks/grown/O = target
-		if(O.dry)
-			var/obj/item/clothing/mask/cigarette/rollie/R = new /obj/item/clothing/mask/cigarette/rollie(user.loc)
-			R.chem_volume = target.reagents.total_volume
-			target.reagents.trans_to(R, R.chem_volume, transfered_by = user)
-			qdel(target)
-			qdel(src)
-			user.put_in_active_hand(R)
-			to_chat(user, span_notice("I roll the [target.name] into a rolling paper."))
-			R.desc = ""
-		else
-			to_chat(user, span_warning("I need to dry this first!"))

@@ -45,6 +45,31 @@
 	verbage_simple = "construct"
 	verbage = "constructs"
 
+/datum/crafting_recipe/roguetown/structure/psycruci
+	name = "wooden psydonic cross"
+	result = /obj/structure/fluff/psycross/psycrucifix
+	reqs = list(/obj/item/grown/log/tree/small = 1,
+				/obj/item/grown/log/tree/stake = 3) 
+	verbage_simple = "construct"
+	verbage = "constructs"
+
+/datum/crafting_recipe/roguetown/structure/stonepsycruci
+	name = "stone psydonic cross"
+	result = /obj/structure/fluff/psycross/psycrucifix/stone
+	reqs =	list(/obj/item/natural/stone = 3)
+	verbage_simple = "construct"
+	verbage = "constructs"
+
+/datum/crafting_recipe/roguetown/structure/silverpsycruci
+	name = "silver psydonic cross"
+	result = /obj/structure/fluff/psycross/psycrucifix/silver
+	reqs = list(/obj/item/ingot/silverblessed = 1,
+				/obj/item/ingot/steel = 2)	
+	verbage_simple = "construct"
+	verbage = "constructs"	
+	skillcraft = /datum/skill/craft/masonry
+	craftdiff = 3
+
 /datum/crafting_recipe/roguetown/structure/stonepsycrss
 	name = "stone cross"
 	result = /obj/structure/fluff/psycross
@@ -406,6 +431,29 @@
 			return FALSE
 	return TRUE
 
+/datum/crafting_recipe/roguetown/structure/bordercorner
+	name = "border corner"
+	result = /obj/structure/fluff/railing/corner
+	reqs = list(/obj/item/grown/log/tree/small = 1)
+	ontile = TRUE
+	verbage_simple = "construct"
+	verbage = "constructs"
+	skillcraft = /datum/skill/craft/carpentry
+	buildsame = TRUE
+	diagonal = TRUE
+	craftdiff = 1
+
+/datum/crafting_recipe/roguetown/structure/border
+	name = "border"
+	result = /obj/structure/fluff/railing/border
+	reqs = list(/obj/item/grown/log/tree/small = 1)
+	ontile = TRUE
+	verbage_simple = "construct"
+	verbage = "constructs"
+	skillcraft = /datum/skill/craft/carpentry
+	buildsame = TRUE
+	craftdiff = 1
+
 /datum/crafting_recipe/roguetown/structure/railing
 	name = "railing"
 	result = /obj/structure/fluff/railing/wood
@@ -555,7 +603,7 @@
 	craftdiff = 0
 
 /datum/crafting_recipe/roguetown/structure/strawbed
-	name = "straw bed"
+	name = "bed, straw"
 	result = /obj/structure/bed/rogue/shit
 	reqs = list(/obj/item/grown/log/tree/small = 1,
 				/obj/item/natural/fibers = 1)
@@ -565,7 +613,7 @@
 	craftdiff = 0
 
 /datum/crafting_recipe/roguetown/structure/bed
-	name = "nice bed"
+	name = "bed, nice"
 	result = /obj/structure/bed/rogue/inn
 	reqs = list(/obj/item/grown/log/tree/small = 2,
 				/obj/item/natural/cloth = 2)
@@ -576,7 +624,7 @@
 	craftdiff = 1
 
 /datum/crafting_recipe/roguetown/structure/woolbed
-	name = "woolbed"
+	name = "bed, wood"
 	result = /obj/structure/bed/rogue/inn/wool
 	reqs = list(/obj/item/grown/log/tree/small = 2,
 				/obj/item/natural/cloth = 1)
@@ -587,7 +635,7 @@
 	craftdiff = 1
 
 /datum/crafting_recipe/roguetown/structure/doublebed
-	name = "double bed"
+	name = "bed, double"
 	result = /obj/structure/bed/rogue/inn/double
 	reqs = list(/obj/item/grown/log/tree/small = 3,
 				/obj/item/natural/cloth = 4)
@@ -599,7 +647,7 @@
 
 
 /datum/crafting_recipe/roguetown/structure/wooldoublebed
-	name = "wool double bed"
+	name = "bed, double wool"
 	result = /obj/structure/bed/rogue/inn/wooldouble
 	reqs = list(/obj/item/grown/log/tree/small = 3,
 				/obj/item/natural/cloth = 3)
@@ -649,6 +697,24 @@
 	if(istype(T,/turf/open/lava))
 		return FALSE
 	return ..()
+
+/datum/crafting_recipe/roguetown/structure/floorgrille
+	name = "floorgrille"
+	result = /obj/structure/bars/grille
+	reqs = list(/obj/item/ingot/iron = 1,
+					/obj/item/roguegear = 1)
+	verbage_simple = "engineer"
+	verbage = "engineers"
+	skillcraft = /datum/skill/craft/engineering
+	craftdiff = 3
+
+/datum/crafting_recipe/roguetown/structure/floorgrille/TurfCheck(mob/user, turf/T)
+	if(istype(T,/turf/open/transparent/openspace))
+		return TRUE
+	if(istype(T,/turf/open/lava))
+		return FALSE
+	return ..()
+
 
 /datum/crafting_recipe/roguetown/structure/sign
 	name = "custom sign"
@@ -810,3 +876,32 @@
 	verbage = "builds"
 	skillcraft = /datum/skill/craft/carpentry
 	craftdiff = 2
+
+// Here for now until we get a new file for anything trap related.
+/datum/crafting_recipe/roguetown/structure/spike_pit
+	name = "spike pit (Dirt Floor needed)"
+	result = list(/obj/structure/spike_pit)
+	tools = list(/obj/item/rogueweapon/shovel = 1)
+	reqs = list(/obj/item/grown/log/tree/stake = 3)
+	skillcraft = /datum/skill/craft/crafting
+	craftdiff = 1	//Low skill, but at least some. Kinda decently strong after all w/ combat.
+
+/datum/crafting_recipe/roguetown/structure/spike_pit/TurfCheck(mob/user, turf/T)
+	var/turf/to_check = get_step(user.loc, user.dir)
+	if(!istype(to_check, /turf/open/floor/rogue/dirt))
+		to_chat(user, span_info("I need a dirt floor to do this."))
+		return FALSE
+	for(var/obj/O in T.contents)
+		if(istype(O, /obj/structure/spike_pit))
+			to_chat(user, span_info("There's already a pit of spikes here."))
+			return FALSE
+	return TRUE
+
+/datum/crafting_recipe/roguetown/structure/wicker
+	name = "wicker basket"
+	result = /obj/structure/closet/crate/chest/wicker
+	reqs = list(/obj/item/grown/log/tree/stick = 4,
+				/obj/item/natural/fibers = 3)
+	verbage_simple = "weave"
+	verbage = "weaves"
+	craftdiff = 0

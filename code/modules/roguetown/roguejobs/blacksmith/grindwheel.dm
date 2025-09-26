@@ -12,10 +12,10 @@
 	if(I.max_blade_int)
 		playsound(loc,'sound/foley/grindblade.ogg', 100, FALSE)
 		if(do_after(user, 41, target = src))
-			I.add_bintegrity(999)
+			I.add_bintegrity(999, user)
 		return
 	if(istype(I, /obj/item/grown/log/tree/small))
-		var/skill_level = user.mind.get_skill_level(/datum/skill/craft/carpentry)
+		var/skill_level = user.get_skill_level(/datum/skill/craft/carpentry)
 		var/wood_time = (40 - (skill_level * 5))
 		playsound(src, pick('sound/misc/slide_wood (2).ogg', 'sound/misc/slide_wood (1).ogg'), 100, FALSE)
 		if(do_after(user, wood_time, target = src))

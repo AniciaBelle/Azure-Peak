@@ -21,7 +21,7 @@
 /datum/intent/shoot/bow/get_chargetime() //this handles how long it takes for us to fully aim our bow. damage is handled below in /obj/item/gun/ballistic/revolver/grenadelauncher/bow/process_fire
 	if(mastermob && chargetime)
 		var/newtime = 0
-		newtime = ((newtime + 10) - (mastermob.mind?.get_skill_level(/datum/skill/combat/bows) * (2)))
+		newtime = ((newtime + 10) - (mastermob.get_skill_level(/datum/skill/combat/bows) * (2)))
 		if(strength_check == TRUE)
 			newtime = ((newtime + 10) - (mastermob.STASTR / 2))
 		else
@@ -58,7 +58,7 @@
 /datum/intent/arc/bow/get_chargetime() //same calc as above, but with a higher absolute floor for how fast you can shoot
 	if(mastermob && chargetime)
 		var/newtime = 0
-		newtime = ((newtime + 10) - (mastermob.mind?.get_skill_level(/datum/skill/combat/bows) * (2)))
+		newtime = ((newtime + 10) - (mastermob.get_skill_level(/datum/skill/combat/bows) * (2)))
 		if(strength_check == TRUE)
 			newtime = ((newtime + 10) - (mastermob.STASTR / 2))
 		else
@@ -225,7 +225,7 @@
 		var/obj/projectile/BB = CB.BB
 		BB.accuracy += accfactor * (user.STAPER - 9) * 4 // 9+ PER gives +4 per level. Exponential.
 		BB.bonus_accuracy += (user.STAPER - 8) * 3 // 8+ PER gives +3 per level. Does not decrease over range.
-		BB.bonus_accuracy += (user.mind.get_skill_level(/datum/skill/combat/bows) * 5) // +5 per Bow level.
+		BB.bonus_accuracy += (user.get_skill_level(/datum/skill/combat/bows) * 5) // +5 per Bow level.
 
 		if(user.client.chargedprog < 100)
 			BB.damage -= (BB.damage * (user.client.chargedprog / 100))
@@ -420,3 +420,23 @@
 					"eastabove" = 0,
 					"westabove" = 0,
 					)
+
+//Unique Bows
+
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve/warden
+	name = "blackhorn bow"
+	desc = "When a northern black-horned saiga is old enough, it will shed its two-metre long antlers. As time passes, they harden progressively more but keep a degree of flexibility that can outdo even yew.\
+		Wardens often collect such antlers in the rare occasion they are found and send them to be filed, strung and treated by a master bowyer. Such tradition carries merit even todae, \
+		and thus one can see Azurian wardens carrying their endemic blackhorn bows with pride."
+	icon_state = "recurve_warden"
+
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/longbow/warden
+	name = "blackhorn longbow"
+	desc = "When a northern black-horned saiga is old enough, it will shed its two-metre long antlers. As time passes, they harden progressively more but keep a degree of flexibility that can outdo even yew.\
+		Wardens often collect such antlers in the rare occasion they are found and send them to be filed, strung and treated by a master bowyer. The end result is a war bow such as this one."
+	icon_state = "longbow_warden"
+
+/obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve/steppesman
+	name = "aavnic riding bow"
+	desc = "A short recurve warbow made for the express purpose of shooting on saigaback, a skill every archer in Aavnr takes much more seriously than their Northern counterparts. Every seasoned Druzhina is themselves a good bowyer and usually makes their own bow, this one is made with the purpure-ish crimson wood of a Vörötslevé tree."
+	icon_state = "recurve_riding"

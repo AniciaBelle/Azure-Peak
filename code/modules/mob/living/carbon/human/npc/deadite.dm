@@ -8,6 +8,7 @@
 	flee_in_pain = FALSE
 	ambushable = FALSE
 	wander = TRUE
+	infected = TRUE
 
 /mob/living/carbon/human/species/npc/deadite/Initialize()
 	. = ..()
@@ -20,11 +21,19 @@
 		/datum/species/aasimar,
 		/datum/species/human/halfelf,
 		/datum/species/halforc,
-		/datum/species/tieberian,
 	)
 
 	set_species(pick(species))
 	gender = pick(MALE, FEMALE)
+
+	var/obj/item/organ/ears/organ_ears = getorgan(/obj/item/organ/ears)
+	var/list/deadite_firstnames = world.file2list("strings/rt/names/other/deaditenpcfirst.txt")
+	var/list/deadite_lastnames  = world.file2list("strings/rt/names/other/deaditenpclast.txt")
+	
+	if(organ_ears)
+		organ_ears.accessory_colors = "#868e79"
+
+	real_name = "[pick(deadite_firstnames)] [pick(deadite_lastnames)]"
 
 	addtimer(CALLBACK(src, PROC_REF(after_creation)), 1 SECONDS)
 
@@ -37,6 +46,14 @@
 	//Make sure deadite NPCs don't show up in the antag listings
 	GLOB.antagonists -= zombie_antag
 	update_body()
+
+/mob/living/carbon/human/species/npc/deadite/npc_try_backstep()
+	return FALSE // deadites cannot juke
+
+/mob/living/carbon/human/species/npc/deadite/npc_should_resist(ignore_grab = TRUE)
+	if(!check_mouth_grabbed())
+		ignore_grab ||= TRUE
+	return ..(ignore_grab = ignore_grab)
 
 /datum/outfit/job/roguetown/deadite/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -155,10 +172,18 @@
 		return
 	if(stat >= DEAD) //do shit the natural way i guess
 		return
+	var/datum/status_effect/zombie_infection/infection = has_status_effect(/datum/status_effect/zombie_infection)
+	if(infection)
+		var/time_remaining = infection.transformation_time - world.time
+		infection.transformation_time = world.time + (time_remaining * 0.8)
+		return
+	if(!prob(ZOMBIE_INFECTION_PROBABILITY))	//Failed the probability of infection
+		return
 	to_chat(src, span_danger("I feel horrible... REALLY horrible..."))
 	mob_timers["puke"] = world.time
 	vomit(1, blood = TRUE, stun = FALSE)
-	addtimer(CALLBACK(src, PROC_REF(wake_zombie)), 1 MINUTES)
+	src.infected = TRUE //Is this in use? Just in case it is
+	apply_status_effect(/datum/status_effect/zombie_infection, 5 MINUTES, "wound")
 	return zombie_antag
 
 /mob/living/carbon/human/proc/wake_zombie()

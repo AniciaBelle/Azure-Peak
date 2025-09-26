@@ -73,6 +73,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	var/body_parts_covered = 0 //see setup.dm for appropriate bit flags
 	var/body_parts_covered_dynamic = 0
 	var/body_parts_inherent	= 0 //bodypart coverage areas you cannot peel off because it wouldn't make any sense (peeling chest off of torso armor, hands off of gloves, head off of helmets, etc)
+	var/surgery_cover = TRUE // binary, whether this item is considered covering its bodyparts in respect to surgery. Tattoos, etc. are false. 
 	var/gas_transfer_coefficient = 1 // for leaking gas from turf to mask and vice-versa (for masks right now, but at some point, i'd like to include space helmets)
 	var/permeability_coefficient = 1 // for chemicals/diseases
 	var/siemens_coefficient = 1 // for electrical admittance/conductance (electrocution checks and shit)
@@ -80,6 +81,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	var/armor_penetration = 0 //percentage of armour effectiveness to remove
 	var/list/allowed = null //suit storage stuff.
 	var/equip_delay_self = 1 //In deciseconds, how long an item takes to equip; counts only for normal clothing slots, not pockets etc.
+	var/unequip_delay_self = 1 //In deciseconds, how long an item takes to unequip; counts only for normal clothing slots, not pockets etc.
+	var/inv_storage_delay = 0 //In deciseconds, how long an item takes to store in/pull out of a mob storage item (like, bags).
 	var/edelay_type = 1 //if 1, can be moving while equipping (for helmets etc)
 	var/equip_delay_other = 20 //In deciseconds, how long an item takes to put on another person
 	var/strip_delay = 40 //In deciseconds, how long an item takes to remove from another person
@@ -144,6 +147,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	var/list/gripped_intents //intents while gripped, replacing main intents
 	var/force_wielded = 0
 	var/gripsprite = FALSE //use alternate grip sprite for inhand
+	var/wieldsound = FALSE
 
 	var/dropshrink = 0
 	/// Force value that is force or force_wielded, with any added bonuses from external sources. (Mainly components for enchantments)
@@ -187,13 +191,9 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	var/icon/experimental_inhand = TRUE
 	var/icon/experimental_onhip = FALSE
 	var/icon/experimental_onback = FALSE
-
-	///trying to emote or talk with this in our mouth makes us muffled
 	var/muteinmouth = TRUE
 	///using spit emote spits the item out of our mouth and falls out after some time
 	var/spitoutmouth = TRUE
-
-	var/has_inspect_verb = FALSE
 
 	///The appropriate skill to repair this obj/item. If null, our object cannot be placed on an anvil to be repaired
 	var/anvilrepair
@@ -216,7 +216,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 	var/thrown_damage_flag = "blunt"
 
-	var/sheathe_sound // played when item is placed on hip_r or hip_l, the belt side slots
+	var/holster_sound // played when item is placed on hip_r or hip_l, the belt side slots
 
 	var/visual_replacement //Path. For use in generating dummies for one-off items that would break the game like the crown.
 
@@ -226,6 +226,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	/// This is what we get when we either tear up or salvage a piece of clothing
 	var/obj/item/salvage_result = null
 
+	var/craft_blocked = FALSE //blocks the item from being used in crafts, such as conjured items
+
 	/// The amount of salvage we get out of salvaging with scissors
 	var/salvage_amount = 0 //This will be more accurate when sewing recipes get sorted
 
@@ -234,7 +236,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 	/// Number of torn sleves, important for salvaging calculations and examine text
 	var/torn_sleeve_number = 0
-	
+
 	/// Angle of the icon, these are used for attack animations.
 	var/icon_angle = 50 // most of our icons are angled
 
@@ -246,9 +248,6 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	if(!pixel_x && !pixel_y && !bigboy)
 		pixel_x = rand(-5,5)
 		pixel_y = rand(-5,5)
-		
-	if(twohands_required)
-		has_inspect_verb = TRUE
 
 	if(grid_width <= 0)
 		grid_width = (w_class * world.icon_size)
@@ -343,7 +342,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 				getmoboverlay(i,prop,behind=TRUE,mirrored=TRUE)
 	
 	wdefense_dynamic = wdefense
-	force_dynamic = force
+	update_force_dynamic()
 
 	. = ..()
 	for(var/path in actions_types)
@@ -368,12 +367,15 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		AddComponent(/datum/component/butchering, 80 * toolspeed)
 
 	if(max_blade_int)
-		//set blade integrity to randomized 60% to 100% if not already set
-		if(!blade_int)
-			blade_int = max_blade_int + rand(-(max_blade_int * 0.4), 0)
-		//set dismemberment integrity to max_blade_int if not already set
-		if(!dismember_blade_int)
-			dismember_blade_int = max_blade_int
+		if(randomize_blade_int_on_init)
+			//set blade integrity to randomized 60% to 100% if not already set
+			if(!blade_int)
+				blade_int = max_blade_int + rand(-(max_blade_int * 0.4), 0)
+			//set dismemberment integrity to max_blade_int if not already set
+			if(!dismember_blade_int)
+				dismember_blade_int = max_blade_int
+		else
+			blade_int = max_blade_int
 
 /obj/item/Destroy()
 	item_flags &= ~DROPDEL	//prevent reqdels
@@ -427,6 +429,15 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 /obj/item/Topic(href, href_list)
 	. = ..()
 
+	if(href_list["explainshaft"])
+		to_chat(usr, span_info("Your weapon's shaft determines what kind of damage it is weak and strong against. Shafts other than Grand & Conjured Shaft can be swapped out.\n\
+		<b>Metal Shaft</b>: [DULLFACTOR_COUNTERED_BY]x vs Blunt/Smash, [DULLFACTOR_COUNTERS] vs Cut/Chop. 1x Everything Else. \n\
+		<b>Reinforced Shaft</b>: [DULLFACTOR_COUNTERED_BY]x vs Stab/Pick, [DULLFACTOR_COUNTERS] vs Blunt/Smash. 1x Everything Else. \n\
+		<b>Wooden Shaft</b>: [DULLFACTOR_COUNTERED_BY]x vs Cut/Chop, [DULLFACTOR_COUNTERS] vs Blunt/Smash. 1x Everything Else. \n\
+		<b>Grand Shaft</b>: [DULLFACTOR_ANTAG]x vs Everything but Smash. 1x vs Smash. Only present on certain special weapons. \n\
+		<b>Conjured Shaft</b>: [DULLFACTOR_COUNTERED_BY]x vs Everything. Present on Conjured or Decrepit weapons. Also meant to represent crumbling weapons. \n\
+		"))
+	
 	if(href_list["inspect"])
 		if(!usr.canUseTopic(src, be_close=TRUE))
 			return
@@ -437,7 +448,8 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		if(force)
 			inspec += "\n<b>FORCE:</b> [get_force_string(force)]"
 		if(gripped_intents && !wielded)
-			inspec += "\n<b>WIELDED FORCE:</b> [get_force_string(force_wielded)]"
+			if(force_wielded)
+				inspec += "\n<b>WIELDED FORCE:</b> [get_force_string(force_wielded)]"
 
 		if(wbalance)
 			inspec += "\n<b>BALANCE: </b>"
@@ -461,7 +473,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 		var/shafttext = get_blade_dulling_text(src, verbose = TRUE)
 		if(shafttext)
-			inspec += "\n<b>SHAFT:</b> [shafttext]"
+			inspec += "\n<b>SHAFT:</b> [shafttext] <span class='info'><a href='?src=[REF(src)];explainshaft=1'>{?}</a></span>"
 
 		if(gripped_intents)
 			inspec += "\n<b>TWO-HANDED</b>"
@@ -474,13 +486,13 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 		if(max_blade_int)
 			inspec += "\n<b>SHARPNESS:</b> "
-			var/meme = round(((blade_int / max_blade_int) * 100), 1)
-			inspec += "[meme]%"
+			var/percent = round(((blade_int / max_blade_int) * 100), 1)
+			inspec += "[percent]% ([blade_int])"
 
 		if(associated_skill && associated_skill.name)
 			inspec += "\n<b>SKILL:</b> [associated_skill.name]"
 		
-		if(intdamage_factor)
+		if(intdamage_factor != 1 && force >= 5)
 			inspec += "\n<b>INTEGRITY DAMAGE:</b> [intdamage_factor * 100]%"
 
 //**** CLOTHING STUFF
@@ -529,8 +541,11 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 		if(max_integrity)
 			inspec += "\n<b>DURABILITY:</b> "
-			var/meme = round(((obj_integrity / max_integrity) * 100), 1)
-			inspec += "[meme]%"
+			var/eff_maxint = max_integrity - (max_integrity * integrity_failure)
+			var/eff_currint = max(obj_integrity - (max_integrity * integrity_failure), 0)
+			var/ratio =	(eff_currint / eff_maxint)
+			var/percent = round((ratio * 100), 1)
+			inspec += "[percent]% ([floor(eff_currint)])"
 
 		to_chat(usr, "[inspec.Join()]")
 
@@ -538,9 +553,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	var/simpleton_price = FALSE
 
 /obj/item/get_inspect_button()
-	if(has_inspect_verb || (obj_integrity < max_integrity))
-		return " <span class='info'><a href='?src=[REF(src)];inspect=1'>{?}</a></span>"
-	return ..()
+	return " <span class='info'><a href='?src=[REF(src)];inspect=1'>{?}</a></span>"
 
 
 /obj/item/interact(mob/user)
@@ -618,6 +631,9 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 
 
 	//If the item is in a storage item, take it out
+	if(inv_storage_delay && SEND_SIGNAL(loc, COMSIG_CONTAINS_STORAGE))
+		if(!move_after(user, inv_storage_delay, target = iscarbon(loc) ? src : src.loc, progress = TRUE))
+			return
 	SEND_SIGNAL(loc, COMSIG_TRY_STORAGE_TAKE, src, user.loc, TRUE)
 	if(QDELETED(src)) //moving it out of the storage to the floor destroyed it.
 		return
@@ -679,6 +695,9 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		return 1
 	return 0
 
+/obj/item/proc/hit_response(mob/living/carbon/human/owner, mob/living/carbon/human/attacker)
+	SEND_SIGNAL(src, COMSIG_ITEM_HIT_RESPONSE, owner, attacker)		//sends signal for Magic_items. Used to call enchantments effects for worn items
+
 /obj/item/proc/talk_into(mob/M, input, channel, spans, datum/language/language)
 	return ITALICS | REDUCE_RANGE
 
@@ -701,6 +720,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		ungrip(user, FALSE)
 	item_flags &= ~IN_INVENTORY
 	SEND_SIGNAL(src, COMSIG_ITEM_DROPPED,user)
+	SEND_SIGNAL(user, COMSIG_ITEM_DROPPED, src)
 	if(!silent)
 		playsound(src, drop_sound, DROP_SOUND_VOLUME, TRUE, ignore_walls = FALSE)
 	user.update_equipment_speed_mods()
@@ -711,6 +731,17 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 	SEND_SIGNAL(src, COMSIG_ITEM_PICKUP, user)
 	item_flags |= IN_INVENTORY
+
+//pulled from Vanderlin
+// called just as an item is picked up (loc is not yet changed)
+/obj/item/proc/afterpickup(mob/user)
+	SHOULD_CALL_PARENT(TRUE)
+	/* leaving this out since we don't use encumbrance here
+	if(isliving(user))
+		user:encumbrance_to_speed()
+	*/
+
+/obj/item/proc/afterdrop(mob/user)
 
 // called when "found" in pockets and storage items. Returns 1 if the search should end.
 /obj/item/proc/on_found(mob/finder)
@@ -725,6 +756,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 /obj/item/proc/equipped(mob/user, slot, initial = FALSE)
 	SHOULD_CALL_PARENT(TRUE)
 	SEND_SIGNAL(src, COMSIG_ITEM_EQUIPPED, user, slot)
+	SEND_SIGNAL(user, COMSIG_ITEM_EQUIPPED, src, slot)
 	for(var/X in actions)
 		var/datum/action/A = X
 		if(item_action_slot_check(slot, user)) //some items only give their actions buttons when in a specific slot.
@@ -767,6 +799,20 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 //If you are making custom procs but would like to retain partial or complete functionality of this one, include a 'return ..()' to where you want this to happen.
 //Set disable_warning to TRUE if you wish it to not give you outputs.
 /obj/item/proc/mob_can_equip(mob/living/M, mob/living/equipper, slot, disable_warning = FALSE, bypass_equip_delay_self = FALSE)
+	if((is_silver || smeltresult == /obj/item/ingot/silver) && (HAS_TRAIT(M, TRAIT_SILVER_WEAK) &&  !M.has_status_effect(STATUS_EFFECT_ANTIMAGIC)))
+		var/datum/antagonist/vampirelord/V_lord = M.mind?.has_antag_datum(/datum/antagonist/vampirelord/)
+		if(V_lord.vamplevel >= 4 && !M.mind.has_antag_datum(/datum/antagonist/vampirelord/lesser))
+			return
+
+		to_chat(M, span_userdanger("I can't pick up the silver, it is my BANE!"))
+		M.Knockdown(10)
+		M.Paralyze(10)
+		M.adjustFireLoss(25)
+		M.adjust_fire_stacks(3, /datum/status_effect/fire_handler/fire_stacks/sunder)
+		M.ignite_mob()
+		return FALSE
+	//else if(is_blessed && slot == SLOT_HANDS)
+	//	user.add_stress(/datum/stressevent/blessed_weapon)
 	if(twohands_required)
 		if(!disable_warning)
 			to_chat(M, span_warning("[src] is too bulky to carry with anything but my hands!"))
@@ -875,7 +921,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		SEND_SIGNAL(src, COMSIG_MOVABLE_IMPACT, hit_atom, throwingdatum)
 		if(get_temperature() && isliving(hit_atom))
 			var/mob/living/L = hit_atom
-			L.IgniteMob()
+			L.ignite_mob()
 		var/itempush = 0
 		if(w_class < 4)
 			itempush = 0 //too light to push anything
@@ -1000,10 +1046,53 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	return max_sharp
 
 /obj/item/proc/get_dismemberment_chance(obj/item/bodypart/affecting, mob/user)
-	if(!affecting.can_dismember(src))
+	if(!get_sharpness() || !affecting.can_dismember(src))
 		return 0
-	if((get_sharpness() || damtype == BURN) && (w_class >= WEIGHT_CLASS_NORMAL) && force >= 10)
-		return force * (affecting.get_damage() / affecting.max_damage)
+
+	var/total_dam = affecting.get_damage()
+	var/nuforce = get_complex_damage(src, user)
+	var/pristine_blade = TRUE
+	if(max_blade_int && dismember_blade_int)
+		var/blade_int_modifier = (blade_int / dismember_blade_int)
+		//blade is about as sharp as a brick it won't dismember shit
+		if(blade_int_modifier <= 0.15)
+			return 0
+		nuforce *= blade_int_modifier
+		pristine_blade = (blade_int >= (dismember_blade_int * 0.95))
+
+	if(user)
+		if(istype(user.rmb_intent, /datum/rmb_intent/weak))
+			nuforce = 0
+		else if(istype(user.rmb_intent, /datum/rmb_intent/strong))
+			nuforce *= 1.1
+
+		if(user.used_intent.blade_class == BCLASS_CHOP) //chopping attacks always attempt dismembering
+			nuforce *= 1.1
+		else if(user.used_intent.blade_class == BCLASS_CUT)
+			if(!pristine_blade && (total_dam < affecting.max_damage * 0.8))
+				return 0
+		else
+			return 0
+
+	if(nuforce < 10)
+		return 0
+
+	var/probability = nuforce * (total_dam / affecting.max_damage)
+	var/hard_dismember = HAS_TRAIT(affecting, TRAIT_HARDDISMEMBER)
+	var/easy_dismember = affecting.rotted || affecting.skeletonized || HAS_TRAIT(affecting, TRAIT_EASYDISMEMBER)
+	if(affecting.owner)
+		if(!hard_dismember)
+			hard_dismember = HAS_TRAIT(affecting.owner, TRAIT_HARDDISMEMBER)
+		if(!easy_dismember)
+			easy_dismember = HAS_TRAIT(affecting.owner, TRAIT_EASYDISMEMBER)
+	// If you don't have easy dismember, then you must hit 90% damage or more to dismember a limb.
+	if((affecting.get_damage() <= (affecting.max_damage * CRIT_DISMEMBER_DAMAGE_THRESHOLD)) && !easy_dismember)
+		return FALSE
+	if(hard_dismember)
+		return min(probability, 5)
+	else if(easy_dismember)
+		return probability * 1.5
+	return probability
 
 /obj/item/proc/get_dismember_sound()
 	if(damtype == BURN)
@@ -1094,7 +1183,6 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 /obj/item/MouseExited()
 	. = ..()
 	deltimer(tip_timer)//delete any in-progress timer if the mouse is moved off the item before it finishes
-	closeToolTip(usr)
 
 
 // Called when a mob tries to use the item as a tool.
@@ -1192,6 +1280,9 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	return ..()
 
 /obj/item/proc/canStrip(mob/stripper, mob/owner)
+	if(HAS_TRAIT(loc, TRAIT_STUCKITEMS))
+		return FALSE
+
 	return !HAS_TRAIT(src, TRAIT_NODROP)
 
 /obj/item/proc/doStrip(mob/stripper, mob/owner)
@@ -1213,7 +1304,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	if(wielded)
 		wielded = FALSE
 		if(force_wielded)
-			force_dynamic = force
+			update_force_dynamic()
 		wdefense_dynamic = wdefense
 	if(altgripped)
 		altgripped = FALSE
@@ -1239,7 +1330,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		if(alt_intents)
 			user.update_a_intents()
 
-/obj/item/proc/wield(mob/living/carbon/user)
+/obj/item/proc/wield(mob/living/carbon/user, show_message = TRUE)
 	if(wielded)
 		return
 	if(user.get_inactive_held_item())
@@ -1253,11 +1344,13 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		return
 	wielded = TRUE
 	if(force_wielded)
-		force_dynamic = force_wielded
+		update_force_dynamic()
 	wdefense_dynamic = (wdefense + wdefense_wbonus)
 	update_transform()
-	to_chat(user, span_notice("I wield [src] with both hands."))
-	playsound(loc, pick('sound/combat/weaponr1.ogg','sound/combat/weaponr2.ogg'), 100, TRUE)
+	if(show_message)
+		to_chat(user, span_notice("I wield [src] with both hands."))
+	if(!wieldsound)
+		playsound(loc, pick('sound/combat/weaponr1.ogg','sound/combat/weaponr2.ogg'), 100, TRUE)
 	if(twohands_required)
 		if(!wielded)
 			user.dropItemToGround(src)
@@ -1352,25 +1445,41 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	add_overlay(damage)
 
 /// Proc that is only called with the Peel intent. Stacks consecutive hits, shreds coverage once a threshold is met. Thresholds are defined on /obj/item
-/obj/item/proc/peel_coverage(bodypart, divisor)
+/obj/item/proc/peel_coverage(bodypart, divisor, mob/living/carbon/human/owner)
 	var/coveragezone = attackzone2coveragezone(bodypart)
 	if(!(body_parts_inherent & coveragezone))
 		if(!last_peeled_limb || coveragezone == last_peeled_limb)
-			if(divisor >= peel_threshold)
-				peel_count += divisor ? (peel_threshold / divisor ) : 1
-			else if(divisor < peel_threshold)
+			var/peel_goal = peel_threshold
+			if(divisor > peel_goal)
+				peel_goal = divisor
+				
+			var/list/peeledpart = body_parts_covered2organ_names(coveragezone, precise = TRUE)
+
+			if(peel_count < peel_goal)
 				peel_count++
-			if(peel_count >= peel_threshold)
+
+			if(peel_count >= peel_goal)
 				body_parts_covered_dynamic &= ~coveragezone
 				playsound(src, 'sound/foley/peeled_coverage.ogg', 100)
-				var/list/peeledpart = body_parts_covered2organ_names(coveragezone, precise = TRUE)
 				var/parttext
 				if(length(peeledpart))
 					parttext = peeledpart[1]	//There should really only be one bodypart that gets exposed here.
 				visible_message("<font color = '#f5f5f5'><b>[parttext ? parttext : "Coverage"]</font></b> gets peeled off of [src]!")
+				var/balloon_msg = "<font color = '#bb1111'>[parttext] peeled!</font>"
+				if(length(peeledpart))
+					balloon_alert_to_viewers(balloon_msg, balloon_msg, DEFAULT_MESSAGE_RANGE)
 				reset_peel(success = TRUE)
 			else
-				visible_message(span_info("Peel strikes [src]! <b>[ROUND_UP(peel_count)]</b>!"))
+				if(owner)
+					owner.visible_message(span_info("Peel strikes [src]! <b>[ROUND_UP(peel_count)]</b>!"))
+				var/balloon_msg = "Peel! \Roman[ROUND_UP(peel_count)] <br><font color = '#8b7330'>[peeledpart[1]]!</font>"
+				var/has_guarded = HAS_TRAIT(owner, TRAIT_DECEIVING_MEEKNESS)
+				if(length(peeledpart) && !has_guarded)
+					filtered_balloon_alert(TRAIT_COMBAT_AWARE, balloon_msg)
+				else if(length(peeledpart) && has_guarded)
+					if(prob(10))
+						balloon_msg = "<i>Guarded...</i>"
+						filtered_balloon_alert(TRAIT_COMBAT_AWARE, balloon_msg)
 		else
 			last_peeled_limb = coveragezone
 			reset_peel()
@@ -1394,7 +1503,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 		peel_count = 0
 	visible_message(span_info("Peel reduced to [peel_count == 0 ? "none" : "[peel_count]"] on [src]!"))
 
-/obj/item/proc/attackzone2coveragezone(location)
+/proc/attackzone2coveragezone(location)
 	switch(location)
 		if(BODY_ZONE_HEAD)
 			return HEAD
@@ -1452,3 +1561,6 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 			str += "<b>Sewing</b> and a needle."
 		str = span_info(str)
 		. += str
+
+/obj/item/proc/update_force_dynamic()
+	force_dynamic = (wielded ? force_wielded : force)

@@ -1,15 +1,18 @@
 //t1, the bends
 /obj/effect/proc_holder/spell/invoked/abyssor_bends
 	name = "Depth Bends"
-	overlay_state = "thebends"
+	desc = "Drains the targets stamina, unless they worship Abyssor. Also makes them dizzy and blurs their screen."
+	overlay_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	action_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	overlay_state = "bends"
 	releasedrain = 15
 	chargedrain = 0
-	chargetime = 2 SECONDS
+	chargetime = 0.75 SECONDS
 	range = 15
 	movement_interrupt = FALSE
 	chargedloop = null
 	sound = 'sound/foley/bubb (5).ogg'
-	invocation = "Weight of the deep, crush!"
+	invocations = list("Weight of the deep, crush!")
 	invocation_type = "shout"
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = TRUE
@@ -26,14 +29,50 @@
 		if(istype(target, /mob/living/carbon))
 			var/mob/living/carbon = target
 			if(carbon.patron?.type != /datum/patron/divine/abyssor)
-				var/fatdrain = user.mind?.get_skill_level(associated_skill) * base_fatdrain
-				carbon.rogfat_add(fatdrain)
+				var/fatdrain = user.get_skill_level(associated_skill) * base_fatdrain
+				carbon.stamina_add(fatdrain)
 		target.Dizzy(10)
 		target.blur_eyes(20)
 		target.emote("drown")
 		return TRUE
 	revert_cast()
 	return FALSE
+
+/obj/effect/proc_holder/spell/invoked/abyssor_undertow // t1 offbalance someone for 5 seconds if on land, on water, knock them down.
+	name = "Undertow"
+	desc = "Throws target down if they are on water, otherwise puts them off balance."
+	overlay_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	action_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	overlay_state = "undertow"
+	releasedrain = 15
+	chargedrain = 0
+	chargetime = 0.75 SECONDS
+	range = 15
+	movement_interrupt = FALSE
+	chargedloop = null
+	sound = 'sound/misc/undertow.ogg'
+	invocations = list("Strangling waters, pull!")
+	invocation_type = "shout"
+	associated_skill = /datum/skill/magic/holy
+	antimagic_allowed = TRUE
+	recharge_time = 20 SECONDS
+	miracle = TRUE
+	devotion_cost = 15
+
+/obj/effect/proc_holder/spell/invoked/abyssor_undertow/cast(list/targets, mob/user = usr)
+	. = ..()
+	if(isliving(targets[1]))
+		var/mob/living/target = targets[1]
+		user.visible_message("<font color='yellow'>[user] raises a hand towards [target]!</font>")
+		var/turf/targettile = get_turf(target)
+		if(istype(targettile, /turf/open/water))
+			target.Knockdown(10)
+		else
+			target.OffBalance(50)
+		return TRUE
+	revert_cast()
+	return FALSE
+
 
 //T0. Stands the character up, if they can stand.
 /obj/effect/proc_holder/spell/self/abyssor_wind
@@ -46,7 +85,7 @@
 	sound = 'sound/magic/abyssor_splash.ogg'
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = FALSE
-	invocation = "What is drowned shall rise anew!"
+	invocations = list("What is drowned shall rise anew!")
 	invocation_type = "shout"
 	recharge_time = 120 SECONDS
 	devotion_cost = 30
@@ -66,9 +105,9 @@
 	if(H.resting)
 		H.set_resting(FALSE, FALSE)
 		msg += span_warning("rises and ")
-	var/regen = (stamregenmod / 100) * H.mind?.get_skill_level(associated_skill)
-	H.rogfat_add(-(regen * H.maxrogfat))
-	H.rogstam_add(regen * H.maxrogstam)
+	var/regen = (stamregenmod / 100) * H.get_skill_level(associated_skill)
+	H.stamina_add(-(regen * H.max_stamina))
+	H.energy_add(regen * H.max_energy)
 	msg += span_warning("becomes invigorated!")
 	H.visible_message(msg)
 	return TRUE
@@ -76,6 +115,7 @@
 //T0 The Fishing
 /obj/effect/proc_holder/spell/invoked/aquatic_compulsion
 	name = "Aquatic Compulsion"
+	desc = "Compel a fish to leap out from targeted water tile and towards you."
 	overlay_state = "aqua"
 	releasedrain = 15
 	chargedrain = 0
@@ -84,7 +124,7 @@
 	movement_interrupt = FALSE
 	chargedloop = null
 	sound = 'sound/foley/bubb (5).ogg'
-	invocation = "Splash forth."
+	invocations = list("Splash forth.")
 	invocation_type = "shout"
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = TRUE
@@ -93,48 +133,43 @@
 	devotion_cost = 10
 	//Horrendous carry-over from fishing code
 	var/frwt = list(/turf/open/water/river, /turf/open/water/cleanshallow, /turf/open/water/pond)
-	var/salwt = list(/turf/open/water/ocean, /turf/open/water/ocean/deep)
-	var/list/freshfishloot = list(
-		/obj/item/reagent_containers/food/snacks/fish/carp = 225,
-		/obj/item/reagent_containers/food/snacks/fish/sunny = 325,
-		/obj/item/reagent_containers/food/snacks/fish/salmon = 190,
-		/obj/item/reagent_containers/food/snacks/fish/eel = 140,
-		/obj/item/reagent_containers/food/snacks/smallrat = 1, //funny
-		/mob/living/simple_animal/hostile/retaliate/rogue/mudcrab = 20,			
-	)
-	var/list/seafishloot = list(
-		/obj/item/reagent_containers/food/snacks/fish/cod = 190,
-		/obj/item/reagent_containers/food/snacks/fish/plaice = 210,
-		/obj/item/reagent_containers/food/snacks/fish/sole = 340,
-		/obj/item/reagent_containers/food/snacks/fish/angler = 140,
-		/obj/item/reagent_containers/food/snacks/fish/lobster = 150,
-		/obj/item/reagent_containers/food/snacks/fish/bass = 210,
-		/obj/item/reagent_containers/food/snacks/fish/clam = 40,
-		/obj/item/reagent_containers/food/snacks/fish/clownfish = 20,
-		/obj/item/reagent_containers/food/snacks/smallrat = 1, //still funny
-		/mob/living/carbon/human/species/goblin/npc/sea = 10,
-		/mob/living/simple_animal/hostile/rogue/deepone = 3,
-		/mob/living/simple_animal/hostile/rogue/deepone/spit = 3,			
+	var/salwt_coast = list(/turf/open/water/ocean)
+	var/salwt_deep = list(/turf/open/water/ocean/deep)
+	var/mud = list(/turf/open/water/swamp, /turf/open/water/swamp/deep)
+	var/list/fishingMods = list(
+		"commonFishingMod" = 0.8,
+		"rareFishingMod" = 1,
+		"treasureFishingMod" = 0,
+		"trashFishingMod" = 0,
+		"dangerFishingMod" = 0.1,
+		"ceruleanFishingMod" = 0 // 1 on cerulean aril, 0 on everything else
 	)
 
 /obj/effect/proc_holder/spell/invoked/aquatic_compulsion/cast(list/targets, mob/user = usr)
 	. = ..()
 	if(isturf(targets[1]))
 		var/turf/T = targets[1]
-		var/success
 		var/A
 		if(T.type in frwt)
-			A = pickweight(freshfishloot)
-			success = TRUE
-		if(T.type in salwt)
-			A = pickweight(seafishloot)
-			success = TRUE
-		if(success)
+			A = pickweightAllowZero(createFreshWaterFishWeightListModlist(fishingMods))
+		else if(T.type in salwt_coast)
+			A = pickweightAllowZero(createCoastalSeaFishWeightListModlist(fishingMods))
+		else if(T.type in salwt_deep)
+			A = pickweightAllowZero(createDeepSeaFishWeightListModlist(fishingMods))
+		else if(T.type in mud)
+			A = pickweightAllowZero(createMudFishWeightListModlist(fishingMods))
+		if(A)
 			var/atom/movable/AF = new A(T)
-			AF.throw_at(get_turf(user), 5, 1, null)
+			if(istype(AF, /obj/item/reagent_containers/food/snacks/fish))
+				var/obj/item/reagent_containers/food/snacks/fish/F = AF
+				F.sinkable = FALSE
+				F.throw_at(get_turf(user), 5, 1, null)
+			else
+				AF.throw_at(get_turf(user), 5, 1, null)
 			record_featured_stat(FEATURED_STATS_FISHERS, user)
-			GLOB.azure_round_stats[STATS_FISH_CAUGHT]++
+			record_round_statistic(STATS_FISH_CAUGHT)
 			playsound(T, 'sound/foley/footsteps/FTWAT_1.ogg', 100)
+			teleport_to_dream(user, 10000, 1)
 			user.visible_message("<font color='yellow'>[user] makes a beckoning gesture at [T]!</font>")
 			return TRUE
 		else
@@ -146,52 +181,83 @@
 //T2, Abyssal Healing. Totally stole most of this from lesser heal.
 /obj/effect/proc_holder/spell/invoked/abyssheal
 	name = "Abyssal Healing"
-	overlay_state = "thebends"
+	desc = "Heals target over time, more if there is water around you. Weakens if cast away from water for too long"
+	overlay_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	action_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	overlay_state = "deepheal"
 	releasedrain = 15
 	chargedrain = 0
-	chargetime = 1 SECONDS
+	chargetime = 0.75 SECONDS
 	range = 2
 	warnie = "sydwarning"
 	movement_interrupt = FALSE
 	sound = 'sound/foley/waterenter.ogg'
-	invocation = "Healing waters, come forth!"
+	invocations = list("Healing waters, come forth!")
 	invocation_type = "shout"
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = TRUE
 	recharge_time = 10 SECONDS
 	miracle = TRUE
-	devotion_cost = 50
+	devotion_cost = 45
+	var/slickness = 20
+	var/max_slickness = 20
+	var/max_slickness_greater_caster = 40
+	var/base_healing = 6.5
 
 /obj/effect/proc_holder/spell/invoked/abyssheal/cast(list/targets, mob/living/user)
 	. = ..()
 	if(isliving(targets[1]))
 		var/mob/living/target = targets[1]
-		if(user.patron?.undead_hater && (target.mob_biotypes & MOB_UNDEAD)) //THE DEEP CALLS- sorry, the pressure of the deep falls upon those of the undead ilk
+		if(HAS_TRAIT(target, TRAIT_PSYDONITE))
+			target.visible_message(span_info("[target] stirs for a moment, the miracle dissipates."), span_notice("A dull warmth swells in your heart, only to fade as quickly as it arrived."))
+			playsound(target, 'sound/magic/PSY.ogg', 100, FALSE, -1)
+			user.playsound_local(user, 'sound/magic/PSY.ogg', 100, FALSE, -1)
+			return FALSE
+		if(user.patron?.undead_hater && (target.mob_biotypes & MOB_UNDEAD))
 			target.visible_message(span_danger("[target] is crushed by divine pressure!"), span_userdanger("I'm crushed by divine pressure!"))
 			target.adjustBruteLoss(30)			
 			return TRUE
+
 		var/conditional_buff = FALSE
-		var/situational_bonus = 1
+		var/situational_bonus = 0
 		target.visible_message(span_info("A wave of divine energy crashes over [target]!"), span_notice("I'm crushed by healing energies!"))
+
 		var/list/water = list(/turf/open/water/bath, /turf/open/water/ocean, /turf/open/water/cleanshallow, /turf/open/water/swamp, /turf/open/water/swamp/deep, /turf/open/water/pond, /turf/open/water/river)
-		situational_bonus = 0
-		// the more warter around us, the more we heal
+
+		// Calculate situational bonus based on water nearby
 		for (var/turf/O in oview(3, user))
-			if (O in water)
+			if (is_type_in_list(O, water))
 				situational_bonus = min(situational_bonus + 0.1, 2)
 		for (var/turf/open/water/ocean/deep/O in oview(3, user))
 			situational_bonus += 0.5
-		// Healing by the deep sea gives an extra boost.
+
+		var/holy_skill = user.get_skill_level(associated_skill)
+		// It's annoying to have to do a check here -every- time for a one time change, but it's the only way I can think of without a refactor of job systems or spells...
+		if(holy_skill > 3)
+			max_slickness = max_slickness_greater_caster
+
+		// Update slickness based on situational bonus
 		if (situational_bonus > 0)
+			slickness = max_slickness
 			conditional_buff = TRUE
-		var/healing = 6.5
+			to_chat(user, "Calling upon Abyssor's power is easier in these conditions!")
+
+		// Warning messages
+		if((slickness / max_slickness) <= 0.5)
+			to_chat(user, span_warning("Your connection to Abyssor is weakening. Cast near water to renew it."))
+
+		// Calculate healing based on slickness and situational bonus
+		var/healing = max(base_healing * (slickness / max_slickness) + situational_bonus, 3)
+		if (situational_bonus == 0)
+			slickness = max(0, slickness - 1)
+
 		target.adjustFireLoss(-80)
 		if (conditional_buff)
-			to_chat(user, "Calling upon Abyssor's power is easier in these conditions!")
-			healing += situational_bonus
 			target.adjustFireLoss(-40)
+
 		target.apply_status_effect(/datum/status_effect/buff/healing, healing)
 		return TRUE
+
 	revert_cast()
 	return FALSE
 //t3 alt, land surf, i just removed it but if this idea is like better... we'll see
@@ -199,16 +265,19 @@
 //t3, possible t4 if I put in land surf, summon mossback
 /obj/effect/proc_holder/spell/invoked/call_mossback
 	name = "Call Mossback"
-	overlay_state = "thebends"
+	desc = "Calls a Mossback that is friendly to you and that you can command."
+	overlay_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	action_icon = 'icons/mob/actions/abyssormiracles.dmi'
+	overlay_state = "crab"
 	range = 7
 	no_early_release = TRUE
 	charging_slowdown = 1
 	releasedrain = 20
 	chargedrain = 0
-	chargetime = 2 SECONDS
+	chargetime = 4 SECONDS
 	chargedloop = null
 	sound = 'sound/foley/bubb (1).ogg'
-	invocation = "From the abyss, rise!"
+	invocations = list("From the abyss, rise!")
 	invocation_type = "shout"
 	associated_skill = /datum/skill/magic/holy
 	antimagic_allowed = TRUE
@@ -233,13 +302,14 @@
 
 /obj/effect/proc_holder/spell/invoked/call_dreamfiend
 	name = "Summon Dreamfiend"
+	desc = "Summons a Dreamfiend to hound your target."
 	overlay_state = "dreamfiend"
 	range = 7
 	no_early_release = TRUE
 	charging_slowdown = 1
-	chargetime = 2 SECONDS
+	chargetime = 1.25 SECONDS
 	sound = 'sound/foley/bubb (1).ogg'
-	invocation = "From the dream, consume!"
+	invocations = list("From the dream, consume!")
 	invocation_type = "shout"
 	recharge_time = 300 SECONDS
 	miracle = TRUE
@@ -312,16 +382,17 @@
 	F.visible_message(span_notice("A [F] manifests following after [target]... countless teeth bared with hostility!"))
 	return TRUE
 
+// No chargetime given this can be cast well in advance.
 /obj/effect/proc_holder/spell/invoked/abyssal_infusion
 	name = "Abyssal Infusion"
+	desc = "Consumes an anglerfish to bless target with ability to call upon Abyssal Strength."
 	overlay_state = "abyssal_infusion"
 	range = 7
 	no_early_release = TRUE
 	charging_slowdown = 1
-	chargetime = 2 SECONDS
 	sound = 'sound/foley/bubb (1).ogg'
 	//Each dreamfiend has a different name to call!
-	invocation = "shogg vulgt!"
+	invocations = list("shogg vulgt!")
 	invocation_type = "shout"
 	recharge_time = 600 SECONDS
 	miracle = TRUE
@@ -370,6 +441,7 @@
 
 /obj/effect/proc_holder/spell/invoked/abyssal_strength
 	name = "Abyssal Strength"
+	desc = "Buffs all your stats besides fortune, and lowers your perception."
 	overlay_state = "abyssal_strength1"
 	range = 7
 	no_early_release = TRUE
@@ -377,7 +449,7 @@
 	chargetime = 2 SECONDS
 	sound = 'sound/foley/bubb (1).ogg'
 	//Each dreamfiend has a different name to call!
-	invocation = "shogg vulgt!"
+	invocations = list("shogg vulgt!")
 	invocation_type = "shout"
 	recharge_time = 750 SECONDS
 
@@ -392,12 +464,7 @@
 
 /obj/effect/proc_holder/spell/invoked/abyssal_strength/cast(list/targets, mob/living/user)
 	. = ..()
-	var/mob/living/carbon/target = targets[1]
-
-	if(!istype(target) || !(target == user))
-		to_chat(user, span_warning("This spell only works on myself!"))
-		revert_cast()
-		return FALSE
+	var/mob/living/carbon/target = user
 
 	var/list/stats = list(
 		"str" = 3 + ((stage - 1) * 1),
@@ -485,12 +552,12 @@
 	perception_malus = new_per
 
 	effectedstats = list(
-		"strength" = str_buff,
-		"constitution" = con_buff,
-		"endurance" = end_buff,
-		"fortune" = fortune_malus,
-		"speed" = speed_malus,
-		"perception" = perception_malus
+		STATKEY_STR = str_buff,
+		STATKEY_CON = con_buff,
+		STATKEY_WIL = end_buff,
+		STATKEY_LCK = fortune_malus,
+		STATKEY_SPD = speed_malus,
+		STATKEY_PER = perception_malus
 	)
 	
 	return ..()

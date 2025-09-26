@@ -10,7 +10,7 @@
 	var/next_activation = 0
 	var/end_activation = 0
 	var/ignite_chance = 2
-	var/traits_applied = list(TRAIT_NOPAIN, TRAIT_NOPAINSTUN, TRAIT_NOMOOD, TRAIT_NOHUNGER, TRAIT_NOBREATH, TRAIT_BLOODLOSS_IMMUNE, TRAIT_LONGSTRIDER, TRAIT_STRONGBITE, TRAIT_STRENGTH_UNCAPPED)
+	var/traits_applied = list(TRAIT_NOPAIN, TRAIT_NOPAINSTUN, TRAIT_NOMOOD, TRAIT_NOHUNGER, TRAIT_NOBREATH, TRAIT_BLOODLOSS_IMMUNE, TRAIT_LONGSTRIDER, TRAIT_STRONGBITE, TRAIT_STRENGTH_UNCAPPED, TRAIT_GRABIMMUNE)
 	var/stat_bonus_martyr = 3
 	var/mob/living/current_holder
 	var/is_active = FALSE
@@ -165,7 +165,7 @@
 	if(isliving(target))
 		var/mob/living/M = target
 		M.adjust_fire_stacks(5)
-		M.IgniteMob()
+		M.ignite_mob()
 
 /datum/component/martyrweapon/proc/on_equip(datum/source, mob/user, slot)
 	if(!allow_all)
@@ -176,7 +176,7 @@
 				H.dropItemToGround(parent)
 				return
 			var/datum/job/J = SSjob.GetJob(H.mind?.assigned_role)
-			if(!J.title == "Martyr" && !J.title == "Priest")		//Can't be a Martyr if you're not a Martyr. Or a Priest.
+			if(J.title != "Martyr" && J.title != "Bishop")		//Can't be a Martyr if you're not a Martyr. Or a Bishop.
 				to_chat(H, span_warn("It slips from my grasp. I can't get a hold."))
 				H.dropItemToGround(parent)
 				return
@@ -185,7 +185,7 @@
 				current_holder = user
 			if(J.title == "Martyr")
 				to_chat(user, span_warning("The blade binds to you."))
-			if(J.title == "Priest")
+			if(J.title == "Bishop")
 				to_chat(user, span_warning("You feel the shocking sensation as the sword attempts to bind to you. You know it will kill you. You can still drop it, and leave it for the Oathed."))
 	else
 		RegisterSignal(user, COMSIG_CLICK_ALT, PROC_REF(altclick), override = TRUE)
@@ -251,9 +251,9 @@
 /datum/component/martyrweapon/proc/adjust_traits(remove = FALSE)
 	for(var/trait in traits_applied)
 		if(!remove)
-			ADD_TRAIT(current_holder, trait, TRAIT_GENERIC)
+			ADD_TRAIT(current_holder, trait, "martyrweapon")
 		else
-			REMOVE_TRAIT(current_holder, trait, TRAIT_GENERIC)
+			REMOVE_TRAIT(current_holder, trait, "martyrweapon")
 
 /datum/component/martyrweapon/proc/adjust_stats(state)
 	if(current_holder)
@@ -268,26 +268,25 @@
 				current_holder.STASTR += stat_bonus_martyr
 				//current_holder.STASPD += stat_bonus_martyr
 				current_holder.STACON += stat_bonus_martyr
-				current_holder.STAEND += stat_bonus_martyr
+				current_holder.STAWIL += stat_bonus_martyr
 				current_holder.STAINT += stat_bonus_martyr
 				current_holder.STAPER += stat_bonus_martyr
 				current_holder.STALUC += stat_bonus_martyr
-				H.rogstam_add(9999)
+				H.energy_add(9999)
 			if(STATE_MARTYRULT)	//This is ONLY accessed during the last 30 seconds of the shorter variant.
 				current_holder.STASTR = 20
 				current_holder.STASPD = 20
 				current_holder.STACON = 20
-				current_holder.STAEND = 20
+				current_holder.STAWIL = 20
 				current_holder.STAINT = 20
 				current_holder.STAPER = 20
 				current_holder.STALUC = 20
-				H.rogstam_add(9999)//Go get 'em, Martyrissimo, it's your last 30 seconds, it's a frag or be fragged world
-				if(H.mind)
-					H.mind.adjust_skillrank(/datum/skill/combat/wrestling, 6, FALSE)
-					H.mind.adjust_skillrank(/datum/skill/combat/swords, 6, FALSE)
-					H.mind.adjust_skillrank(/datum/skill/combat/unarmed, 6, FALSE)
-					H.mind.adjust_skillrank(/datum/skill/misc/athletics, 6, FALSE)
-				ADD_TRAIT(current_holder, TRAIT_NOROGSTAM, TRAIT_GENERIC)
+				H.energy_add(9999)//Go get 'em, Martyrissimo, it's your last 30 seconds, it's a frag or be fragged world
+				H.adjust_skillrank(/datum/skill/combat/wrestling, 6, FALSE)
+				H.adjust_skillrank(/datum/skill/combat/swords, 6, FALSE)
+				H.adjust_skillrank(/datum/skill/combat/unarmed, 6, FALSE)
+				H.adjust_skillrank(/datum/skill/misc/athletics, 6, FALSE)
+				ADD_TRAIT(current_holder, TRAIT_INFINITE_STAMINA, TRAIT_GENERIC)
 				current_holder.visible_message(span_warning("[current_holder] rises up, empowered once more!"), span_warningbig("I rise again! I can feel my god flow through me!"))
 				flash_lightning(current_holder)
 				current_holder.revive(full_heal = TRUE, admin_revive = TRUE)
@@ -299,6 +298,9 @@
 		REMOVE_TRAIT(parent, TRAIT_NODROP, TRAIT_GENERIC)	//The weapon can be moved by the Priest again (or used, I suppose)
 	is_active = FALSE
 	I.damtype = BRUTE
+	I.possible_item_intents = list(/datum/intent/sword/cut, /datum/intent/sword/thrust, /datum/intent/sword/strike)
+	I.gripped_intents = list(/datum/intent/sword/cut, /datum/intent/sword/thrust, /datum/intent/sword/strike, /datum/intent/sword/chop)
+	current_holder.update_a_intents()
 	I.force = initial(I.force)
 	I.force_wielded = initial(I.force_wielded)
 	I.max_integrity = initial(I.max_integrity)
@@ -361,6 +363,9 @@
 		flash_lightning(user)
 		var/obj/item/I = parent
 		I.damtype = BURN	//Changes weapon damage type to fire
+		I.possible_item_intents = list(/datum/intent/sword/cut/martyr, /datum/intent/sword/thrust/martyr, /datum/intent/sword/strike/martyr)
+		I.gripped_intents = list(/datum/intent/sword/cut/martyr, /datum/intent/sword/thrust/martyr, /datum/intent/sword/strike/martyr, /datum/intent/sword/chop/martyr)
+		user.update_a_intents()
 		I.slot_flags = null	//Can't sheathe a burning sword
 
 		ADD_TRAIT(parent, TRAIT_NODROP, TRAIT_GENERIC)	//You're committed, now.
@@ -384,7 +389,7 @@
 				current_holder.STASTR += stat_bonus_martyr
 				current_holder.STASPD += stat_bonus_martyr
 				current_holder.STACON += stat_bonus_martyr
-				current_holder.STAEND += stat_bonus_martyr
+				current_holder.STAWIL += stat_bonus_martyr
 				current_holder.STAINT += stat_bonus_martyr
 				current_holder.STAPER += stat_bonus_martyr
 				current_holder.STALUC += stat_bonus_martyr
@@ -426,7 +431,7 @@
 	tutorial = "Martyrs are hand-picked among the most devout of the Holy See. They are given one of the See's cherished relics to protect the Church, and to inspire hope and lead by example of grace, kindness and vicious intolerance to any who do not share the belief of the Ten. They have sworn an Oath in the sight of the gods, and will fulfill it to the bitter end."
 	allowed_sexes = list(MALE, FEMALE)
 	allowed_races = RACES_NO_CONSTRUCT
-	allowed_patrons = ALL_DIVINE_PATRONS
+	allowed_patrons = list(/datum/patron/divine/undivided)
 	outfit = /datum/outfit/job/roguetown/martyr
 	min_pq = 10 //Cus it's a Martyr of the Ten. Get it.
 	max_pq = null
@@ -438,22 +443,71 @@
 	give_bank_account = TRUE
 
 	cmode_music = 'sound/music/combat_martyrsafe.ogg'
+	job_traits = list(
+		TRAIT_HEAVYARMOR,
+		TRAIT_STEELHEARTED,
+		TRAIT_SILVER_BLESSED,
+		TRAIT_EMPATH,
+		TRAIT_MEDICINE_EXPERT,
+		TRAIT_DUALWIELDER
+	)
 
 	//No undeath-adjacent virtues for a role that can sacrifice itself. The Ten like their sacrifices 'pure'. (I actually didn't want to code returning those virtue traits post-sword use)
 	//They get those traits during sword activation, anyway. 
 	//Dual wielder is there to stand-in for ambidextrous in case they activate their sword in their off-hand.
 	virtue_restrictions = list(/datum/virtue/utility/noble, /datum/virtue/combat/rotcured, /datum/virtue/utility/deadened, /datum/virtue/utility/deathless, /datum/virtue/combat/dualwielder, /datum/virtue/heretic/zchurch_keyholder)
 
+	advclass_cat_rolls = list(CTAG_MARTYR = 2)
+	job_subclasses = list(
+		/datum/advclass/martyr
+	)
+
+/datum/advclass/martyr
+	name = "Martyr"
+	tutorial = "Martyrs are hand-picked among the most devout of the Holy See. They are given one of the See's cherished relics to protect the Church, and to inspire hope and lead by example of grace, kindness and vicious intolerance to any who do not share the belief of the Ten. They have sworn an Oath in the sight of the gods, and will fulfill it to the bitter end."
+	outfit = /datum/outfit/job/roguetown/martyr/basic
+	subclass_languages = list(/datum/language/grenzelhoftian)
+	category_tags = list(CTAG_MARTYR)
+	subclass_stats = list(
+		STATKEY_CON = 3,
+		STATKEY_WIL = 3,
+		STATKEY_STR = 2,
+		STATKEY_PER = 1,
+		STATKEY_INT = 1
+	)
+	subclass_skills = list(
+	//No, they don't get any miracles. Their miracle is being able to use their weapon at all.
+		/datum/skill/combat/swords = SKILL_LEVEL_EXPERT,
+		/datum/skill/misc/athletics = SKILL_LEVEL_EXPERT,
+		/datum/skill/misc/tracking = SKILL_LEVEL_EXPERT,
+		/datum/skill/misc/medicine = SKILL_LEVEL_EXPERT,
+		/datum/skill/misc/climbing = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/combat/wrestling = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/combat/shields = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/misc/reading = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/combat/unarmed = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/combat/knives = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/craft/cooking = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/misc/swimming = SKILL_LEVEL_NOVICE,
+		/datum/skill/misc/sneaking = SKILL_LEVEL_NOVICE,
+	)
+	subclass_stashed_items = list(
+		"The Verses and Acts of the Ten" = /obj/item/book/rogue/bibble,
+	)
+
 /datum/outfit/job/roguetown/martyr
 	job_bitflag = BITFLAG_CHURCH
 
-/datum/outfit/job/roguetown/martyr/pre_equip(mob/living/carbon/human/H)
+/datum/outfit/job/roguetown/martyr/basic/pre_equip(mob/living/carbon/human/H)
 	..()
+	H.adjust_blindness(-3)
 	shoes = /obj/item/clothing/shoes/roguetown/boots/armor
 	belt = /obj/item/storage/belt/rogue/leather/plaquegold
 	beltr = /obj/item/storage/keyring/priest
 	beltl = /obj/item/storage/belt/rogue/pouch/coins/rich
+	r_hand = /obj/item/rogueweapon/scabbard/sword
 	backr = /obj/item/storage/backpack/rogue/satchel
+	backl = /obj/item/rogueweapon/shield/tower/holysee
 	gloves = /obj/item/clothing/gloves/roguetown/chain
 	wrists = /obj/item/clothing/wrists/roguetown/bracers
 	neck = /obj/item/clothing/neck/roguetown/bevor
@@ -462,34 +516,11 @@
 	pants = /obj/item/clothing/under/roguetown/platelegs/holysee
 	cloak = /obj/item/clothing/cloak/holysee
 	head = /obj/item/clothing/head/roguetown/helmet/heavy/holysee
-	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/silver = 1)
-
-	//No, they don't get any miracles. Their miracle is being able to use their weapon at all.
-	if(H.mind)
-		H.mind.adjust_skillrank(/datum/skill/combat/swords, 4, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/athletics, 4, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/tracking, 4, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/medicine, 4, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/climbing, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/wrestling, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/shields, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/reading, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/unarmed, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/combat/knives, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/craft/cooking, 3, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/swimming, 1, TRUE)
-		H.mind.adjust_skillrank(/datum/skill/misc/sneaking, 1, TRUE)
-		ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
-		ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
-		ADD_TRAIT(H, TRAIT_EMPATH, TRAIT_GENERIC)
-		ADD_TRAIT(H, TRAIT_SILVER_BLESSED, TRAIT_GENERIC)
-		ADD_TRAIT(H, TRAIT_DUALWIELDER, TRAIT_GENERIC)	//You can't dual wield the unique weapon, this is more to cover for the NODROP weapon that might end up in an off-hand.
-		H.change_stat("strength", 2)
-		H.change_stat("constitution", 3)
-		H.change_stat("endurance", 3)
-		H.change_stat("intelligence", 1)
-		H.change_stat("perception", 1)
-		H.dna.species.soundpack_m = new /datum/voicepack/male/knight()
+	backpack_contents = list(
+		/obj/item/rogueweapon/huntingknife/idagger/silver = 1,
+		/obj/item/rogueweapon/scabbard/sheath = 1
+		)
+	H.dna.species.soundpack_m = new /datum/voicepack/male/knight()
 
 
 /obj/item/rogueweapon/sword/long/martyr
@@ -521,9 +552,34 @@
 	thrown_bclass = BCLASS_CUT
 	dropshrink = 1
 	smeltresult = /obj/item/ingot/gold
-	is_silver = FALSE
+	is_silver = TRUE
 	toggle_state = null
 	is_important = TRUE
+
+/obj/item/rogueweapon/sword/long/martyr/ComponentInitialize()
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_TENNITE,\
+		silver_type = SILVER_TENNITE,\
+		added_force = 0,\
+		added_blade_int = 0,\
+		added_int = 0,\
+		added_def = 0,\
+	)
+
+/datum/intent/sword/cut/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_CUT
+/datum/intent/sword/thrust/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_PICK // so our armor-piercing attacks in ult mode can do crits(against most armors, not having crit)
+/datum/intent/sword/strike/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_SMASH
+/datum/intent/sword/chop/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_CHOP
+
 
 /obj/item/rogueweapon/sword/long/martyr/Initialize()
 	AddComponent(/datum/component/martyrweapon)
@@ -533,7 +589,7 @@
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		var/datum/job/J = SSjob.GetJob(H.mind?.assigned_role)
-		if(J.title == "Priest" || J.title == "Martyr")
+		if(J.title == "Bishop" || J.title == "Martyr")
 			return ..()
 		else if (H.job in GLOB.church_positions)
 			to_chat(user, span_warning("You feel a jolt of holy energies just for a split second, and then the sword slips from your grasp! You are not devout enough."))
@@ -547,7 +603,7 @@
 				visible_message(span_warning("[H] lets out a painful shriek as the sword lashes out at them!"))
 				H.emote("agony")
 				H.adjust_fire_stacks(5)
-				H.IgniteMob()
+				H.ignite_mob()
 			return FALSE
 		else	//Everyone else
 			to_chat(user, span_warning("A painful jolt across your entire body sends you to the ground. You cannot touch this thing."))
@@ -583,7 +639,7 @@
 	body_parts_covered = CHEST|GROIN
 	boobed = FALSE
 	sellprice = 100
-	slot_flags = ITEM_SLOT_ARMOR|ITEM_SLOT_CLOAK
+	slot_flags = ITEM_SLOT_BACK_R|ITEM_SLOT_ARMOR|ITEM_SLOT_CLOAK
 	flags_inv = HIDECROTCH|HIDEBOOB
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/holysee
@@ -619,6 +675,7 @@
 	desc = "Branded by the Holy See, these helms are worn by it's chosen warriors. A bastion of hope in the dark nite."
 	icon = 'icons/roguetown/clothing/special/martyr.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/martyrbascinet.dmi'
+	bloody_icon = 'icons/effects/blood64.dmi'
 	adjustable = CAN_CADJUST
 	emote_environment = 3
 	flags_inv = HIDEEARS|HIDEFACE|HIDEHAIR|HIDESNOUT
@@ -650,6 +707,19 @@
 	flags_inv = HIDECROTCH|HIDEBOOB
 	var/overarmor = TRUE
 	sellprice = 300
+
+
+/obj/item/clothing/cloak/holysee/ComponentInitialize()
+	. = ..()
+	AddComponent(/datum/component/storage/concrete/roguetown/cloak)
+
+/obj/item/clothing/cloak/holysee/dropped(mob/living/carbon/human/user)
+	..()
+	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
+	if(STR)
+		var/list/things = STR.contents()
+		for(var/obj/item/I in things)
+			STR.remove_from_storage(I, get_turf(src))
 
 /obj/item/clothing/cloak/holysee/MiddleClick(mob/user)
 	overarmor = !overarmor

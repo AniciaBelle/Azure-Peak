@@ -33,7 +33,7 @@
 
 //Destroyer of knowledge - for storytellers
 /obj/item/book/fire_act()
-	GLOB.azure_round_stats[STATS_BOOKS_BURNED]++
+	record_round_statistic(STATS_BOOKS_BURNED)
 	..()
 
 
@@ -86,7 +86,7 @@
 	if(!user.hud_used.reads)
 		return
 	if(!user.can_read(src))
-		user.mind.adjust_experience(/datum/skill/misc/reading, 4, FALSE)
+		user.adjust_experience(/datum/skill/misc/reading, 4, FALSE)
 		return
 	if(in_range(user, src) || isobserver(user))
 		if(!pages.len)

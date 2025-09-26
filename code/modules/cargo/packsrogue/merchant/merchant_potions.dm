@@ -5,7 +5,6 @@
 /datum/supply_pack/rogue/potions
 	group = "Potions"
 	crate_name = "merchant guild's crate"
-	mandated_public_profit = 0.5 // 50% Mandatory Profit Margin on top. Let's not make it too expensive for lowpop.
 	crate_type = /obj/structure/closet/crate/chest/merchant
 
 //Only two since that's 4 uses total; two sips each. You only need one sip for cure.
@@ -19,22 +18,22 @@
 
 /datum/supply_pack/rogue/potions/healthpot
 	name = "Healing Potion"
-	cost = 35
+	cost = 25
 	contains = list(/obj/item/reagent_containers/glass/bottle/rogue/healthpot)
 
 /datum/supply_pack/rogue/potions/manapot
 	name = "Mana Potion"
-	cost = 35
+	cost = 25
 	contains = list(/obj/item/reagent_containers/glass/bottle/rogue/manapot)
 
 /datum/supply_pack/rogue/potions/stamina
 	name = "Stamina Potion"
-	cost = 35
+	cost = 25
 	contains = list(/obj/item/reagent_containers/glass/bottle/rogue/stampot)
 
 /datum/supply_pack/rogue/potions/antidote
 	name = "Poison Antidote"
-	cost = 35
+	cost = 25
 	contains = list(/obj/item/reagent_containers/glass/bottle/rogue/antidote)
 
 /datum/supply_pack/rogue/potions/strpot
@@ -48,7 +47,7 @@
 	contains = list(/obj/item/reagent_containers/glass/bottle/alchemical/perpot)
 
 /datum/supply_pack/rogue/potions/endpot
-	name = "Endurance Potion"
+	name = "Willpower Potion"
 	cost = 50
 	contains = list(/obj/item/reagent_containers/glass/bottle/alchemical/endpot)
 

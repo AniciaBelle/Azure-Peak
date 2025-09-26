@@ -414,30 +414,54 @@
 	if(reagents)
 		if(reagents.flags & TRANSPARENT)
 			if(length(reagents.reagent_list))
-				if(user.can_see_reagents() || (user.Adjacent(src) && (user.mind.get_skill_level(/datum/skill/craft/alchemy) >= 2 || HAS_TRAIT(user, TRAIT_CICERONE)))) //Show each individual reagent
+				if(user.can_see_reagents() || (user.Adjacent(src) && (user.get_skill_level(/datum/skill/craft/alchemy) >= 2 || HAS_TRAIT(user, TRAIT_CICERONE)))) //Show each individual reagent
 					. += "It contains:"
 					for(var/datum/reagent/R in reagents.reagent_list)
-						. += "[round(R.volume / 3, 0.1)] oz of <font color=[R.color]>[R.name]</font>"
+						. += "[round(R.volume, 0.1)] [UNIT_FORM_STRING(round(R.volume, 0.1))] of <font color=[R.color]>[R.name]</font>"
 				else //Otherwise, just show the total volume
 					var/total_volume = 0
 					var/reagent_color
 					for(var/datum/reagent/R in reagents.reagent_list)
 						total_volume += R.volume
 					reagent_color = mix_color_from_reagents(reagents.reagent_list)
-					if(total_volume / 3 < 1)
-						. += "It contains less than 1 oz of <font color=[reagent_color]>something.</font>"
+					if(total_volume < 1)
+						. += "It contains less than 1 [UNIT_FORM_STRING(1)] of <font color=[reagent_color]>something.</font>"
 					else
-						. += "It contains [round(total_volume / 3)] oz of <font color=[reagent_color]>something.</font>"
+						. += "It contains [round(total_volume)] [UNIT_FORM_STRING(round(total_volume))] of <font color=[reagent_color]>something.</font>"
 			else
 				. += "Nothing."
 		else if(reagents.flags & AMOUNT_VISIBLE)
 			if(reagents.total_volume)
-				. += span_notice("It has [round(reagents.total_volume / 3)] oz left.")
+				. += span_notice("It has [round(reagents.total_volume)] [UNIT_FORM_STRING(round(reagents.total_volume))] left.")
 			else
 				. += span_danger("It's empty.")
 
 	SEND_SIGNAL(src, COMSIG_PARENT_EXAMINE, user, .)
 
+//taking in the vanderline update on apperance, name and desc processes
+/atom/proc/vand_update_appearance(updates = ALL)
+	SHOULD_NOT_SLEEP(TRUE)
+	SHOULD_CALL_PARENT(TRUE)
+
+	. = NONE
+	updates &= ~SEND_SIGNAL(src, COMSIG_ATOM_UPDATE_APPEARANCE, updates)
+	if(updates & UPDATE_NAME)
+		. |= vand_update_name(updates)
+	if(updates & UPDATE_DESC)
+		. |= vand_update_desc(updates)
+	if(updates & UPDATE_ICON)
+		. |= update_icon(updates)
+
+/// Updates the name of the atom
+/atom/proc/vand_update_name(updates = ALL)
+	SHOULD_CALL_PARENT(TRUE)
+	return SEND_SIGNAL(src, COMSIG_ATOM_UPDATE_NAME, updates)
+
+/// Updates the description of the atom
+/atom/proc/vand_update_desc(updates = ALL)
+	SHOULD_CALL_PARENT(TRUE)
+	return SEND_SIGNAL(src, COMSIG_ATOM_UPDATE_DESC, updates)
+	
 /// Updates the icon of the atom
 /atom/proc/update_icon()
 	var/signalOut = SEND_SIGNAL(src, COMSIG_ATOM_UPDATE_ICON)
@@ -1109,6 +1133,11 @@
 		update_filters()
 	return .
 
+/atom/movable/proc/clear_filters()
+	var/atom/atom_cast = src // filters only work with images or atoms.
+	filter_data = null
+	atom_cast.filters = null
+
 /atom/movable/proc/update_filters() //Determine which filter comes first
 	filters = null                  //note, the cmp_filter is a little flimsy.
 	sortTim(filter_data, /proc/cmp_filter_priority_desc, associative = TRUE) 
@@ -1121,6 +1150,43 @@
 /atom/movable/proc/get_filter(name)
 	if(filter_data && filter_data[name])
 		return filters[filter_data.Find(name)]
+
+/** Update a filter's parameter and animate this change. If the filter doesn't exist we won't do anything.
+ * Basically a [datum/proc/modify_filter] call but with animations. Unmodified filter parameters are kept.
+ *
+ * Arguments:
+ * * name - Filter name
+ * * new_params - New parameters of the filter
+ * * time - time arg of the BYOND animate() proc.
+ * * easing - easing arg of the BYOND animate() proc.
+ * * loop - loop arg of the BYOND animate() proc.
+ */
+/atom/movable/proc/transition_filter(name, list/new_params, time, easing, loop)
+	var/filter = get_filter(name)
+	if(!filter)
+		return
+	// This can get injected by the filter procs, we want to support them so bye byeeeee
+	new_params -= "type"
+	animate(filter, new_params, time = time, easing = easing, loop = loop)
+	modify_filter(name, new_params)
+
+/** Update a filter's parameter to the new one. If the filter doesn't exist we won't do anything.
+ *
+ * Arguments:
+ * * name - Filter name
+ * * new_params - New parameters of the filter
+ * * overwrite - TRUE means we replace the parameter list completely. FALSE means we only replace the things on new_params.
+ */
+/atom/movable/proc/modify_filter(name, list/new_params, overwrite = FALSE)
+	var/filter = get_filter(name)
+	if(!filter)
+		return
+	if(overwrite)
+		filter_data[name] = new_params
+	else
+		for(var/thing in new_params)
+			filter_data[name][thing] = new_params[thing]
+	update_filters()
 
 /atom/proc/intercept_zImpact(atom/movable/AM, levels = 1)
 	. |= SEND_SIGNAL(src, COMSIG_ATOM_INTERCEPT_Z_FALL, AM, levels)
@@ -1173,3 +1239,14 @@
 /atom/proc/InitializeAIController()
 	if(ai_controller)
 		ai_controller = new ai_controller(src)
+
+///Returns a list of all locations (except the area) the movable is within.
+/proc/get_nested_locs(atom/movable/atom_on_location, include_turf = FALSE)
+	. = list()
+	var/atom/location = atom_on_location.loc
+	var/turf/our_turf = get_turf(atom_on_location)
+	while(location && location != our_turf)
+		. += location
+		location = location.loc
+	if(our_turf && include_turf) //At this point, only the turf is left, provided it exists.
+		. += our_turf

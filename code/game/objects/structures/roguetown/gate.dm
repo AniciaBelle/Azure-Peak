@@ -32,6 +32,10 @@ GLOBAL_LIST_EMPTY(biggates)
 	base_state = "bar"
 	opacity = FALSE
 
+/obj/structure/gate/bars/Initialize()
+	. = ..()
+	INVOKE_ASYNC(src, PROC_REF(close))
+
 /obj/structure/gate/bars/preopen
 	icon_state = "bar0"
 
@@ -43,6 +47,7 @@ GLOBAL_LIST_EMPTY(biggates)
 	name = ""
 	desc = ""
 	icon = null
+	density = TRUE
 	mouse_opacity = 0
 	opacity = TRUE
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | ACID_PROOF
@@ -97,6 +102,7 @@ GLOBAL_LIST_EMPTY(biggates)
 	opacity = FALSE
 	for(var/obj/gblock/B in blockers)
 		B.opacity = FALSE
+		B.density = FALSE
 	isSwitchingStates = FALSE
 	update_icon()
 
@@ -133,6 +139,7 @@ GLOBAL_LIST_EMPTY(biggates)
 	layer = initial(layer)
 	for(var/obj/gblock/B in blockers)
 		B.opacity = TRUE
+		B.density = TRUE
 	isSwitchingStates = FALSE
 	update_icon()
 
@@ -172,9 +179,18 @@ GLOBAL_LIST_EMPTY(biggates)
 		return
 	if(isliving(user))
 		var/mob/living/L = user
-		L.changeNext_move(CLICK_CD_MELEE)
+		L.changeNext_move(CLICK_CD_INTENTCAP)
 		var/used_time = 105 - (L.STASTR * 10)
 		user.visible_message(span_warning("[user] cranks the winch."))
 		playsound(src, 'sound/foley/winch.ogg', 100, extrarange = 3)
 		if(do_after(user, used_time, target = user))
 			attached_gate.toggle()
+
+/obj/structure/gate/psy_vault
+	name = "\improper HIS vault"
+	redstone_id = "swamp_psy_dungeon_hour"
+	max_integrity = "9999"
+
+/obj/structure/gate/psy_vault/Initialize()
+	. = ..()
+	addtimer(CALLBACK(src, PROC_REF(open)), 1 HOURS)

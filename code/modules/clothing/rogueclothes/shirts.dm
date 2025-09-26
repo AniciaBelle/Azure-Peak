@@ -15,7 +15,8 @@
 	sewrepair = TRUE
 	flags_inv = HIDEBOOB
 	experimental_inhand = FALSE
-	
+	salvage_amount = 2
+
 	grid_width = 64
 	grid_height = 64
 
@@ -34,6 +35,7 @@
 	icon_state = "priestunder"
 	item_state = "priestunder"
 	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_shirts.dmi'
+	slot_flags = ITEM_SLOT_SHIRT|ITEM_SLOT_ARMOR
 	r_sleeve_status = SLEEVE_NORMAL
 	l_sleeve_status = SLEEVE_NORMAL
 	allowed_sex = list(MALE, FEMALE)
@@ -133,6 +135,7 @@
 /obj/item/clothing/suit/roguetown/shirt/tunic/noblecoat
 	name = "fancy coat"
 	desc = "A fancy tunic and coat combo. How elegant."
+	slot_flags = ITEM_SLOT_SHIRT|ITEM_SLOT_ARMOR|ITEM_SLOT_CLOAK
 	icon_state = "noblecoat"
 	sleevetype = "noblecoat"
 	detail_tag = "_detail"
@@ -531,6 +534,13 @@
 	icon_state = "stewardtunic"
 	item_state = "stewardtunic"
 
+/obj/item/clothing/suit/roguetown/shirt/dress/silkdress/loudmouth
+	color = null
+	name = "crier's garb"
+	desc = "A robe that speaks volumes!"
+	icon_state = "loudmouthrobe"
+	item_state = "loudmouthrobe"
+
 //WEDDING CLOTHES
 /obj/item/clothing/suit/roguetown/shirt/dress/silkdress/weddingdress
 	name = "wedding silk dress"
@@ -573,7 +583,7 @@
 	icon_state = "eastshirt2"
 	icon = 'icons/roguetown/clothing/shirts.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/shirts.dmi'
-	sleeved = 'icons/roguetown/clothing/onmob/shirts.dmi'
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_shirts.dmi'
 	boobed = TRUE
 	r_sleeve_status = SLEEVE_NORMAL
 	l_sleeve_status = SLEEVE_NORMAL
@@ -583,19 +593,21 @@
 //tattoo code
 /obj/item/clothing/suit/roguetown/shirt/undershirt/easttats/Initialize(mapload)
 	. = ..()
-	name = "lenticular tattoos"
-	desc = "It's styled into the shapes of clouds. You shudder as the ink moves and condenses into areas where the skin is struck."
+	name = "bouhoi bujeog tattoos"
+	desc = "A mystic style of tattoos adopted by the Ruma Clan, emulating a practice performed by warrior monks of the Xinyi Dynasty. They are your way of identifying fellow clan members, an sign of companionship and secretive brotherhood. These are styled into the shape of clouds, created by a mystical ink which shifts and moves in ripples like a pond to harden where your skin is struck. It's movement causes you to shudder."
 	resistance_flags = FIRE_PROOF
 	icon_state = "easttats"
 	slot_flags = ITEM_SLOT_SHIRT|ITEM_SLOT_ARMOR
 	ADD_TRAIT(src, TRAIT_NODROP, CURSED_ITEM_TRAIT)
-	body_parts_covered = CHEST|ARMS
+	body_parts_covered = ARMS
 	icon = 'icons/roguetown/clothing/shirts.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/shirts.dmi'
-	sleeved = 'icons/roguetown/clothing/onmob/shirts.dmi'
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_shirts.dmi'
 	r_sleeve_status = SLEEVE_NORMAL
 	l_sleeve_status = SLEEVE_NORMAL
 	allowed_race = NON_DWARVEN_RACE_TYPES
+	flags_inv = null //free the breast
+	surgery_cover = FALSE // cauterize and surgery through it.
 
 /obj/item/clothing/suit/roguetown/shirt/easttats/easttats/dropped(mob/living/carbon/human/user)
 	. = ..()

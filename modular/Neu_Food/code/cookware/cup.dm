@@ -14,7 +14,7 @@
 	dropshrink = 0.8
 	w_class = WEIGHT_CLASS_NORMAL
 	experimental_inhand = FALSE
-	volume = 24
+	volume = 25
 	obj_flags = CAN_BE_HIT
 	sellprice = 1
 	drinksounds = list('sound/items/drink_cup (1).ogg','sound/items/drink_cup (2).ogg','sound/items/drink_cup (3).ogg','sound/items/drink_cup (4).ogg','sound/items/drink_cup (5).ogg')
@@ -50,14 +50,17 @@
 
 /obj/item/reagent_containers/glass/cup/aalloymug
 	name = "decrepit mug"
-	desc = "A decrepit mug. Aeon's grasp is upon its form."
+	desc = "Frayed bronze, coiled into a cup. Here, adventurers of centuries-past would laugh and legendize; but now, nothing but empty chairs and empty tables remain."
+	color = "#bb9696"
 	icon_state = "amug"
+	sellprice = 10
 
 /obj/item/reagent_containers/glass/cup/aalloygob
 	name = "decrepit goblet"
-	desc = "A decrepit goblet. Aeon's grasp is upon its form."
+	desc = "Frayed bronze, coiled into a hooked vessel. To think that this was once a nobleman's goblet; yet, it has endured far longer than their now-withered bloodline."
+	color = "#bb9696"
 	icon_state = "agoblet"
-	sellprice = 0
+	sellprice = 20
 
 /obj/item/reagent_containers/glass/cup/silver
 	name = "silver goblet"
@@ -72,48 +75,7 @@
 	desc = "A silver cup, its surface adorned with intricate carvings and runes."
 	icon_state = "scup"
 	sellprice = 20
-
-/obj/item/reagent_containers/glass/cup/silver/pickup(mob/user)
-	. = ..()
-	var/mob/living/carbon/human/H = user
-	var/datum/antagonist/vampirelord/V_lord = H.mind.has_antag_datum(/datum/antagonist/vampirelord/)
-	var/datum/antagonist/werewolf/W = H.mind.has_antag_datum(/datum/antagonist/werewolf/)
-	if(ishuman(H))
-		if(H.mind.has_antag_datum(/datum/antagonist/vampirelord/lesser))
-			to_chat(H, span_userdanger("I can't pick up the silver, it is my BANE!"))
-			H.Knockdown(10)
-			H.Paralyze(10)
-			H.adjustFireLoss(25)
-			H.fire_act(1,10)
-		if(V_lord)
-			if(V_lord.vamplevel < 4 && !H.mind.has_antag_datum(/datum/antagonist/vampirelord/lesser))
-				to_chat(H, span_userdanger("I can't pick up the silver, it is my BANE!"))
-				H.Knockdown(10)
-				H.adjustFireLoss(25)
-		if(W && W.transformed == TRUE)
-			to_chat(H, span_userdanger("I can't pick up the silver, it is my BANE!"))
-			H.Knockdown(10)
-			H.Paralyze(10)
-			H.adjustFireLoss(25)
-			H.fire_act(1,10)
-
-/obj/item/reagent_containers/glass/cup/silver/mob_can_equip(mob/living/M, mob/living/equipper, slot, disable_warning = FALSE, bypass_equip_delay_self = FALSE)
-	. = ..()
-	if(ishuman(M))
-		var/mob/living/carbon/human/H = M
-		if(H.dna && H.dna.species)
-			if(istype(H.dna.species, /datum/species/werewolf))
-				M.Knockdown(10)
-				M.Paralyze(10)
-				M.adjustFireLoss(25)
-				H.fire_act(1,10)
-				to_chat(H, span_userdanger("I can't pick up the silver, it is my BANE!"))
-				return FALSE
-	if(M.mind && M.mind.has_antag_datum(/datum/antagonist/vampirelord))
-		M.adjustFireLoss(25)
-		M.fire_act(1,10)
-		to_chat(M, span_userdanger("I can't pick up the silver, it is my BANE!"))
-		return FALSE
+	is_silver = TRUE
 
 /obj/item/reagent_containers/glass/cup/golden
 	name = "golden goblet"

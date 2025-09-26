@@ -29,6 +29,59 @@
 	anvilrepair = /datum/skill/craft/armorsmithing
 //	block2add = FOV_BEHIND
 
+/obj/item/clothing/mask/rogue/spectacles/inq
+	name = "otavan nocshade lens-pair"
+	icon_state = "bglasses"
+	desc = "Made to both ENDURE and incite debate within those few Noc-Sainted within Otava. Noc-lit walks, yae or nae? The lenses look like they can be brushed aside with a carefully guided right-pointer finger led motion."
+	attacked_sound = 'sound/combat/hits/onglass/glasshit.ogg'
+	max_integrity = 300
+	integrity_failure = 0.5
+	resistance_flags = FIRE_PROOF
+	body_parts_covered = EYES
+	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_HEAD
+	anvilrepair = /datum/skill/craft/armorsmithing
+	var/lensmoved = FALSE
+
+/obj/item/clothing/mask/rogue/spectacles/inq/spawnpair
+	lensmoved = TRUE
+
+/obj/item/clothing/mask/rogue/spectacles/inq/equipped(mob/user, slot)
+	..()
+
+	if(slot == SLOT_WEAR_MASK || slot == SLOT_HEAD)
+		if(!lensmoved)
+			ADD_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+			return
+
+/obj/item/clothing/mask/rogue/spectacles/inq/update_icon(mob/user, slot)	
+	cut_overlays()
+	..()
+	if(slot == SLOT_WEAR_MASK || slot == SLOT_HEAD)
+		var/mutable_appearance/redlenses = mutable_appearance(mob_overlay_icon, "bglasses_glow")
+		redlenses.layer = 19
+		redlenses.plane = 20
+		user.add_overlay(redlenses)	
+
+/obj/item/clothing/mask/rogue/spectacles/inq/attack_right(mob/user, slot)
+	..()
+
+	if(!lensmoved)
+		to_chat(user, span_info("You discreetly slide the inner lenses out of the way."))
+		REMOVE_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+		lensmoved = TRUE
+		return
+	to_chat(user, span_info("You discreetly slide the inner lenses back into place."))
+	ADD_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+	lensmoved = FALSE
+
+/obj/item/clothing/mask/rogue/spectacles/inq/dropped(mob/user, slot)
+	..()		
+	if(slot != SLOT_WEAR_MASK || slot == SLOT_HEAD)
+		if(!lensmoved)
+			REMOVE_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+			return
+		lensmoved = FALSE
+
 /obj/item/clothing/mask/rogue/spectacles/golden
 	name = "golden spectacles"
 	icon_state = "goggles"
@@ -39,9 +92,39 @@
 	resistance_flags = FIRE_PROOF
 	body_parts_covered = EYES
 	anvilrepair = /datum/skill/craft/armorsmithing
+	var/active_item = FALSE
+
+/obj/item/clothing/mask/rogue/spectacles/golden/equipped(mob/user, slot)
+	..()
+	if(active_item)
+		return
+	else if(slot == SLOT_WEAR_MASK || slot == SLOT_HEAD)
+		if (user.get_skill_level(/datum/skill/craft/engineering) >= 2)
+			ADD_TRAIT(user, TRAIT_ENGINEERING_GOGGLES, "[type]")
+			user.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/engineeranalyze)
+			to_chat(user, span_notice("Time to build"))
+			active_item = TRUE
+			return
+		else 
+			to_chat(user, span_notice("I can't understand these words and numbers before my eyes"))
+			return
+	else
+		return
+
+				
+		
+		
+
+/obj/item/clothing/mask/rogue/spectacles/golden/dropped(mob/user, slot)
+	..()
+	if(active_item)
+		active_item = FALSE
+		REMOVE_TRAIT(user, TRAIT_ENGINEERING_GOGGLES, "[type]")
+		user.mind.RemoveSpell(new /obj/effect/proc_holder/spell/invoked/engineeranalyze)
+		to_chat(user, span_notice("Time to stop working"))
 
 /obj/item/clothing/mask/rogue/spectacles/Initialize()
-	. = ..()
+	..()
 	AddComponent(/datum/component/spill, null, 'sound/blank.ogg')
 
 /obj/item/clothing/mask/rogue/spectacles/Crossed(mob/crosser)
@@ -50,11 +133,11 @@
 	..()
 
 /obj/item/clothing/mask/rogue/equipped(mob/user, slot)
-	. = ..()
+	..()
 	user.update_fov_angles()
 
 /obj/item/clothing/mask/rogue/dropped(mob/user)
-	. = ..()
+	..()
 	user.update_fov_angles()
 
 /obj/item/clothing/mask/rogue/eyepatch
@@ -87,6 +170,96 @@
 	name = "tarnished golden halfmask"
 	desc = "Runes and wards, meant for daemons; the gold has somehow rusted in unnatural, impossible agony. The gold is now worthless, but that is not why the Naledi wear them."
 	sellprice = 20
+
+/obj/item/clothing/mask/rogue/sack
+	name = "sack mask"
+	desc = "A brown sack with eyeholes cut into it."
+	icon_state = "sackmask"
+	blocksound = SOFTHIT
+	break_sound = 'sound/foley/cloth_rip.ogg'
+	drop_sound = 'sound/foley/dropsound/cloth_drop.ogg'
+	max_integrity = 200
+	prevent_crits = list(BCLASS_BLUNT)
+	slot_flags = ITEM_SLOT_HEAD|ITEM_SLOT_MASK
+	flags_inv = HIDEFACE|HIDESNOUT|HIDEHAIR|HIDEEARS
+	body_parts_covered = FACE|HEAD
+	block2add = FOV_BEHIND
+	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_HIP
+	armor = ARMOR_PADDED 
+	sewrepair = TRUE
+
+/obj/item/clothing/mask/rogue/sack/psy
+	name = "psydonian sack mask"
+	desc = "An ordinary brown sack. This one has eyeholes cut into it, bearing a crude chalk drawing of Psydon's cross upon its visage. Unsettling for most."
+	icon_state = "sackmask_psy"
+
+/obj/item/clothing/mask/rogue/facemask/steel/confessor
+	name = "strange mask"
+	desc = "It is said that the original version of this mask was used for obscure rituals prior to the fall of the Empire of the Holy Celestia, and now it has been repurposed as a veil for the cunning hand of the Otavan Orthodoxy.<br> <br>Others say it is a piece of heresy, a necessary evil, capable of keeping its user safe from left-handed magicks. You can taste copper whenever you draw breath."
+	icon_state = "confessormask"
+	max_integrity = 200
+	equip_sound = 'sound/items/confessormaskon.ogg'
+	smeltresult = /obj/item/ingot/steel	
+	var/worn = FALSE
+	slot_flags = ITEM_SLOT_MASK
+	
+/obj/item/clothing/mask/rogue/facemask/steel/confessor/equipped(mob/living/carbon/human/user, slot)
+	. = ..()
+	if(user.wear_mask == src)
+		worn = TRUE
+
+/obj/item/clothing/mask/rogue/facemask/steel/confessor/dropped(mob/user)
+	. = ..()
+	if(worn)
+		playsound(user, 'sound/items/confessormaskoff.ogg', 80)
+		worn = FALSE
+
+/obj/item/clothing/mask/rogue/facemask/steel/confessor/attackby(obj/item/I, mob/user, params)
+	. = ..()
+	if(istype(I, /obj/item/clothing/mask/rogue/spectacles/inq))
+		user.visible_message(span_warning("[user] starts to insert [I]'s lenses into [src]."))
+		if(do_after(user, 4 SECONDS))
+			var/obj/item/clothing/mask/rogue/facemask/steel/confessor/lensed/P = new /obj/item/clothing/mask/rogue/facemask/steel/confessor/lensed(get_turf(src.loc))
+			if(user.is_holding(src))
+				user.dropItemToGround(src)
+				user.put_in_hands(P)
+			P.obj_integrity = src.obj_integrity
+			qdel(src)
+			qdel(I)
+		else
+			user.visible_message(span_warning("[user] stops inserting the lenses into [src]."))
+		return		
+
+/obj/item/clothing/mask/rogue/facemask/steel/confessor/lensed
+	name = "stranger mask"
+	desc = "It is said that the original version of this mask was used for obscure rituals prior to the fall of the Empire of the Holy Celestia, and now it has been repurposed as a veil for the cunning hand of the Otavan Orthodoxy.<br> <br>Others say it is a piece of heresy, a necessary evil, capable of keeping its user safe from left-handed magicks. You can taste copper whenever you draw breath."
+	icon_state = "confessormask_lens"
+	var/lensmoved = TRUE
+
+/obj/item/clothing/mask/rogue/facemask/steel/confessor/lensed/equipped(mob/user, slot)
+	..()
+	if(slot == SLOT_WEAR_MASK || slot == SLOT_HEAD)
+		if(!lensmoved)
+			ADD_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+			return
+
+/obj/item/clothing/mask/rogue/facemask/steel/confessor/lensed/attack_right(mob/user, slot)
+	..()
+	if(!lensmoved)
+		to_chat(user, span_info("You discreetly slide the inner lenses out of the way."))
+		REMOVE_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+		lensmoved = TRUE
+		return
+	to_chat(user, span_info("You discreetly slide the inner lenses back into place."))
+	ADD_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+	lensmoved = FALSE
+
+/obj/item/clothing/mask/rogue/facemask/steel/confessor/lensed/dropped(mob/user, slot)
+	..()		
+	if(slot != SLOT_WEAR_MASK || slot == SLOT_HEAD)
+		if(!lensmoved)
+			REMOVE_TRAIT(user, TRAIT_NOCSHADES, "redlens")
+			return	
 
 /obj/item/clothing/mask/rogue/wildguard
 	name = "wild guard"
@@ -126,10 +299,12 @@
 
 /obj/item/clothing/mask/rogue/facemask/aalloy
 	name = "decrepit mask"
-	desc = "A decrepit creepy old mask. Aeon's grasp is upon it."
+	desc = "Frayed bronze, molded into an unblinking visage. Only the statues, buried within the innards of Mount Decapitation, share its wrinkled lip and sneer of cold command."
 	icon_state = "ancientmask"
 	max_integrity = 75
-	smeltresult = /obj/item/ingot/aalloy
+	color = "#bb9696"
+	smeltresult = /obj/item/ingot/aaslag
+	anvilrepair = null
 
 /obj/item/clothing/mask/rogue/facemask/copper
 	name = "copper mask"
@@ -228,15 +403,27 @@
 
 /obj/item/clothing/mask/rogue/facemask/steel/paalloy
 	name = "ancient mask"
-	desc = "A mask forged of ancient alloys. Aeon's grasp has been lifted from its form."
+	desc = "Polished gilbranze, molded into an intimidating visage. Touch the cheek; it is warm, like flesh. But it is not flesh. Not yet."
 	icon_state = "ancientmask"
-
+	smeltresult = /obj/item/ingot/aaslag
 
 /obj/item/clothing/mask/rogue/facemask/steel/hound
 	name = "steel hound mask"
 	desc = "A steel mask, made for those who have snouts, protecting the eyes, nose and muzzle while obscuring the face."
 	icon_state = "smask_hound"
 
+/obj/item/clothing/mask/rogue/facemask/steel/steppesman
+	name = "steppesman war mask"
+	desc = "A steel mask shaped like the face of a rather charismatic fellow! Pronounced cheeks, a nose, and a large mustache. Well, people outside of Aavnr don't think you'd look charismatic at all wearing this."
+	max_integrity = 250
+	icon_state = "steppemask"
+	layer = HEAD_LAYER
+
+/obj/item/clothing/mask/rogue/facemask/steel/steppesman/anthro
+	name = "steppesman beast mask"
+	desc = "A steel mask shaped like the face of a rather charismatic beastman! Pronounced cheeks, a nose, and small spikes for whiskers. Well, people outside of Aavnr don't think you'd look charismatic at all wearing this."
+	icon_state = "steppebeast"
+	
 /obj/item/clothing/mask/rogue/facemask/goldmask
 	name = "Gold Mask"
 	icon_state = "goldmask"
@@ -244,11 +431,20 @@
 	sellprice = 100
 	smeltresult = /obj/item/ingot/gold
 
+/obj/item/clothing/mask/rogue/facemask/yoruku_oni
+	name = "oni mask"
+	desc = "A wood mask carved in the visage of demons said to stalk the mountains of Kazengun."
+	icon_state = "oni"
+
+/obj/item/clothing/mask/rogue/facemask/yoruku_kitsune
+	name = "kitsune mask"
+	desc = "A wood mask carved in the visage of the fox spirits said to ply their tricks in the forests of Kazengun."
+	icon_state = "kitsune"
+
 /obj/item/clothing/mask/rogue/shepherd
 	name = "halfmask"
 	icon_state = "shepherd"
 	flags_inv = HIDEFACE|HIDEFACIALHAIR|HIDESNOUT
-	body_parts_covered = NECK|MOUTH
 	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_HIP
 	adjustable = CAN_CADJUST
 	toggle_icon_state = TRUE
@@ -295,7 +491,6 @@
 	name = "rag mask"
 	icon_state = "ragmask"
 	flags_inv = HIDEFACE|HIDEFACIALHAIR|HIDESNOUT
-	body_parts_covered = NECK|MOUTH
 	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_HIP
 	adjustable = CAN_CADJUST
 	toggle_icon_state = TRUE
@@ -322,7 +517,6 @@
 	name = "exotic silk mask"
 	icon_state = "exoticsilkmask"
 	flags_inv = HIDEFACE|HIDEFACIALHAIR
-	body_parts_covered = NECK|MOUTH
 	slot_flags = ITEM_SLOT_MASK|ITEM_SLOT_HIP
 	sewrepair = TRUE
 	adjustable = CAN_CADJUST

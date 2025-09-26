@@ -31,7 +31,10 @@
 			return
 
 /obj/structure/roguemachine/vendor/attackby(obj/item/P, mob/user, params)
-
+	if(istype(P, /obj/item/roguecoin/aalloy))
+		return
+	if(istype(P, /obj/item/roguecoin/inqcoin))	
+		return
 	if(istype(P, /obj/item/roguecoin))
 		budget += P.get_real_price()
 		qdel(P)
@@ -79,6 +82,7 @@
 				else
 					say("NO MONEY NO HONEY!")
 					return
+			record_round_statistic(STATS_PEDDLER_REVENUE, held_items[O]["PRICE"])
 			held_items -= O
 			if(!usr.put_in_hands(O))
 				O.forceMove(get_turf(src))
@@ -144,7 +148,7 @@
 	. = ..()
 	if(.)
 		return
-	user.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_INTENTCAP)
 	playsound(loc, 'sound/misc/beep.ogg', 100, FALSE, -1)
 	var/canread = user.can_read(src, TRUE)
 	var/contents
@@ -296,4 +300,16 @@
 		held_items[P] = list()
 		held_items[P]["NAME"] = P.name
 		held_items[P]["PRICE"] = 10
+	update_icon()
+
+/obj/structure/roguemachine/vendor/stablemaster
+	keycontrol = "stablemaster"
+
+/obj/structure/roguemachine/vendor/stablemaster/Initialize()
+	. = ..()
+	for(var/X in list(/obj/item/roguekey/apartments/stablemaster_1,/obj/item/roguekey/apartments/stablemaster_2,/obj/item/roguekey/apartments/stablemaster_3,/obj/item/roguekey/apartments/stablemaster_4,/obj/item/roguekey/apartments/stablemaster_5))
+		var/obj/P = new X(src)
+		held_items[P] = list()
+		held_items[P]["NAME"] = P.name
+		held_items[P]["PRICE"] = 30
 	update_icon()

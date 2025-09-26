@@ -34,7 +34,6 @@
 		/datum/crafting_recipe/roguetown/survival/stonesword,
 		/datum/crafting_recipe/roguetown/survival/woodsword,
 		/datum/crafting_recipe/roguetown/survival/bag,
-		/datum/crafting_recipe/roguetown/survival/bagx5,
 		/datum/crafting_recipe/roguetown/survival/rod,
 		/datum/crafting_recipe/roguetown/survival/pearlcross,
 		/datum/crafting_recipe/roguetown/survival/bpearlcross,
@@ -56,6 +55,8 @@
 		/datum/crafting_recipe/roguetown/survival/flowercrown_rosa,
 		/datum/crafting_recipe/roguetown/survival/flowercrown_salvia,
 		/datum/crafting_recipe/roguetown/survival/slingpouchcraft,
+		/datum/crafting_recipe/roguetown/survival/oar,
+		/datum/crafting_recipe/roguetown/survival/boat,
 		)
 
 	AddElement(
@@ -67,7 +68,7 @@
 	if(user.get_active_held_item())
 		return
 	var/is_legendary = FALSE
-	if(user.mind.get_skill_level(/datum/skill/labor/farming) == SKILL_LEVEL_LEGENDARY) //check if the user has legendary farming skill
+	if(user.get_skill_level(/datum/skill/labor/farming) == SKILL_LEVEL_LEGENDARY) //check if the user has legendary farming skill
 		is_legendary = TRUE //they do
 	if(is_legendary)
 		bundling_time = 2 //if legendary skill, the move_after is fast, 0.2 seconds
@@ -174,7 +175,6 @@
 	var/static/list/slapcraft_recipe_list = list(
 		/datum/crafting_recipe/roguetown/survival/longbowpartial,
 		/datum/crafting_recipe/roguetown/survival/bag,
-		/datum/crafting_recipe/roguetown/survival/bagx5,
 		/datum/crafting_recipe/roguetown/survival/book_crafting_kit,
 		/datum/crafting_recipe/roguetown/survival/slingpouchcraft,
 		)
@@ -278,8 +278,7 @@
 		to_chat(user, span_warning("There is already a bandage."))
 		return
 	var/used_time = 70
-	if(H.mind)
-		used_time -= (H.mind.get_skill_level(/datum/skill/misc/medicine) * 10)
+	used_time -= (H.get_skill_level(/datum/skill/misc/medicine) * 10)
 	playsound(loc, 'sound/foley/bandage.ogg', 100, FALSE)
 	if(!do_mob(user, M, used_time))
 		return

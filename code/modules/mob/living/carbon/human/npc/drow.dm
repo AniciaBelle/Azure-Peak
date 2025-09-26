@@ -42,6 +42,8 @@ GLOBAL_LIST_INIT(drowraider_aggro, world.file2list("strings/rt/drowaggrolines.tx
 	job = "Drow Raider"
 	ADD_TRAIT(src, TRAIT_NOMOOD, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOHUNGER, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_LEECHIMMUNE, INNATE_TRAIT)
+	ADD_TRAIT(src, TRAIT_BREADY, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
 	equipOutfit(new /datum/outfit/job/roguetown/human/species/elf/dark/drowraider)
 	gender = pick(MALE, FEMALE)
@@ -57,7 +59,8 @@ GLOBAL_LIST_INIT(drowraider_aggro, world.file2list("strings/rt/drowaggrolines.tx
 	var/hairm = pick(list(/datum/sprite_accessory/hair/head/ponytailwitcher, 
 						/datum/sprite_accessory/hair/head/dave, 
 						/datum/sprite_accessory/hair/head/emo, 
-						/datum/sprite_accessory/hair/head/sabitsuki))
+						/datum/sprite_accessory/hair/head/sabitsuki,
+						/datum/sprite_accessory/hair/head/sabitsuki_ponytail))
 
 	var/datum/bodypart_feature/hair/head/new_hair = new()
 
@@ -114,32 +117,38 @@ GLOBAL_LIST_INIT(drowraider_aggro, world.file2list("strings/rt/drowaggrolines.tx
 	. = ..()
 
 /datum/outfit/job/roguetown/human/species/elf/dark/drowraider/pre_equip(mob/living/carbon/human/H)
-	armor = /obj/item/clothing/suit/roguetown/armor/plate/half/iron
-	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/lord
+	armor = /obj/item/clothing/suit/roguetown/armor/plate/iron
+	shirt = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron
 	pants = /obj/item/clothing/under/roguetown/chainlegs/iron
 	cloak = /obj/item/clothing/cloak/raincloak/furcloak/black
-	wrists = /obj/item/clothing/wrists/roguetown/bracers/leather
-	if(prob(50))
-		wrists = /obj/item/clothing/wrists/roguetown/bracers
-	mask = /obj/item/clothing/mask/rogue/facemask/steel
+	wrists = /obj/item/clothing/wrists/roguetown/bracers/iron
 	if(prob(50))
 		mask = /obj/item/clothing/mask/rogue/ragmask/black
-	head = /obj/item/clothing/head/roguetown/roguehood/black
+	head = /obj/item/clothing/head/roguetown/helmet/sallet/visored/iron
 	if(prob(50))
-		head = /obj/item/clothing/head/roguetown/helmet/kettle
-	neck = /obj/item/clothing/neck/roguetown/bevor
+		head = /obj/item/clothing/head/roguetown/helmet/kettle/iron
+	neck = /obj/item/clothing/neck/roguetown/bevor/iron
 	if(prob(50))
 		neck = /obj/item/clothing/neck/roguetown/gorget
-	gloves = /obj/item/clothing/gloves/roguetown/chain/blk
-	shoes = /obj/item/clothing/shoes/roguetown/boots
-	H.STASTR = rand(16,18)
-	H.STASPD = rand(16,18)
-	H.STACON = rand(14,16)
-	H.STAEND = rand(14,16)
-	H.STAPER = rand(12,14)
-	H.STAINT = rand(12,14)
+	gloves = /obj/item/clothing/gloves/roguetown/chain/iron
+	shoes = /obj/item/clothing/shoes/roguetown/boots/leather/reinforced
+	H.STASTR = 14 // 8 Points
+	H.STASPD = 11 // +1 - Drow
+	H.STACON = 14 // 4 points
+	H.STAWIL = 12 // 2 points - 14 points spread. Equal to 1 more than a KC accounting for Statpack.
+	H.STAPER = 10
+	H.STAINT = 10  
 	if(prob(50))
 		r_hand = /obj/item/rogueweapon/sword/falx
 		l_hand = /obj/item/rogueweapon/shield/tower
 	else
-		r_hand = /obj/item/rogueweapon/halberd/glaive
+		r_hand = /obj/item/rogueweapon/halberd/bardiche
+	H.adjust_skillrank(/datum/skill/combat/polearms, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/maces, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/axes, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/swords, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/shields, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
+	H.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE)
+	H.adjust_skillrank(/datum/skill/misc/climbing, 2, TRUE)

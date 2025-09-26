@@ -75,7 +75,7 @@
 		QDEL_NULL(mob_light)
 	if(mob_charge_effect)
 		mastermob.vis_contents -= mob_charge_effect
-	if(mastermob.curplaying == src)
+	if(mastermob?.curplaying == src)
 		mastermob.curplaying = null
 	mastermob = null
 	masteritem = null
@@ -123,6 +123,9 @@
 			for(var/part in int.target_parts)
 				str +="|[bodyzone2readablezone(part)]|"
 			inspec += str
+	if(intent_intdamage_factor != 1)
+		var/percstr = abs(intent_intdamage_factor - 1) * 100
+		inspec += "\nThis intent deals [percstr]% [intent_intdamage_factor > 1 ? "more" : "less"] damage to integrity."
 	inspec += "<br>----------------------"
 
 	to_chat(user, "[inspec.Join()]")
@@ -371,7 +374,21 @@
 	item_d_type = "stab"
 	blade_class = BCLASS_PICK
 	chargetime = 0
+	clickcd = 14 // Just like knife pick!
 	swingdelay = 12
+
+/datum/intent/pick/bad	//One-handed intents
+	name = "sluggish pick"
+	icon_state = "inpick"
+	attack_verb = list("picks","impales")
+	hitsound = list('sound/combat/hits/pick/genpick (1).ogg', 'sound/combat/hits/pick/genpick (2).ogg')
+	penfactor = 60
+	animname = "strike"
+	item_d_type = "stab"
+	blade_class = BCLASS_PICK
+	chargetime = 0
+	clickcd = 16 // Just like knife pick!
+	swingdelay = 16
 
 /datum/intent/pick/ranged
 	name = "ranged pick"
@@ -380,8 +397,8 @@
 	hitsound = list('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg')
 	penfactor = 60
 	damfactor = 1.1
-	chargetime = 0.7
-	chargedrain = 2
+	clickcd = CLICK_CD_CHARGED
+	releasedrain = 4
 	reach = 2
 	no_early_release = TRUE
 	blade_class = BCLASS_PICK
@@ -453,9 +470,10 @@
 	noaa = FALSE
 	animname = "bite"
 	hitsound = list('sound/combat/hits/punch/punch (1).ogg', 'sound/combat/hits/punch/punch (2).ogg', 'sound/combat/hits/punch/punch (3).ogg')
-	misscost = 5
-	releasedrain = 2	//Lowered for intent stam usage.
+	misscost = 4
+	releasedrain = 1
 	swingdelay = 0
+	clickcd = 10
 	rmb_ranged = TRUE
 	candodge = TRUE
 	canparry = TRUE
@@ -463,8 +481,11 @@
 	miss_text = "swing a fist at the air"
 	miss_sound = "punchwoosh"
 	item_d_type = "blunt"
+	intent_intdamage_factor = 0.5
 
 /datum/intent/unarmed/punch/rmb_ranged(atom/target, mob/user)
+	if(user.stat >= UNCONSCIOUS)
+		return
 	if(ismob(target))
 		var/mob/M = target
 		var/list/targetl = list(target)
@@ -507,6 +528,8 @@
 	item_d_type = "blunt"
 
 /datum/intent/unarmed/shove/rmb_ranged(atom/target, mob/user)
+	if(user.stat >= UNCONSCIOUS)
+		return
 	if(ismob(target))
 		var/mob/M = target
 		var/list/targetl = list(target)
@@ -532,6 +555,8 @@
 	item_d_type = "blunt"
 
 /datum/intent/unarmed/grab/rmb_ranged(atom/target, mob/user)
+	if(user.stat >= UNCONSCIOUS)
+		return
 	if(ismob(target))
 		var/mob/M = target
 		var/list/targetl = list(target)
@@ -554,6 +579,8 @@
 	rmb_ranged = TRUE
 
 /datum/intent/unarmed/help/rmb_ranged(atom/target, mob/user)
+	if(user.stat >= UNCONSCIOUS)
+		return
 	if(ismob(target))
 		var/mob/M = target
 		var/list/targetl = list(target)

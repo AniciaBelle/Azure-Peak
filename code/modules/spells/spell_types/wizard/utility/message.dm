@@ -1,7 +1,7 @@
 /obj/effect/proc_holder/spell/self/message
 	name = "Message"
 	desc = "Latch onto the mind of one who is familiar to you, whispering a message into their head."
-	cost = 2 // Message is quite powefrful so 1 cost is too low
+	cost = 2
 	xp_gain = TRUE
 	releasedrain = 30
 	recharge_time = 60 SECONDS
@@ -39,6 +39,7 @@
 				identify_difficulty = 0 //anyone can clear this
 
 			var/identified = FALSE
+			HL.playsound_local(HL, 'sound/magic/message.ogg', 100)
 			if(HL.STAPER >= identify_difficulty) //quick stat check
 				if(HL.mind)
 					if(HL.mind.do_i_know(name=user.real_name)) //do we know who this person is?

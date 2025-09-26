@@ -13,7 +13,6 @@
 	icon = 'icons/roguetown/weapons/32.dmi'
 	slot_flags = ITEM_SLOT_BACK
 	flags_1 = null
-	armor = ARMOR_SHIELD
 	force = 10
 	throwforce = 5
 	throw_speed = 1
@@ -30,9 +29,8 @@
 	var/coverage = 50
 	parrysound = list('sound/combat/parry/shield/towershield (1).ogg','sound/combat/parry/shield/towershield (2).ogg','sound/combat/parry/shield/towershield (3).ogg')
 	parrysound = list('sound/combat/parry/shield/towershield (1).ogg','sound/combat/parry/shield/towershield (2).ogg','sound/combat/parry/shield/towershield (3).ogg')
-	max_integrity = 150
-	blade_dulling = DULLING_BASHCHOP
-	anvilrepair = /datum/skill/craft/weaponsmithing
+	max_integrity = 100
+	anvilrepair = /datum/skill/craft/carpentry
 	COOLDOWN_DECLARE(shield_bang)
 
 
@@ -66,8 +64,11 @@
 	if(attacker && istype(attacker))
 		if (!owner.can_see_cone(attacker))
 			return FALSE
+		if(obj_broken) // No blocking with a broken shield you fool
+			return FALSE
 		if((owner.client?.chargedprog == 100 && owner.used_intent?.tranged) || prob(coverage))
 			owner.visible_message(span_danger("[owner] expertly blocks [hitby] with [src]!"))
+			src.take_damage(floor(damage / 4))
 			return TRUE
 	return FALSE
 
@@ -164,27 +165,43 @@
 	throw_range = 3
 	wlength = WLENGTH_NORMAL
 	resistance_flags = FLAMMABLE
+	var/swapped = FALSE
 	wdefense = 10
 	coverage = 40
 	parrysound = list('sound/combat/parry/shield/towershield (1).ogg','sound/combat/parry/shield/towershield (2).ogg','sound/combat/parry/shield/towershield (3).ogg')
-	max_integrity = 200
+	max_integrity = 300
+	anvilrepair = /datum/skill/craft/weaponsmithing
 
 /obj/item/rogueweapon/shield/tower/holysee
 	name = "decablessed shield"
 	desc = "Protection of the Ten upon the wielder. A final, staunch line against the darkness. For it's not what is before the shield-carrier that matters, but the home behind them."
 	icon_state = "gsshield"
-	wdefense = 13
-	max_integrity = 300
-	coverage = 50
+	force = 20
+	throwforce = 10
+	throw_speed = 1
+	throw_range = 3
+	possible_item_intents = list(SHIELD_BASH_METAL, SHIELD_BLOCK, SHIELD_SMASH_METAL)	
 	wlength = WLENGTH_NORMAL
 	resistance_flags = null
 	flags_1 = CONDUCT_1
-	force = 20
-	blade_dulling = DULLING_BASH
+	wdefense = 11
+	coverage = 50
+	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
+	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
+	max_integrity = 330
 	sellprice = 30
 
-/obj/item/rogueweapon/shield/tower/holysee/dark
-	icon_state = "gsshielddark"
+/obj/item/rogueweapon/shield/tower/holysee/MiddleClick(mob/user, params)
+	. = ..()
+	swapped = !swapped
+	update_icon()
+
+/obj/item/rogueweapon/shield/tower/holysee/update_icon()
+	. = ..()
+	if(swapped)
+		icon_state = "gsshielddark"
+	else
+		icon_state = "gsshield"
 
 
 /obj/item/rogueweapon/shield/tower/getonmobprop(tag)
@@ -208,13 +225,13 @@
 	wlength = WLENGTH_NORMAL
 	resistance_flags = null
 	flags_1 = CONDUCT_1
-	wdefense = 11
-	coverage = 50
+	wdefense = 12
+	coverage = 60
 	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	max_integrity = 300
-	blade_dulling = DULLING_BASH
 	sellprice = 30
+	anvilrepair = /datum/skill/craft/weaponsmithing
 
 /obj/item/rogueweapon/shield/tower/metal/getonmobprop(tag)
 	if(tag)
@@ -225,19 +242,73 @@
 				return list("shrink" = 0.6,"sx" = 1,"sy" = 4,"nx" = 1,"ny" = 2,"wx" = 3,"wy" = 3,"ex" = 0,"ey" = 2,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 8,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 1,"southabove" = 0,"eastabove" = 0,"westabove" = 0)
 	return ..()
 
+/obj/item/rogueweapon/shield/tower/metal/psy
+	name = "Covenant"
+	desc = "A Psydonian endures. A Psydonian preserves themselves. A Psydonian preserves His flock."
+	icon_state = "psyshield"
+	force = 15
+	throwforce = 5
+	throw_speed = 1
+	throw_range = 3
+	possible_item_intents = list(SHIELD_BASH_METAL, SHIELD_BLOCK, SHIELD_SMASH_METAL)
+	wlength = WLENGTH_NORMAL
+	resistance_flags = null
+	flags_1 = CONDUCT_1
+	wdefense = 14
+	coverage = 50
+	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
+	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
+	max_integrity = 350
+	is_silver = TRUE
+	smeltresult = /obj/item/ingot/silver
+
+/obj/item/rogueweapon/shield/tower/metal/psy/ComponentInitialize()
+	AddComponent(\
+		/datum/component/silverbless,\
+		pre_blessed = BLESSING_PSYDONIAN,\
+		silver_type = SILVER_PSYDONIAN,\
+		added_force = -3,\
+		added_blade_int = 0,\
+		added_int = 100,\
+		added_def = 1,\
+	)
+
 /obj/item/rogueweapon/shield/tower/metal/alloy
 	name = "decrepit shield"
-	desc = "A decrepit, worn out shield. Aeon's grasp is upon it."
-	max_integrity = 150
+	desc = "A hefty tower shield, wrought from frayed bronze. Looped with dried kelp and reeking of saltwater, you'd assume that this had been fished out from the remains of a long-sunken warship.. alongside its former legionnaire."
+	max_integrity = 120
 	wdefense = 9
 	icon_state = "ancientsh"
-	smeltresult = /obj/item/ingot/aalloy
+	blade_dulling = DULLING_SHAFT_CONJURED
+	color = "#bb9696"
+	smeltresult = /obj/item/ingot/aaslag
+	anvilrepair = null
 
 /obj/item/rogueweapon/shield/tower/metal/palloy
 	name = "ancient shield"
-	desc = "A ancient, venerable shield. Aeon's grasp has been lifted from it."
+	desc = "A venerable scutum, plated with polished gilbranze. An undying legionnaire's closest friend; that which rebukes arrow-and-bolt alike with unphasing prejudice. It is a reminder - one of many - that Her progress cannot be stopped."
 	icon_state = "ancientsh"
 	smeltresult = /obj/item/ingot/purifiedaalloy
+
+/obj/item/rogueweapon/shield/tower/raneshen
+	name = "rider shield"
+	desc = "A shield of Raneshen design. Clever usage of wood, iron, and leather make an impressive match for any weapon."
+	icon_state = "desert_rider"
+	possible_item_intents = list(SHIELD_BASH_METAL, SHIELD_BLOCK)
+	force = 25
+	throwforce = 25 //for cosplaying captain raneshen
+	wdefense = 11
+	max_integrity = 220 //not fully metal but not fully wood either
+	anvilrepair = /datum/skill/craft/carpentry
+
+/obj/item/rogueweapon/shield/tower/raneshen/getonmobprop(tag)
+	. = ..()
+	if(tag)
+		switch(tag)
+			if("gen")
+				return list("shrink" = 0.6,"sx" = -5,"sy" = -1,"nx" = 6,"ny" = -1,"wx" = 0,"wy" = -2,"ex" = 0,"ey" = -2,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 0,"wflip" = 1,"eflip" = 0)
+			if("onback")
+				return list("shrink" = 0.6,"sx" = 1,"sy" = 4,"nx" = 1,"ny" = 2,"wx" = 3,"wy" = 3,"ex" = 0,"ey" = 2,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 8,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 1,"southabove" = 0,"eastabove" = 0,"westabove" = 0)
 
 /obj/item/rogueweapon/shield/buckler
 	name = "buckler shield"
@@ -253,11 +324,11 @@
 	coverage = 10
 	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
-	max_integrity = 300
-	blade_dulling = DULLING_BASH
+	max_integrity = 130
 	associated_skill = /datum/skill/combat/shields
 	grid_width = 32
 	grid_height = 64
+	anvilrepair = /datum/skill/craft/weaponsmithing
 
 /obj/item/rogueweapon/shield/buckler/examine(mob/living/user)
 	. = ..()
@@ -274,7 +345,7 @@
 			weapon_parry = TRUE
 	if(istype(mainhand, /obj/item/rogueweapon/shield/buckler))
 		associated_skill = /datum/skill/combat/shields
-	if(weapon_parry && mainhand.associated_skill)
+	if(weapon_parry && mainhand.associated_skill && ispath(mainhand.associated_skill, /datum/skill/combat))
 		associated_skill = mainhand.associated_skill
 	else
 		associated_skill = /datum/skill/combat/shields
@@ -288,6 +359,14 @@
 			if("onback")
 				return list("shrink" = 0.6,"sx" = 1,"sy" = 4,"nx" = 1,"ny" = 2,"wx" = 3,"wy" = 3,"ex" = 0,"ey" = 2,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 8,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 1,"southabove" = 0,"eastabove" = 0,"westabove" = 0)
 
+/obj/item/rogueweapon/shield/buckler/palloy
+	name = "ancient buckler"
+	desc = "An object once before its time, now out of it. The artisan's hammerstrikes are still visible in the mottled surface, yet \
+	the encroach of rust and rot threatens even this memory."
+	icon_state = "ancient_buckler"
+	max_integrity = 85
+	smeltresult = /obj/item/ingot/purifiedaalloy
+
 /obj/item/rogueweapon/shield/heater
 	name = "heater shield"
 	desc = "A sturdy wood and leather shield. Made to not be too encumbering while still providing good protection."
@@ -298,7 +377,7 @@
 	coverage = 30
 	attacked_sound = list('sound/combat/parry/shield/towershield (1).ogg','sound/combat/parry/shield/towershield (2).ogg','sound/combat/parry/shield/towershield (3).ogg')
 	parrysound = list('sound/combat/parry/shield/towershield (1).ogg','sound/combat/parry/shield/towershield (2).ogg','sound/combat/parry/shield/towershield (3).ogg')
-	max_integrity = 200
+	max_integrity = 220
 
 /obj/item/rogueweapon/shield/heater/getonmobprop(tag)
 	. = ..()
@@ -310,7 +389,36 @@
 				return list("shrink" = 0.6,"sx" = 1,"sy" = 4,"nx" = 1,"ny" = 2,"wx" = 3,"wy" = 3,"ex" = 0,"ey" = 2,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 8,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 1,"southabove" = 0,"eastabove" = 0,"westabove" = 0)
 
 
+/obj/item/rogueweapon/shield/iron
+	name = "iron shield"
+	desc = "A heavy iron shield. It's cheaper than steel, but more encumbering."
+	icon_state = "ironsh"
+	force = 20
+	throwforce = 25 // "I can do this all day."
+	dropshrink = 0.8
+	coverage = 30
+	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
+	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
+	possible_item_intents = list(SHIELD_SMASH_METAL, SHIELD_BLOCK) // No SHIELD_BASH. Too heavy to swing quickly, or something.
+	max_integrity = 220
+	anvilrepair = /datum/skill/craft/weaponsmithing
+
+/obj/item/rogueweapon/shield/iron/getonmobprop(tag)
+	. = ..()
+	if(tag)
+		switch(tag)
+			if("gen")
+				return list("shrink" = 0.6,"sx" = -5,"sy" = -1,"nx" = 6,"ny" = -1,"wx" = 0,"wy" = -2,"ex" = 0,"ey" = -2,"northabove" = 0,"southabove" = 1,"eastabove" = 1,"westabove" = 0,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 0,"sflip" = 0,"wflip" = 0,"eflip" = 0)
+			if("onback")
+				return list("shrink" = 0.6,"sx" = 1,"sy" = 4,"nx" = 1,"ny" = 2,"wx" = 3,"wy" = 3,"ex" = 0,"ey" = 2,"nturn" = 0,"sturn" = 0,"wturn" = 0,"eturn" = 0,"nflip" = 8,"sflip" = 0,"wflip" = 0,"eflip" = 0,"northabove" = 1,"southabove" = 0,"eastabove" = 0,"westabove" = 0)
+
 #undef SHIELD_BANG_COOLDOWN
+
+/obj/item/rogueweapon/shield/iron/steppesman
+	name = "steppesman shield"
+	desc = "A banded iron shield decorated with traditional Aavnic colours, often seen in the hands of the Steppesmen."
+	icon_state = "ironsh_steppeman"
+	max_integrity = 250 //+30
 
 /*/obj/item/rogueweapon/shield/buckler/freelancer
 	name = "fencer's wrap"

@@ -8,8 +8,14 @@
 	dropshrink = 1
 	drop_sound = 'sound/items/gem.ogg'
 	resistance_flags = FIRE_PROOF
+	is_silver = TRUE
 	var/miracle_use = 0
 	var/success = 0
+
+/obj/item/quicksilver/luxinfused
+	name = "absolving silver"
+	icon_state = "quicksilverlux"
+	desc = "A daring blend of trace amounts of purifying lux, aberrant blood, and divine silver, this poultice can lift some of the most fell of curses."
 
 /obj/item/quicksilver/examine(mob/user)
 	. = ..()
@@ -23,8 +29,10 @@
 	var/inquisitor = FALSE
 	if(!user.mind)
 		return
-	if(user.mind.assigned_role == "Inquisitor")
+	if(HAS_TRAIT(user, TRAIT_PURITAN))
 		inquisitor = TRUE
+	if(HAS_TRAIT(user, TRAIT_PACIFISM) && HAS_TRAIT(user, TRAIT_INQUISITION) && HAS_TRAIT(user, TRAIT_SILVER_BLESSED))
+		inquisitor = TRUE	
 
 	if(!M.mind) //Stopping null lookup runtimes
 		to_chat(user, span_warning("[M] does not have the mind to benefit from the holy anointment."))
@@ -34,7 +42,7 @@
 		to_chat(user, span_warning("Upon closer inspection, [M] is already anointed with quicksilver."))
 		return
 
-	if(!inquisitor && !user.mind.get_skill_level(/datum/skill/magic/holy) >= SKILL_EXP_EXPERT)
+	if(!inquisitor && !user.get_skill_level(/datum/skill/magic/holy) >= SKILL_EXP_EXPERT)
 		to_chat(user, span_warning("I do not have the divine knowledge to properly apply [src]."))
 		return
 
@@ -87,7 +95,9 @@
 		new /obj/item/natural/cloth(user.loc)
 		qdel(src)
 	else
-		to_chat(user, span_notice("My inquisitorial training allows just enough of the poultice left for one more anointment."))
+		icon_state = "[initial(icon_state)]_half"
+		to_chat(user, span_notice("My inquisitorial training leaves just enough of the poultice left for one more anointment."))
+		
 
 	//Werewolf deconversion
 	if(Were && !Wereless) //The roundstart elder/alpha werewolf, it cannot be saved
@@ -146,7 +156,7 @@
 		M.mind.special_role = null
 		M.emote("agony", forced = TRUE)
 		to_chat(M, span_userdanger("THE FOUL SILVER! IT QUICKENS MY HEART!"))
-		REMOVE_TRAIT(M, TRAIT_NOROGSTAM, "/datum/antagonist/vampirelord/lesser")
+		REMOVE_TRAIT(M, TRAIT_INFINITE_STAMINA, "/datum/antagonist/vampirelord/lesser")
 		REMOVE_TRAIT(M, TRAIT_NOSLEEP, "/datum/antagonist/vampirelord/lesser")
 		REMOVE_TRAIT(M, TRAIT_NOBREATH, "/datum/antagonist/vampirelord/lesser")
 		REMOVE_TRAIT(M, TRAIT_NOPAIN, "/datum/antagonist/vampirelord/lesser")
@@ -164,33 +174,6 @@
 		M.Knockdown(30)
 		M.Jitter(30)
 		return
-
-
-/obj/item/quicksilver/pickup(mob/user) //Akin to the psycross.
-	. = ..()
-	var/mob/living/carbon/human/H = user
-	if(!H.mind)
-		return
-	var/datum/antagonist/vampirelord/V_lord = H.mind.has_antag_datum(/datum/antagonist/vampirelord/)
-	var/datum/antagonist/werewolf/W = H.mind.has_antag_datum(/datum/antagonist/werewolf/)
-	if(ishuman(H))
-		if(H.mind.has_antag_datum(/datum/antagonist/vampirelord/lesser))
-			to_chat(H, span_userdanger("I can't pick up the silver, it is my BANE!"))
-			H.Knockdown(20)
-			H.adjustFireLoss(60)
-			H.Paralyze(20)
-			H.fire_act(1,5)
-		if(V_lord)
-			if(V_lord.vamplevel < 4 && !H.mind.has_antag_datum(/datum/antagonist/vampirelord/lesser))
-				to_chat(H, span_userdanger("I can't pick up the silver, it is my BANE!"))
-				H.Knockdown(10)
-				H.adjustFireLoss(25)
-		if(W && W.transformed == TRUE)
-			to_chat(H, span_userdanger("I can't pick up the silver, it is my BANE!"))
-			H.Knockdown(10)
-			H.Paralyze(10)
-			H.adjustFireLoss(25)
-			H.fire_act(1,10)
 
 //A letter to give info on how to make this thing.
 /obj/item/paper/inquisition_poultice_info

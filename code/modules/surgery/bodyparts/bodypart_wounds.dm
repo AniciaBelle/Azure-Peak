@@ -29,6 +29,9 @@
 /obj/item/bodypart/proc/get_sewable_wounds()
 	var/list/woundies = list()
 	for(var/datum/wound/wound as anything in wounds)
+		if(wound == null)
+			listclearnulls(wounds) //Putting this somewhere useful but low intensity
+			continue
 		if(!wound.can_sew)
 			continue
 		woundies += wound
@@ -47,6 +50,8 @@
 /obj/item/bodypart/proc/heal_wounds(heal_amount)
 	if(!length(wounds))
 		return FALSE
+	if(HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && owner.has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder) || owner.has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder/blessed))
+		return
 	var/healed_any = FALSE
 	for(var/datum/wound/wound as anything in wounds)
 		if(heal_amount <= 0)
@@ -116,15 +121,25 @@
 	return bleed_rate
 
 /// Called after a bodypart is attacked so that wounds and critical effects can be applied
-/obj/item/bodypart/proc/bodypart_attacked_by(bclass = BCLASS_BLUNT, dam, mob/living/user, zone_precise = src.body_zone, silent = FALSE, crit_message = FALSE)
+/obj/item/bodypart/proc/bodypart_attacked_by(bclass = BCLASS_BLUNT, dam, mob/living/user, zone_precise = src.body_zone, silent = FALSE, crit_message = FALSE, armor, obj/item/weapon)
+	RETURN_TYPE(/datum/wound)
 	if(!bclass || !dam || !owner || (owner.status_flags & GODMODE))
-		return FALSE
+		return null
 	var/do_crit = TRUE
+	var/acheck_dflag
+	switch(bclass)
+		if(BCLASS_BLUNT, BCLASS_SMASH, BCLASS_TWIST, BCLASS_PUNCH)
+			acheck_dflag = "blunt"
+		if(BCLASS_CHOP, BCLASS_CUT, BCLASS_LASHING, BCLASS_PUNISH)
+			acheck_dflag = "slash"
+		if(BCLASS_PICK, BCLASS_STAB)
+			acheck_dflag = "stab"
+	armor = owner.run_armor_check(zone_precise, acheck_dflag, damage = 0)
 	if(ishuman(owner))
 		var/mob/living/carbon/human/human_owner = owner
 		if(human_owner.checkcritarmor(zone_precise, bclass))
-			return FALSE
-		if(owner.mind && (get_damage() <= (max_damage * 0.9))) //No crits unless the damage is maxed out.
+			do_crit = FALSE
+		if(owner.mind && (get_damage() <= (max_damage * CRIT_DISMEMBER_DAMAGE_THRESHOLD))) //No crits unless the damage is maxed out.
 			do_crit = FALSE // We used to check if they are buckled or lying down but being grounded is a big enough advantage.
 	if(user)
 		if(user.goodluck(2))
@@ -132,55 +147,48 @@
 		if(istype(user.rmb_intent, /datum/rmb_intent/weak) || bclass == BCLASS_PEEL)
 			do_crit = FALSE
 	testing("bodypart_attacked_by() dam [dam]")
-	var/added_wound
-	switch(bclass) //do stuff but only when we are a blade that adds wounds
-		if(BCLASS_SMASH, BCLASS_BLUNT)
-			switch(dam)
-				if(20 to INFINITY)
-					added_wound = /datum/wound/bruise/large
-				if(10 to 20)
-					added_wound = /datum/wound/bruise
-				if(1 to 10)
-					added_wound = /datum/wound/bruise/small
-		if(BCLASS_CUT, BCLASS_CHOP)
-			switch(dam)
-				if(20 to INFINITY)
-					added_wound = /datum/wound/slash/large
-				if(10 to 20)
-					added_wound = /datum/wound/slash
-				if(1 to 10)
-					added_wound = /datum/wound/slash/small
-		if(BCLASS_STAB, BCLASS_PICK)
-			switch(dam)
-				if(20 to INFINITY)
-					added_wound = /datum/wound/puncture/large
-				if(10 to 20)
-					added_wound = /datum/wound/puncture
-				if(1 to 10)
-					added_wound = /datum/wound/puncture/small
-		if(BCLASS_LASHING)
-			switch(dam)
-				if(20 to INFINITY)
-					added_wound = /datum/wound/lashing/large
-				if(10 to 20)
-					added_wound = /datum/wound/lashing
-				if(1 to 10)
-					added_wound = /datum/wound/lashing/small
-		if(BCLASS_BITE)
-			switch(dam)
-				if(20 to INFINITY)
-					added_wound = /datum/wound/bite/large
-				if(10 to 20)
-					added_wound = /datum/wound/bite
-				if(1 to 10)
-					added_wound = /datum/wound/bite/small
-	if(added_wound)
-		added_wound = add_wound(added_wound, silent, crit_message)
+
+	var/datum/wound/dynwound = manage_dynamic_wound(bclass, dam, armor)
+
 	if(do_crit)
-		var/crit_attempt = try_crit(bclass, dam, user, zone_precise, silent, crit_message)
+		var/datum/component/silverbless/psyblessed = weapon?.GetComponent(/datum/component/silverbless)
+		var/sundering = HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && istype(weapon) && weapon?.is_silver && psyblessed?.is_blessed
+		var/crit_attempt = try_crit(sundering ? BCLASS_SUNDER : bclass, dam, user, zone_precise, silent, crit_message)
 		if(crit_attempt)
 			return crit_attempt
-	return added_wound
+	return dynwound
+
+/obj/item/bodypart/proc/manage_dynamic_wound(bclass, dam, armor)
+	var/woundtype
+	switch(bclass)
+		if(BCLASS_BLUNT, BCLASS_SMASH, BCLASS_PUNCH, BCLASS_TWIST)
+			woundtype = /datum/wound/dynamic/bruise
+		if(BCLASS_BITE)
+			woundtype = /datum/wound/dynamic/bite
+		if(BCLASS_CHOP, BCLASS_CUT)
+			woundtype = /datum/wound/dynamic/slash
+		if(BCLASS_STAB)
+			woundtype = /datum/wound/dynamic/puncture
+		if(BCLASS_PICK, BCLASS_PIERCE)
+			woundtype = /datum/wound/dynamic/gouge
+		if(BCLASS_LASHING)
+			woundtype = /datum/wound/dynamic/lashing
+		if(BCLASS_PUNISH)
+			woundtype = /datum/wound/dynamic/punish
+		else	//Wrong bclass type for wounds, skip adding this.
+			return
+	var/datum/wound/dynwound = has_wound(woundtype)
+	if(!isnull(dynwound))
+		dynwound.upgrade(dam, armor)
+	else
+		if(ispath(woundtype) && woundtype)
+			if(!isnull(woundtype))
+				var/datum/wound/newwound = add_wound(woundtype)
+				dynwound = newwound
+				if(newwound && !isnull(newwound))	//don't even ask - Free
+					owner.visible_message(span_red("A new [newwound.name] appears on [owner]'s [lowertext(bodyzone2readablezone(bodypart_to_zone(newwound.bodypart_owner)))]!"))
+					newwound.upgrade(dam, armor)
+	return dynwound
 
 /// Behemoth of a proc used to apply a wound after a bodypart is damaged in an attack
 /obj/item/bodypart/proc/try_crit(bclass = BCLASS_BLUNT, dam, mob/living/user, zone_precise = src.body_zone, silent = FALSE, crit_message = FALSE)
@@ -191,10 +199,10 @@
 	var/total_dam = get_damage()
 	var/damage_dividend = (total_dam / max_damage)
 	var/resistance = HAS_TRAIT(owner, TRAIT_CRITICAL_RESISTANCE)
-	if (user && dam)
+	if(user && dam)
 		if(user.goodluck(2))
 			dam += 10
-	if ((bclass = BCLASS_PUNCH) && (user && dam))
+	if((bclass == BCLASS_PUNCH) && (user && dam))
 		if(user && HAS_TRAIT(user, TRAIT_CIVILIZEDBARBARIAN))
 			dam += 15
 	if(bclass in GLOB.dislocation_bclasses)
@@ -214,8 +222,10 @@
 		if(HAS_TRAIT(src, TRAIT_BRITTLE))
 			used += 10
 		if(prob(used))
-			attempted_wounds += /datum/wound/dislocation
-			attempted_wounds += /datum/wound/fracture
+			if(damage_dividend >= 0.6)
+				attempted_wounds += /datum/wound/fracture		//More sevre wound
+			else
+				attempted_wounds += /datum/wound/dislocation	//Less sevre wound
 	if(bclass in GLOB.artery_bclasses)
 		used = round(damage_dividend * 20 + (dam / 3) - 10 * resistance, 1)
 		if(user)
@@ -233,12 +243,17 @@
 			attempted_wounds += /datum/wound/artery		//basically does sword-tier wounds.
 		if(prob(used))
 			attempted_wounds += /datum/wound/scarring
+	if((bclass in GLOB.sunder_bclasses))
+		if(HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && !owner.has_status_effect(STATUS_EFFECT_ANTIMAGIC))
+			used = round(damage_dividend * 20 + (dam / 2) - 10 * resistance, 1)
+			if(prob(used))
+				attempted_wounds += /datum/wound/sunder
 
 	for(var/wound_type in shuffle(attempted_wounds))
 		var/datum/wound/applied = add_wound(wound_type, silent, crit_message)
 		if(applied)
 			if(user?.client)
-				GLOB.azure_round_stats[STATS_CRITS_MADE]++
+				record_round_statistic(STATS_CRITS_MADE)
 			return applied
 	return FALSE
 
@@ -270,7 +285,8 @@
 			used += 10
 		var/fracture_type = /datum/wound/fracture/chest
 		if(zone_precise == BODY_ZONE_PRECISE_GROIN)
-			fracture_type = /datum/wound/fracture/groin
+			if(damage_dividend >= 0.7)
+				fracture_type = /datum/wound/fracture/groin	//Paralyzes lower body
 		if(prob(used))
 			attempted_wounds += fracture_type
 	if(bclass in GLOB.artery_bclasses)
@@ -283,7 +299,7 @@
 		if(prob(used))
 			if((zone_precise == BODY_ZONE_PRECISE_STOMACH) && !resistance)
 				attempted_wounds += /datum/wound/slash/disembowel
-			if(HAS_TRAIT(owner, TRAIT_CRITICAL_WEAKNESS))
+			if(owner.has_wound(/datum/wound/fracture/chest) || (bclass in GLOB.artery_heart_bclasses) || HAS_TRAIT(owner, TRAIT_CRITICAL_WEAKNESS))
 				attempted_wounds += /datum/wound/artery/chest
 			else
 				attempted_wounds += /datum/wound/artery
@@ -297,12 +313,17 @@
 				attempted_wounds += /datum/wound/artery/chest
 			else
 				attempted_wounds += /datum/wound/scarring
+	if(bclass in GLOB.sunder_bclasses)
+		if(HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && !owner.has_status_effect(STATUS_EFFECT_ANTIMAGIC))
+			used = round(damage_dividend * 20 + (dam / 2) - 10 * resistance, 1)
+			if(prob(used))
+				attempted_wounds += list(/datum/wound/sunder/chest)
 
 	for(var/wound_type in shuffle(attempted_wounds))
 		var/datum/wound/applied = add_wound(wound_type, silent, crit_message)
 		if(applied)
 			if(user?.client)
-				GLOB.azure_round_stats[STATS_CRITS_MADE]++
+				record_round_statistic(STATS_CRITS_MADE)
 			return applied
 	return FALSE
 
@@ -337,7 +358,7 @@
 		if(user)
 			if(istype(user.rmb_intent, /datum/rmb_intent/strong) || (user.m_intent == MOVE_INTENT_SNEAK))
 				used += 10
-		if(!owner.stat && !resistance && (zone_precise in knockout_zones) && (bclass != BCLASS_CHOP) && prob(used))
+		if(!owner.stat && !resistance && (zone_precise in knockout_zones) && (bclass != BCLASS_CHOP && bclass != BCLASS_PIERCE) && prob(used))
 			owner.next_attack_msg += " <span class='crit'><b>Critical hit!</b> [owner] is knocked out[from_behind ? " FROM BEHIND" : ""]!</span>"
 			owner.flash_fullscreen("whiteflash3")
 			owner.Unconscious(5 SECONDS + (from_behind * 10 SECONDS))
@@ -350,15 +371,19 @@
 		if(resistance)
 			fracture_type = /datum/wound/fracture
 		else if(zone_precise == BODY_ZONE_PRECISE_SKULL)
+			fracture_type = /datum/wound/fracture/head/brain
+		else if(zone_precise== BODY_ZONE_PRECISE_EARS)
+			fracture_type = /datum/wound/fracture/head/ears
 			necessary_damage = 0.8
-			used += 5
+		else if(zone_precise == BODY_ZONE_PRECISE_NOSE)
+			fracture_type = /datum/wound/fracture/head/nose
+			necessary_damage = 0.7
 		else if(zone_precise == BODY_ZONE_PRECISE_MOUTH)
 			fracture_type = /datum/wound/fracture/mouth
-			necessary_damage = 0.6
+			necessary_damage = 0.7
 		else if(zone_precise == BODY_ZONE_PRECISE_NECK)
 			fracture_type = /datum/wound/fracture/neck
 			dislocation_type = /datum/wound/dislocation/neck
-			necessary_damage = 0.9
 		if(prob(used) && (damage_dividend >= necessary_damage))
 			if(dislocation_type)
 				attempted_wounds += dislocation_type
@@ -394,7 +419,7 @@
 						else if(zone_precise == BODY_ZONE_PRECISE_L_EYE)
 							attempted_wounds += /datum/wound/facial/eyes/left
 				else if(zone_precise in tonguestab_zones)
-					var/obj/item/organ/tongue/tongue_up_my_asshole = owner.getorganslot(ORGAN_SLOT_TONGUE)
+					var/obj/item/organ/tongue/tongue_up_my_asshole = owner.getorganslot(ORGAN_SLOT_TONGUE)		//..hello?
 					if(!tongue_up_my_asshole || has_wound(/datum/wound/facial/tongue))
 						attempted_wounds += /datum/wound/fracture/mouth
 					else
@@ -406,12 +431,17 @@
 						attempted_wounds += /datum/wound/facial/disfigurement/nose
 				else if(zone_precise in knockout_zones)
 					attempted_wounds += /datum/wound/fracture/head/brain
+	if(bclass in GLOB.sunder_bclasses)
+		if(HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && !owner.has_status_effect(STATUS_EFFECT_ANTIMAGIC))
+			used = round(damage_dividend * 20 + (dam / 2) - 10 * resistance, 1)
+			if(prob(used))
+				attempted_wounds += /datum/wound/sunder/head
 
 	for(var/wound_type in shuffle(attempted_wounds))
 		var/datum/wound/applied = add_wound(wound_type, silent, crit_message)
 		if(applied)
 			if(user?.client)
-				GLOB.azure_round_stats[STATS_CRITS_MADE]++
+				record_round_statistic(STATS_CRITS_MADE)
 			return applied
 	return FALSE
 
@@ -422,7 +452,7 @@
 	if(owner && ((owner.status_flags & GODMODE) || HAS_TRAIT(owner, TRAIT_PIERCEIMMUNE)))
 		return FALSE
 	if(istype(embedder, /obj/item/natural/worms/leech))
-		GLOB.azure_round_stats[STATS_LEECHES_EMBEDDED]++
+		record_round_statistic(STATS_LEECHES_EMBEDDED)
 	LAZYADD(embedded_objects, embedder)
 	embedder.is_embedded = TRUE
 	embedder.forceMove(src)
@@ -439,6 +469,10 @@
 		if(crit_message)
 			owner.next_attack_msg += " <span class='userdanger'>[embedder] runs through [owner]'s [src]!</span>"
 		update_disabled()
+		if(embedder.is_silver && HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && !owner.has_status_effect(STATUS_EFFECT_ANTIMAGIC))
+			var/datum/component/silverbless/psyblessed = embedder.GetComponent(/datum/component/silverbless)
+			owner.adjust_fire_stacks(1, psyblessed?.is_blessed ? /datum/status_effect/fire_handler/fire_stacks/sunder/blessed : /datum/status_effect/fire_handler/fire_stacks/sunder)
+			to_chat(owner, span_danger("the [embedder] in your body painfully jostles!"))
 	return TRUE
 
 /// Removes an embedded object from this bodypart

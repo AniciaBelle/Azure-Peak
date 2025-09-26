@@ -305,13 +305,17 @@
 	zone_select.hud = src
 	static_inventory += zone_select
 
+	fov_blocker = new /atom/movable/screen/fov_blocker()
+	fov_blocker.hud = src
+	static_inventory += fov_blocker
+
 	zone_select.update_icon()
 
-	fats = new /atom/movable/screen/rogfat()
-	infodisplay += fats
+	stamina = new /atom/movable/screen/stamina()
+	infodisplay += stamina
 
-	stams = new /atom/movable/screen/rogstam()
-	infodisplay += stams
+	energy = new /atom/movable/screen/energy()
+	infodisplay += energy
 
 	for(var/atom/movable/screen/inventory/inv in (static_inventory + toggleable_inventory))
 		if(inv.slot_id)

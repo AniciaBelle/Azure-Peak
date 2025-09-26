@@ -217,7 +217,7 @@
 			if(brokenstate || climbable)
 				if(ishuman(mover))
 					var/mob/living/carbon/human/dude = mover
-					if(prob(100 - clamp((dude.mind.get_skill_level(/datum/skill/misc/athletics) + dude.mind.get_skill_level(/datum/skill/misc/climbing)) * 10 - (!dude.is_jumping * 30), 10, 100)))
+					if(prob(100 - clamp((dude.get_skill_level(/datum/skill/misc/athletics) + dude.get_skill_level(/datum/skill/misc/climbing)) * 10 - (!dude.is_jumping * 30), 10, 100)))
 						var/obj/item/bodypart/head/head = dude.get_bodypart(BODY_ZONE_HEAD)
 						head.receive_damage(20)
 						dude.Stun(5 SECONDS)
@@ -249,7 +249,7 @@
 		return
 	if(brokenstate)
 		return
-	user.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_INTENTCAP)
 	if(HAS_TRAIT(user, TRAIT_BASHDOORS))
 		src.take_damage(15)
 		return
@@ -262,7 +262,7 @@
 		attacked_sound = list('sound/combat/hits/onwood/woodimpact (1).ogg','sound/combat/hits/onwood/woodimpact (2).ogg')
 		log_admin("Window broken at X:[src.x] Y:[src.y] Z:[src.z] in area: [get_area(src)]")
 		loud_message("A loud crash of a window getting broken rings out", hearing_distance = 14)
-		new /obj/item/natural/glass/shard (get_turf(src))
+		new /obj/item/natural/glass_shard (get_turf(src))
 		new /obj/effect/decal/cleanable/debris/glassy(get_turf(src))
 		climbable = TRUE
 		brokenstate = TRUE

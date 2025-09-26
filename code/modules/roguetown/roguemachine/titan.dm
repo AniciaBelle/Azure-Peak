@@ -2,6 +2,7 @@ GLOBAL_LIST_EMPTY(outlawed_players)
 GLOBAL_LIST_EMPTY(lord_decrees)
 GLOBAL_LIST_EMPTY(court_agents)
 GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
+GLOBAL_VAR_INIT(last_crown_announcement_time, -1000)
 
 /proc/initialize_laws_of_the_land()
 	var/list/laws = strings("laws_of_the_land.json", "lawsets")
@@ -21,10 +22,8 @@ GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
 	blade_dulling = DULLING_BASH
 	integrity_failure = 0.5
 	max_integrity = 0
-	flags_1 = HEAR_1
 	anchored = TRUE
 	var/mode = 0
-
 
 /obj/structure/roguemachine/titan/obj_break(damage_flag)
 	..()
@@ -34,12 +33,14 @@ GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
 	return
 
 /obj/structure/roguemachine/titan/Destroy()
+	lose_hearing_sensitivity()
 	set_light(0)
-	..()
+	return ..()
 
 /obj/structure/roguemachine/titan/Initialize()
 	. = ..()
 	icon_state = null
+	become_hearing_sensitive()
 //	var/mutable_appearance/eye_lights = mutable_appearance(icon, "titan-eyes")
 //	eye_lights.plane = ABOVE_LIGHTING_PLANE //glowy eyes
 //	eye_lights.layer = ABOVE_LIGHTING_LAYER
@@ -149,6 +150,9 @@ GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
 				if(nocrown)
 					say("You need the crown.")
 					playsound(src, 'sound/misc/machineno.ogg', 100, FALSE, -1)
+					return
+				if (world.time < GLOB.last_crown_announcement_time + 2 MINUTES)
+					say(("Tis not yet time for another announcement my liege."))
 					return
 				if(!SScommunications.can_announce(H))
 					say("I must gather my strength!")
@@ -313,6 +317,7 @@ GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
 	try_make_rebel_decree(user)
 
 	SScommunications.make_announcement(user, FALSE, raw_message)
+	GLOB.last_crown_announcement_time = world.time 
 
 /obj/structure/roguemachine/titan/proc/try_make_rebel_decree(mob/living/user)
 	if(!SScommunications.can_announce(user))
@@ -340,7 +345,7 @@ GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
 			if(!SSmapping.retainer.head_rebel_decree)
 				user.mind.adjust_triumphs(1)
 			SSmapping.retainer.head_rebel_decree = TRUE
-	GLOB.azure_round_stats[STATS_LAWS_AND_DECREES_MADE]++
+	record_round_statistic(STATS_LAWS_AND_DECREES_MADE)
 	SScommunications.make_announcement(user, TRUE, raw_message)
 
 /obj/structure/roguemachine/titan/proc/declare_outlaw(mob/living/user, raw_message)
@@ -371,7 +376,7 @@ GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
 /proc/make_law(raw_message)
 	GLOB.laws_of_the_land += raw_message
 	priority_announce("[length(GLOB.laws_of_the_land)]. [raw_message]", "A LAW IS DECLARED", pick('sound/misc/new_law.ogg', 'sound/misc/new_law2.ogg'), "Captain")
-	GLOB.azure_round_stats[STATS_LAWS_AND_DECREES_MADE]++
+	record_round_statistic(STATS_LAWS_AND_DECREES_MADE)
 
 /proc/remove_law(law_index)
 	if(!GLOB.laws_of_the_land[law_index])
@@ -379,7 +384,7 @@ GLOBAL_LIST_INIT(laws_of_the_land, initialize_laws_of_the_land())
 	var/law_text = GLOB.laws_of_the_land[law_index]
 	GLOB.laws_of_the_land -= law_text
 	priority_announce("[law_index]. [law_text]", "A LAW IS ABOLISHED", pick('sound/misc/new_law.ogg', 'sound/misc/new_law2.ogg'), "Captain")
-	GLOB.azure_round_stats[STATS_LAWS_AND_DECREES_MADE]--
+	record_round_statistic(STATS_LAWS_AND_DECREES_MADE, -1)
 
 /proc/purge_laws()
 	GLOB.laws_of_the_land = list()

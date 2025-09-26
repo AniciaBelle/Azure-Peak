@@ -9,16 +9,16 @@
 /mob/living/carbon/human/species/wildshape/spider/gain_inherent_skills()
 	. = ..()
 	if(src.mind)
-		src.mind.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
-		src.mind.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE)
-		src.mind.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE) //For the bog mainly
-		src.mind.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
-		src.mind.adjust_skillrank(/datum/skill/misc/sneaking, 3, TRUE)
-		src.mind.adjust_skillrank(/datum/skill/misc/climbing, 5, TRUE)
+		src.adjust_skillrank(/datum/skill/combat/wrestling, 4, TRUE)
+		src.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE)
+		src.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE) //For the bog mainly
+		src.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
+		src.adjust_skillrank(/datum/skill/misc/sneaking, 3, TRUE)
+		src.adjust_skillrank(/datum/skill/misc/climbing, 5, TRUE)
 
 		src.STASTR = 12
 		src.STACON = 6
-		src.STAEND = 7
+		src.STAWIL = 7
 		src.STAPER = 12
 		src.STASPD = 14
 

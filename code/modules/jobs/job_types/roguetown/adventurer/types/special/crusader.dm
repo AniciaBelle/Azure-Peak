@@ -13,28 +13,36 @@
 	The 451st crusade is sure to be the last."
 
 	category_tags = list(CTAG_DISABLED)
+	subclass_stats = list(
+		STATKEY_STR = 2,
+		STATKEY_CON = 2,
+		STATKEY_WIL = 2,
+		STATKEY_PER = 1,
+		STATKEY_INT = 1
+	)
+	subclass_skills = list(
+		/datum/skill/combat/crossbows = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/combat/wrestling = SKILL_LEVEL_NOVICE,
+		/datum/skill/combat/unarmed = SKILL_LEVEL_NOVICE,
+		/datum/skill/combat/swords = SKILL_LEVEL_MASTER,
+		/datum/skill/combat/shields = SKILL_LEVEL_EXPERT,
+		/datum/skill/combat/knives = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/misc/swimming = SKILL_LEVEL_NOVICE,
+		/datum/skill/misc/climbing = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/misc/riding = SKILL_LEVEL_MASTER,
+		/datum/skill/misc/athletics = SKILL_LEVEL_MASTER,
+		/datum/skill/misc/reading = SKILL_LEVEL_NOVICE,
+		/datum/skill/combat/polearms = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/combat/axes = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/combat/maces = SKILL_LEVEL_EXPERT,
+		/datum/skill/magic/holy = SKILL_LEVEL_APPRENTICE,
+	)
 
 /datum/outfit/job/roguetown/adventurer/crusader
 	name = "Crusader"
 
 /datum/outfit/job/roguetown/adventurer/crusader/pre_equip(mob/living/carbon/human/H)
 	..()
-	H.mind.adjust_skillrank(/datum/skill/combat/crossbows, 2, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/wrestling, 1, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/unarmed, 1, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/swords, 5, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/shields, 4, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/knives, 3, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/swimming, 1, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/climbing, 3, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/riding, 5, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/athletics, 5, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/misc/reading, 1, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/polearms, 2, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/axes, 2, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/combat/maces, 4, TRUE)
-	H.mind.adjust_skillrank(/datum/skill/magic/holy, 2, TRUE)
-
 	belt = /obj/item/storage/belt/rogue/leather/plaquegold
 	pants = /obj/item/clothing/under/roguetown/chainlegs
 	shoes = /obj/item/clothing/shoes/roguetown/boots/armor
@@ -44,19 +52,14 @@
 	gloves = /obj/item/clothing/gloves/roguetown/chain
 	backr = /obj/item/rogueweapon/shield/tower/metal
 	backl = /obj/item/storage/backpack/rogue/satchel
-	beltr = /obj/item/rogueweapon/sword/decorated
+	beltr = /obj/item/rogueweapon/scabbard/sword
+	r_hand = /obj/item/rogueweapon/sword/decorated
 	beltl = /obj/item/clothing/head/roguetown/helmet/heavy/crusader
 	neck = /obj/item/clothing/neck/roguetown/psicross/g
 	backpack_contents = list(
 						/obj/item/storage/belt/rogue/pouch/coins/rich = 1,
 						/obj/item/flashlight/flare/torch = 1,
 						)
-
-	H.change_stat("endurance", 2)
-	H.change_stat("constitution", 2)
-	H.change_stat("intelligence", 1)
-	H.change_stat("perception", 1)
-	H.change_stat("strength", 2)
 
 	for(var/I in SSrole_class_handler.sorted_class_categories[CTAG_ALLCLASS])
 		var/datum/advclass/A = I
@@ -66,7 +69,8 @@
 				cloak = /obj/item/clothing/cloak/raincloak/furcloak
 				beltl = /obj/item/clothing/head/roguetown/helmet/heavy/crusader/t
 				neck = /obj/item/clothing/neck/roguetown/psicross
-				beltr = /obj/item/rogueweapon/sword/sabre
+				r_hand = /obj/item/rogueweapon/sword/sabre
+				beltr = /obj/item/rogueweapon/scabbard/sword
 				belt = /obj/item/storage/belt/rogue/leather/plaquesilver
 
 	if(H.pronouns == SHE_HER || H.pronouns == THEY_THEM_F)
@@ -77,8 +81,9 @@
 							/obj/item/rogueweapon/huntingknife/idagger/silver = 1,
 							/obj/item/storage/belt/rogue/pouch/coins/rich = 1,
 							/obj/item/flashlight/flare/torch = 1,
+							/obj/item/rogueweapon/scabbard/sheath = 1
 							)
-		H.change_stat("strength", 1)
+		H.change_stat(STATKEY_STR, 1)
 
 
 	var/datum/devotion/C = new /datum/devotion(H, H.patron)

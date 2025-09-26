@@ -62,6 +62,22 @@
 /// each component of the same type is consulted as to whether the duplicate should be allowed
 #define COMPONENT_DUPE_SELECTIVE 5
 
+// Update flags for [/atom/proc/update_appearance]
+/// Update the atom's name
+#define UPDATE_NAME (1<<0)
+/// Update the atom's desc
+#define UPDATE_DESC (1<<1)
+/// Update the atom's icon state
+#define UPDATE_ICON_STATE (1<<2)
+/// Update the atom's overlays
+#define UPDATE_OVERLAYS (1<<3)
+/// Update the atom's greyscaling
+#define UPDATE_GREYSCALE (1<<4)
+/// Update the atom's smoothing. (More accurately, queue it for an update)
+#define UPDATE_SMOOTHING (1<<5)
+/// Update the atom's icon
+#define UPDATE_ICON (UPDATE_ICON_STATE|UPDATE_OVERLAYS)
+
 // All signals. Format:
 // When the signal is called: (signal arguments)
 // All signals send the source datum of the signal as the first argument
@@ -71,6 +87,8 @@
 // start global signals with "!", this used to be necessary but now it's just a formatting choice
 /// from base of datum/controller/subsystem/mapping/proc/add_new_zlevel(): (list/args)
 #define COMSIG_GLOB_NEW_Z "!new_z"
+/// sent after world.maxx and/or world.maxy are expanded: (has_exapnded_world_maxx, has_expanded_world_maxy)
+#define COMSIG_GLOB_EXPANDED_WORLD_BOUNDS "!expanded_world_bounds"
 /// called after a successful var edit somewhere in the world: (list/args)
 #define COMSIG_GLOB_VAR_EDIT "!var_edit"
 /// mob was created somewhere : (mob)
@@ -169,6 +187,8 @@
 #define COMSIG_ENTER_AREA "enter_area" 						//from base of area/Entered(): (/area)
 #define COMSIG_EXIT_AREA "exit_area" 							//from base of area/Exited(): (/area)
 
+#define COMSIG_MIND_TRANSFER "mind_transfer"
+
 #define COMSIG_CLICK "atom_click"								//from base of atom/Click(): (location, control, params, mob/user)
 #define COMSIG_CLICK_SHIFT "shift_click"						//from base of atom/ShiftClick(): (/mob)
 #define COMSIG_CLICK_CTRL "ctrl_click"							//from base of atom/CtrlClickOn(): (/mob)
@@ -256,8 +276,8 @@
 // /mob/living signals
 #define COMSIG_LIVING_SET_RESTING "comsig_set_resting"
 #define COMSIG_LIVING_RESIST "living_resist"					//from base of mob/living/resist() (/mob/living)
-#define COMSIG_LIVING_IGNITED "living_ignite"					//from base of mob/living/IgniteMob() (/mob/living)
-#define COMSIG_LIVING_EXTINGUISHED "living_extinguished"		//from base of mob/living/ExtinguishMob() (/mob/living)
+#define COMSIG_LIVING_IGNITED "living_ignite"					//from base of mob/living/ignite_mob() (/mob/living)
+#define COMSIG_LIVING_EXTINGUISHED "living_extinguished"		//from base of mob/living/extinguish_mob() (/mob/living)
 #define COMSIG_LIVING_ELECTROCUTE_ACT "living_electrocute_act"		//from base of mob/living/electrocute_act(): (shock_damage, source, siemens_coeff, flags)
 #define COMSIG_LIVING_MINOR_SHOCK "living_minor_shock"			//sent by stuff like stunbatons and tasers: ()
 #define COMSIG_LIVING_REVIVE "living_revive"					//from base of mob/living/revive() (full_heal, admin_revive)
@@ -301,6 +321,7 @@
 
 // /obj/item signals
 #define COMSIG_ITEM_ATTACK "item_attack"						//from base of obj/item/attack(): (/mob/living/target, /mob/living/user)
+#define COMSIG_ITEM_ATTACK_SUCCESS "item_attack_success"		//from base of obj/item/attack(): (/mob/living/target, /mob/living/user) upon successful attacking
 #define COMSIG_ITEM_ATTACK_SELF "item_attack_self"				//from base of obj/item/attack_self(): (/mob)
 	#define COMPONENT_NO_INTERACT 1
 #define COMSIG_ITEM_ATTACK_OBJ "item_attack_obj"				//from base of obj/item/attack_obj(): (/obj, /mob)
@@ -311,6 +332,7 @@
 #define COMSIG_ITEM_ATTACK_QDELETED "item_attack_qdeleted"		//from base of obj/item/attack_qdeleted(): (atom/target, mob/user, params)
 #define COMSIG_ITEM_EQUIPPED "item_equip"						//from base of obj/item/equipped(): (/mob/equipper, slot)
 #define COMSIG_ITEM_DROPPED "item_drop"							//from base of obj/item/dropped(): (mob/user)
+#define COMSIG_ITEM_BROKEN "item_broken"                        //from base of /obj/proc/obj_break(damage_flag)
 #define COMSIG_ITEM_PICKUP "item_pickup"						//from base of obj/item/pickup(): (/mob/taker)
 #define COMSIG_OBJ_TAKE_DAMAGE "obj_take_damage"				//from base of obj/take_damage() (damage_amount, damage_type, damage_flag, sound_effect, attack_dir, armor_penetration)
 #define COMSIG_ITEM_ATTACK_ZONE "item_attack_zone"				//from base of mob/living/carbon/attacked_by(): (mob/living/carbon/target, mob/living/user, hit_zone)
@@ -318,13 +340,15 @@
 #define COMSIG_ITEM_MARK_RETRIEVAL "item_mark_retrieval"			//called before marking an object for retrieval, checked in /obj/effect/proc_holder/spell/targeted/summonitem/cast() : (mob/user)
 	#define COMPONENT_BLOCK_MARK_RETRIEVAL 1
 #define COMSIG_ITEM_HIT_REACT "item_hit_react"					//from base of obj/item/hit_reaction(): (list/args)
+#define COMSIG_ITEM_HIT_RESPONSE "item_hit_response"
 #define COMSIG_ITEM_WEARERCROSSED "wearer_crossed"                //called on item when crossed by something (): (/atom/movable, mob/living/crossed)
+#define COMSIG_ITEM_ATTACK_TURF "item_attack_turf"
 
 // /obj/item/clothing signals
 #define COMSIG_CLOTHING_STEP_ACTION "clothing_step_action"			//from base of obj/item/clothing/shoes/proc/step_action(): ()
 
-// /obj/item/rogueweapon signals
-#define COMSIG_ROGUEWEAPON_OBJFIX "rogueweapon_fix"				//from base of obj/item/rogueweapon/obj_fix()
+// /obj/item/ signals
+#define COMSIG_ITEM_OBJFIX "rogueweapon_fix"				//from base of obj/item/obj_fix()
 
 // /obj/item/implant signals
 #define COMSIG_IMPLANT_ACTIVATED "implant_activated"			//from base of /obj/item/implant/proc/activate(): ()
@@ -456,3 +480,5 @@
 // heretic signals
 #define COMSIG_TRAIT_GAIN "trait_gain"    // (trait, source)
 #define COMSIG_TRAIT_LOSS "trait_loss"    // (trait, source)				//from monkey CtrlClickOn(): (/mob)
+
+#define COMSIG_ITEM_ATTACK_EFFECT "item_attack_effect"

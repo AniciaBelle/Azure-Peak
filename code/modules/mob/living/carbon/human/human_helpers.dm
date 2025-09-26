@@ -44,6 +44,12 @@
 		return face_name
 	if(id_name)
 		return id_name
+	var/list/d_list = get_mob_descriptors()
+	var/height_desc = "[capitalize(build_coalesce_description_nofluff(d_list, src, list(MOB_DESCRIPTOR_SLOT_HEIGHT), "%DESC1%"))]"
+	var/stature_desc = "[capitalize(build_coalesce_description_nofluff(d_list, src, list(MOB_DESCRIPTOR_SLOT_STATURE), "%DESC1%"))]"
+	var/descriptor_name = "[height_desc] [stature_desc]"
+	if(descriptor_name != " ")
+		return descriptor_name
 	return "Unknown"
 
 //Returns "Unknown" if facially disfigured and real_name if not. Useful for setting name when Fluacided or when updating a human's name variable
@@ -111,7 +117,12 @@
 		return TRUE
 
 /mob/living/carbon/human/get_punch_dmg()
-	var/damage = 12
+
+	var/damage
+	if(STASTR > UNARMED_DAMAGE_DEFAULT || STASTR < 10)
+		damage = STASTR
+	else
+		damage = UNARMED_DAMAGE_DEFAULT
 
 	var/used_str = STASTR
 
@@ -125,16 +136,13 @@
 	if(used_str <= 9)
 		damage = max(damage - (damage * ((10 - used_str) * 0.1)), 1)
 
-	if(istype(G, /obj/item/clothing/gloves/roguetown/plate))
-		damage = (damage * 1.20)
-	if(istype(G, /obj/item/clothing/gloves/roguetown/chain))
-		damage = (damage * 1.15)
-	if(istype(G, /obj/item/clothing/gloves/roguetown/leather))
-		damage = (damage * 1.10) 
+	if(istype(G, /obj/item/clothing/gloves/roguetown))
+		var/obj/item/clothing/gloves/roguetown/GL = G
+		damage = (damage * GL.unarmed_bonus)
 
 	if(mind)
 		if(mind.has_antag_datum(/datum/antagonist/werewolf))
-			return 30
+			return 50
 
 	return damage
 
@@ -142,3 +150,10 @@
 	. = ..()
 	if(dna?.species?.is_floor_hazard_immune(src))
 		return TRUE
+
+
+/mob/living/carbon/human/proc/do_invisibility(timeinvis)
+	animate(src, alpha = 0, time = 0 SECONDS, easing = EASE_IN)
+	src.mob_timers[MT_INVISIBILITY] = world.time + timeinvis
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/mob/living/carbon/human, update_sneak_invis), TRUE), timeinvis)
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/atom/movable, visible_message), span_warning("[src] fades back into view."), span_notice("You become visible again.")), timeinvis)

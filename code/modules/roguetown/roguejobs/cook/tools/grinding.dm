@@ -1,4 +1,4 @@
-#define BASE_GRIND_TIME 2 SECONDS
+#define BASE_GRIND_TIME 1 SECONDS
 /obj/item/millstone // Previous structure path means it cannot be crafted on tables
 	name = "millstone"
 	desc = "A millstone used to grind grain into flour."
@@ -11,7 +11,7 @@
 	var/list/obj/item/to_grind = list()
 
 /obj/item/millstone/attackby(obj/item/W, mob/living/user, params)
-	var/datum/skill/craft/cooking/cs = user?.mind?.get_skill_level(/datum/skill/craft/cooking)
+	var/datum/skill/craft/cooking/cs = user?.get_skill_level(/datum/skill/craft/cooking)
 	var/scaled_grind_time = BASE_GRIND_TIME / get_cooktime_divisor(cs)
 	if(W.mill_result)
 		if(do_after(user, scaled_grind_time, target = src))

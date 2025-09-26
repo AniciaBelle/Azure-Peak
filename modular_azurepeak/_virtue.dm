@@ -39,17 +39,17 @@ GLOBAL_LIST_EMPTY(virtues)
 		return
 	for(var/skill in added_skills)
 		if (!islist(skill))
-			recipient.mind?.adjust_skillrank(skill, added_skills[skill], TRUE)
+			recipient.adjust_skillrank(skill, added_skills[skill], TRUE)
 		else
 			var/list/skill_block = skill
 			var/datum/skill/the_skill = skill_block[1]
 			var/increase_by = skill_block[2]
 			var/maximum_skill = skill_block[3]
-			var/our_skill = recipient.mind?.get_skill_level(the_skill)
+			var/our_skill = recipient.get_skill_level(the_skill)
 			if (our_skill < maximum_skill)
 				if ((our_skill + increase_by) > maximum_skill) // we'll be pushing it higher than our max with 1 addition, so lower increase_by
 					increase_by = (maximum_skill - our_skill)
-				recipient.mind?.adjust_skillrank(the_skill.type, increase_by, TRUE)
+				recipient.adjust_skillrank(the_skill.type, increase_by, TRUE)
 			else
 				to_chat(recipient, span_notice("My Virtue cannot influence my skill with [lowertext(the_skill.name)] any further."))
 				
@@ -83,7 +83,7 @@ GLOBAL_LIST_EMPTY(virtues)
 		return FALSE
 	
 	// we should check to see if they have triumphs first but i can't be fucked
-	recipient.mind?.adjust_triumphs(-triumph_cost, FALSE)
+	recipient.adjust_triumphs(-triumph_cost, FALSE)
 	return TRUE
 
 /proc/apply_virtue(mob/living/carbon/human/recipient, datum/virtue/virtue_type)
@@ -102,7 +102,9 @@ GLOBAL_LIST_EMPTY(virtues)
 			SStreasury.create_bank_account(recipient, 20)
 	if(HAS_TRAIT(recipient, TRAIT_RESIDENT))
 		REMOVE_TRAIT(recipient, TRAIT_OUTLANDER, ADVENTURER_TRAIT)
-
+		REMOVE_TRAIT(recipient, TRAIT_OUTLANDER, JOB_TRAIT)
+		REMOVE_TRAIT(recipient, TRAIT_OUTLANDER, TRAIT_GENERIC)
+	record_featured_object_stat(FEATURED_STATS_VIRTUES, virtue_type.name)
 /datum/virtue/none
 	name = "None"
 	desc = "Without virtue."

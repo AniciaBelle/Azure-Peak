@@ -5,6 +5,7 @@
 	name = "astratan tabard"
 	desc = "The washed out golds of an asratan crusader adorn these fine robes."
 	icon_state = "astratatabard"
+	resistance_flags = FIRE_PROOF
 
 /obj/item/clothing/cloak/templar/malumite
 	mob_overlay_icon = 'icons/roguetown/clothing/onmob/cloaks.dmi'
@@ -45,3 +46,14 @@
 	name = "xylixian cloak"
 	desc = "Swirling cloth, jingling bells! Oh, how I love the path to hell!"
 	icon_state = "xylixcloak"
+	sleeved = 'icons/roguetown/clothing/onmob/helpers/sleeves_cloaks.dmi'
+	sleevetype = "shirt"
+
+
+/obj/item/clothing/cloak/templar/undivided
+	mob_overlay_icon = 'icons/roguetown/clothing/onmob/cloaks.dmi'
+	alternate_worn_layer = TABARD_LAYER
+	boobed = TRUE
+	name = "undivided tabard"
+	desc = "The refuge of the TEN upon my back. A Undivided House, standing eternal against the encroaching darkness."
+	icon_state = "seetabard"

@@ -29,6 +29,7 @@
 
 	var/resting = FALSE
 	var/wallpressed = FALSE
+	var/climbing = FALSE
 
 	var/pixelshift_layer = 0
 
@@ -41,6 +42,8 @@
 
 	var/last_special = 0 //Used by the resist verb, likely used to prevent players from bypassing next_move by logging in/out.
 	var/timeofdeath = 0
+
+	var/infected = FALSE //Used to tell if the mob is in progress of turning into deadite
 
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.
 	var/incorporeal_move = FALSE //FALSE is off, INCORPOREAL_MOVE_BASIC is normal, INCORPOREAL_MOVE_SHADOW is for ninjas
@@ -56,9 +59,12 @@
 
 	var/tod = null // Time of death
 
-	var/on_fire = 0 //The "Are we on fire?" var
-	var/fire_stacks = 0 //Tracks how many stacks of fire we have on, max is usually 20
-	var/divine_fire_stacks = 0	//Same as regular firestacks but has less properties to avoid firespreading and other mechanics. Meant to ONLY harm the target.
+	/// The boolean "Are we on fire?" var. 
+	var/on_fire = FALSE
+	/// Helper vars for quick access to firestacks, these should be updated every time firestacks are adjusted
+	var/fire_stacks = 0
+	/// Rate at which fire stacks should decay from this mob
+	var/fire_stack_decay_rate = -0.05
 
 	var/bloodcrawl = 0 //0 No blood crawling, BLOODCRAWL for bloodcrawling, BLOODCRAWL_EAT for crawling+mob devour
 	var/holder = null //The holder for blood crawling
@@ -125,10 +131,10 @@
 	var/list/ownedSoullinks //soullinks we are the owner of
 	var/list/sharedSoullinks //soullinks we are a/the sharer of
 
-	var/maxrogstam = 1000
-	var/maxrogfat = 100
-	var/rogstam = 1000
-	var/rogfat = 0
+	var/max_energy = 1000
+	var/max_stamina = 100
+	var/energy = 1000
+	var/stamina = 0 // Stamina. In reality this is stamina damage and the higher it is the worse it is.
 
 	var/last_fatigued = 0
 	var/last_ps = 0
@@ -136,6 +142,7 @@
 	var/ambushable = 0
 
 	var/surrendering = 0
+	var/compliance = 0 // whether we are choosing to auto-resist grabs and stuff
 
 	var/defprob = 50 //base chance to defend against this mob's attacks, for simple mob combat
 	var/encumbrance = 0
@@ -180,3 +187,10 @@
 	var/voice_pitch = 1
 
 	var/domhand = 0
+
+	var/cmode_music_override = list() // set by prefs or the verb, ignored if empty
+	var/cmode_music_override_name // solely for autoselecting as a spawned-in mob
+	var/last_heard_raw_message //to prevent repeated messages from spamming
+
+	/// If the character has prominent mob descriptors, they'll make extra noise
+	var/loud_sneaking = FALSE

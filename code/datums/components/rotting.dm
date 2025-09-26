@@ -52,6 +52,8 @@
 	
 	var/mob/living/carbon/C = parent
 	var/is_zombie
+	if(HAS_TRAIT(C, TRAIT_DNR))
+		return
 	if(C.mind)
 		if(C.mind.has_antag_datum(/datum/antagonist/zombie))
 			is_zombie = TRUE
@@ -72,6 +74,7 @@
 		if(is_zombie)
 			var/datum/antagonist/zombie/Z = C.mind.has_antag_datum(/datum/antagonist/zombie)
 			if(Z && !Z.has_turned && !Z.revived && C.stat == DEAD)
+				C.infected = TRUE
 				wake_zombie(C, infected_wake = TRUE, converted = FALSE)
 
 	var/findonerotten = FALSE

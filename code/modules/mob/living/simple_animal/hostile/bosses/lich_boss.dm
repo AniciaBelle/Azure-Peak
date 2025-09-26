@@ -30,7 +30,7 @@
 	STAPER = 20
 	STAINT = 18
 	STACON = 20
-	STAEND = 20
+	STAWIL = 20
 	STASPD = 15
 	STALUC = 15
 	loot = list(/obj/effect/temp_visual/lich_dying)
@@ -65,7 +65,7 @@
 	blink.player_lock = 0
 	blink.inner_tele_radius = 5
 	blink.outer_tele_radius = 6
-	blink.invocation = pick(taunt)
+	blink.invocations += pick(taunt)
 	blink.invocation_type = "shout"
 	AddSpell(blink)
 	REMOVE_TRAIT(src, TRAIT_SIMPLE_WOUNDS, TRAIT_GENERIC)
@@ -106,7 +106,7 @@
 	if(target && next_cast < world.time && next_blink < world.time) //Triggers a blink spell
 		if(blink.cast_check(0,src))
 			blink.choose_targets(src)
-			blink.invocation = pick(taunt)
+			blink.invocations += pick(taunt)
 			next_cast = world.time + 20
 			next_blink = world.time + 120
 			return .
@@ -350,27 +350,26 @@
 	H.STAPER = 20
 	H.STASPD = 10
 	H.STACON = 20
-	H.STAEND = 20
+	H.STAWIL = 20
 	H.STAINT = 1
 	H.faction = list("lich")
 	H.wander = FALSE
 
-	if(H.mind)
-		H.mind.adjust_skillrank_up_to(/datum/skill/craft/carpentry, 1, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/craft/masonry, 1, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/craft/crafting, 1, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/misc/sewing, 1, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/craft/carpentry, 1, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/craft/masonry, 1, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/craft/crafting, 1, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/misc/sewing, 1, TRUE)
 
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/polearms, 4, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/maces, 3, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/axes, 3, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/wrestling, 2, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/unarmed, 2, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/misc/athletics, 4, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/swords, 4, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/shields, 2, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/combat/knives, 3, TRUE)
-		H.mind.adjust_skillrank_up_to(/datum/skill/misc/climbing, 2, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/polearms, 4, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/maces, 3, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/axes, 3, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/wrestling, 2, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/unarmed, 2, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/misc/athletics, 4, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/swords, 4, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/shields, 2, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/knives, 3, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/misc/climbing, 2, TRUE)
 
 	H.set_patron(/datum/patron/inhumen/zizo)
 	ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
@@ -399,6 +398,8 @@
 	anchored = TRUE
 
 /obj/effect/oneway/CanPass(atom/movable/mover, turf/target)
+	if(!(ismob(mover))) //Fixes cart exploit that broke one way boss arena doors. Only mobs can pass through now.
+		return ..() && 0
 	var/turf/T = get_turf(src)
 	var/turf/MT = get_turf(mover)
 	return ..() && (T == MT || get_dir(MT,T) == dir)
@@ -436,8 +437,6 @@
 	school = "abjuration"
 	recharge_time = 20
 	clothes_req = FALSE
-	invocation = "none"
-	invocation_type = "none"
 	range = -1
 	include_user = TRUE
 	cooldown_min = 5 //4 deciseconds reduction per rank

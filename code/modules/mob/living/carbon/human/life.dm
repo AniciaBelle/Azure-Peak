@@ -43,57 +43,59 @@
 		for(var/datum/antagonist/A in mind.antag_datums)
 			A.on_life(src)
 
-	if(mode == NPC_AI_OFF)
-		handle_vamp_dreams()
-		if(IsSleeping())
-			if(health > 0)
-				if(has_status_effect(/datum/status_effect/debuff/sleepytime))
-					remove_status_effect(/datum/status_effect/debuff/sleepytime)
-					remove_stress(/datum/stressevent/sleepytime)
-					if(mind)
-						mind.sleep_adv.advance_cycle()
-						allmig_reward++
-						adjust_triumphs(1)
-						to_chat(src, span_danger("Nights Survived: \Roman[allmig_reward]"))
-		if(leprosy == 1)
-			adjustToxLoss(2)
-		else if(leprosy == 2)
-			if(client)
-				if(check_blacklist(client.ckey))
-					ADD_TRAIT(src, TRAIT_NOPAIN, TRAIT_GENERIC)
-					leprosy = 1
-					var/obj/item/bodypart/B = get_bodypart(BODY_ZONE_HEAD)
-					if(B)
-						B.sellprice = rand(16, 33)
-				else
-					leprosy = 3
-		//heart attack stuff
-		handle_heart()
-		handle_liver()
-		update_rogfat()
-		update_rogstam()
-		if(charflaw && !charflaw.ephemeral && mind)
-			charflaw.flaw_on_life(src)
-		if(health <= 0)
-			adjustOxyLoss(0.5)
-		if(mode == NPC_AI_OFF && !client && !HAS_TRAIT(src, TRAIT_NOSLEEP))
-			if(mob_timers["slo"])
-				if(world.time > mob_timers["slo"] + 90 SECONDS)
-					Sleeping(100)
+	handle_vamp_dreams()
+	if(IsSleeping())
+		if(health > 0)
+			if(has_status_effect(/datum/status_effect/debuff/sleepytime))
+				remove_status_effect(/datum/status_effect/debuff/sleepytime)
+				remove_stress(/datum/stressevent/sleepytime)
+				if(mind)
+					mind.sleep_adv.advance_cycle()
+					allmig_reward++
+					adjust_triumphs(1)
+					to_chat(src, span_danger("Nights Survived: \Roman[allmig_reward]"))
+	if(leprosy == 1)
+		adjustToxLoss(2)
+	else if(leprosy == 2)
+		if(client)
+			if(check_blacklist(client.ckey))
+				ADD_TRAIT(src, TRAIT_NOPAIN, TRAIT_GENERIC)
+				leprosy = 1
+				var/obj/item/bodypart/B = get_bodypart(BODY_ZONE_HEAD)
+				if(B)
+					B.sellprice = rand(16, 33)
 			else
-				mob_timers["slo"] = world.time
+				leprosy = 3
+	//heart attack stuff
+	handle_heart()
+	handle_liver()
+	update_stamina()
+	update_energy()
+	if(charflaw && !charflaw.ephemeral && mind)
+		charflaw.flaw_on_life(src)
+	if(health <= 0)
+		adjustOxyLoss(0.5)
+	if(mode == NPC_AI_OFF && !client && !HAS_TRAIT(src, TRAIT_NOSLEEP))
+		if(mob_timers["slo"])
+			if(world.time > mob_timers["slo"] + 90 SECONDS)
+				Sleeping(100)
 		else
-			if(mob_timers["slo"])
-				mob_timers["slo"] = null
+			mob_timers["slo"] = world.time
+	else
+		if(mob_timers["slo"])
+			mob_timers["slo"] = null
 
-		if(dna?.species)
-			dna.species.spec_life(src) // for mutantraces
+	if(dna?.species)
+		dna.species.spec_life(src) // for mutantraces
 
 	//Update our name based on whether our face is obscured/disfigured
 	name = get_visible_name()
 
-	if(sexcon)
-		sexcon.process_sexcon(1 SECONDS)
+	handle_gas_mask_sound()
+
+	if(mode == NPC_AI_OFF)
+		if(sexcon)
+			sexcon.process_sexcon(1 SECONDS)
 
 	if(stat != DEAD)
 		return 1
@@ -129,22 +131,6 @@
 
 	dna.species.handle_environment(src)
 
-///FIRE CODE
-/mob/living/carbon/human/handle_fire()
-	. = ..()
-	if(.) //if the mob isn't on fire anymore
-		return
-
-	if(dna)
-		. = dna.species.handle_fire(src) //do special handling based on the mob's species. TRUE = they are immune to the effects of the fire.
-
-	if(!last_fire_update)
-		last_fire_update = fire_stacks
-	if((fire_stacks + divine_fire_stacks > 10 && last_fire_update <= 10) || (fire_stacks + divine_fire_stacks <= 10 && last_fire_update > 10))
-		last_fire_update = fire_stacks + divine_fire_stacks
-		update_fire()
-
-
 /mob/living/carbon/human/proc/get_thermal_protection()
 	var/thermal_protection = 0 //Simple check to estimate how protected we are against multiple temperatures
 	if(wear_armor)
@@ -156,12 +142,16 @@
 	thermal_protection = round(thermal_protection)
 	return thermal_protection
 
-/mob/living/carbon/human/IgniteMob()
+/mob/living/carbon/human/ignite_mob()
 	//If have no DNA or can be Ignited, call parent handling to light user
 	//If firestacks are high enough
-	if(!dna || dna.species.CanIgniteMob(src))
+	if(!dna || dna.species.Canignite_mob(src))
 		if(!on_fire)
-			if(fire_stacks + divine_fire_stacks > 10)
+			var/datum/status_effect/fire_handler/fire_stacks/fire_status = has_status_effect(/datum/status_effect/fire_handler/fire_stacks)
+			var/datum/status_effect/fire_handler/fire_stacks/sunder_status = has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder)
+			var/datum/status_effect/fire_handler/fire_stacks/divine_status = has_status_effect(/datum/status_effect/fire_handler/fire_stacks/divine)
+			var/datum/status_effect/fire_handler/fire_stacks/sunder/blessed/blessed_sunder = has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder/blessed)
+			if(fire_status?.stacks + sunder_status?.stacks + divine_status?.stacks + blessed_sunder?.stacks > 10)
 				Immobilize(30)
 				emote("firescream", TRUE)
 			else
@@ -169,8 +159,8 @@
 		return ..()
 	. = FALSE //No ignition
 
-/mob/living/carbon/human/ExtinguishMob()
-	if(!dna || !dna.species.ExtinguishMob(src))
+/mob/living/carbon/human/extinguish_mob()
+	if(!dna || !dna.species.extinguish_mob(src))
 		last_fire_update = null
 		..()
 
@@ -197,6 +187,29 @@
 //			add_stress(/datum/stressevent/coldfeet)
 
 //END FIRE CODE
+
+
+/mob/living/carbon/human/proc/handle_gas_mask_sound()
+	if(!istype(wear_mask, /obj/item/clothing/mask/rogue/facemask/steel/confessor))
+		if(breathe_tick)
+			breathe_tick = 0
+		return
+	if(stat == DEAD)
+		return
+	if(HAS_TRAIT(src, TRAIT_NOBREATH))
+		return
+	breathe_tick++
+	var/mask_sound
+	if(istype(wear_mask, /obj/item/clothing/mask/rogue/facemask/steel/confessor))
+		if(breathe_tick>=rand(3,5))
+			breathe_tick = 0
+			mask_sound = pick('sound/items/confessormask1.ogg', 'sound/items/confessormask2.ogg', 'sound/items/confessormask3.ogg',
+							'sound/items/confessormask4.ogg', 'sound/items/confessormask5.ogg', 'sound/items/confessormask6.ogg',
+							'sound/items/confessormask7.ogg', 'sound/items/confessormask8.ogg', 'sound/items/confessormask9.ogg',
+					 		'sound/items/confessormask10.ogg')
+			playsound(src, mask_sound, 90, FALSE, 4, 0)
+			return
+			 	
 
 
 //This proc returns a number made up of the flags for body parts which you are protected on. (such as HEAD, CHEST, GROIN, etc. See setup.dm for the full list)

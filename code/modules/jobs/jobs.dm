@@ -89,7 +89,7 @@ GLOBAL_LIST_INIT(garrison_positions, list(
 ))
 
 GLOBAL_LIST_INIT(church_positions, list(
-	"Priest",
+	"Bishop",
 	"Confessor",
 	"Acolyte",
 	"Mortician",
@@ -101,6 +101,7 @@ GLOBAL_LIST_INIT(church_positions, list(
 GLOBAL_LIST_INIT(inquisition_positions, list(
 	"Inquisitor",
 	"Orthodoxist",
+	"Absolver",
 ))
 
 
@@ -109,7 +110,7 @@ GLOBAL_LIST_INIT(yeoman_positions, list(
 	"Innkeeper",
 	"Archivist",
 	"Scribe",
-	"Town Elder",
+	"Town Crier",
 	"Bathmaster",
 	"Guildmaster",
 	"Guildsman",

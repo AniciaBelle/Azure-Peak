@@ -1,10 +1,10 @@
 //Call to Slaughter - AoE buff for all people surrounding you.
 /obj/effect/proc_holder/spell/self/call_to_slaughter
 	name = "Call to Slaughter"
-	desc = "Grants you and all allies nearby a buff to their strength, endurance, and constitution."
+	desc = "Grants you and all allies nearby a buff to their strength, willpower, and constitution."
 	overlay_state = "call_to_slaughter"
 	recharge_time = 5 MINUTES
-	invocation = "LAMBS TO THE SLAUGHTER!"
+	invocations = list("LAMBS TO THE SLAUGHTER!")
 	invocation_type = "shout"
 	sound = 'sound/magic/timestop.ogg'
 	releasedrain = 30
@@ -15,16 +15,16 @@
 	for(var/mob/living/carbon/target in view(3, get_turf(user)))
 		if(istype(target.patron, /datum/patron/inhumen))
 			target.apply_status_effect(/datum/status_effect/buff/call_to_slaughter)	//Buffs inhumens
-			return
+			continue
 		if(istype(target.patron, /datum/patron/old_god))
 			to_chat(target, span_danger("You feel a surge of cold wash over you; leaving your body as quick as it hit.."))	//No effect on Psydonians!
-			return
+			continue
 		if(!user.faction_check_mob(target))
 			continue
 		if(target.mob_biotypes & MOB_UNDEAD)
 			continue
 		target.apply_status_effect(/datum/status_effect/debuff/call_to_slaughter)	//Debuffs non-inhumens/psydonians
-	return ..()
+	return TRUE
 
 //Unholy Grasp - Throws disappearing net made of viscera at enemy. Creates blood on impact.
 /obj/effect/proc_holder/spell/invoked/projectile/blood_net
@@ -70,7 +70,7 @@
 	desc = "The blood of your enemy shall boil, their skin feeling as if it's being ripped apart! Gaggar demands their blood must FLOW!!!."
 	overlay_state = "bloodsteal"
 	recharge_time = 5 MINUTES
-	invocation = "YOUR BLOOD WILL BOIL TILL IT'S SPILLED!"
+	invocations = list("YOUR BLOOD WILL BOIL TILL IT'S SPILLED!")
 	invocation_type = "shout"
 	sound = 'sound/magic/antimagic.ogg'
 	releasedrain = 30
@@ -78,7 +78,6 @@
 	devotion_cost = 70
 
 /obj/effect/proc_holder/spell/invoked/revel_in_slaughter/cast(atom/A, list/targets, mob/living/user = usr)
-	. = ..()
 	var/success = 0
 	for(var/obj/effect/decal/cleanable/blood/B in view(3, user))
 		success++
@@ -97,7 +96,8 @@
 			addtimer(VARSET_CALLBACK(phy, pain_mod, phy.pain_mod /= 1.5), 15 SECONDS)
 			human_target.visible_message(span_danger("[target]'s wounds become inflammed as their vitality is sapped away!"))
 			to_chat(target, span_warning("My skins feels like pins and needles, as if something were ripping and tearing at me!"))
-			return ..()
+			return TRUE
+	return FALSE
 
 //Bloodrage T0 -- Uncapped STR buff.
 /obj/effect/proc_holder/spell/self/graggar_bloodrage
@@ -105,7 +105,10 @@
 	desc = "Grants you unbound strength for a short while."
 	overlay_state = "bloodrage"
 	recharge_time = 5 MINUTES
-	invocation = "GRAGGAR!! GRAGGAR!! GRAGGAR!!"
+	invocations = list("GRAGGAR!! GRAGGAR!! GRAGGAR!!",
+		"GRAGGAR! BREAK MY CHAINS!",
+		"GRAGGAR! SHATTER MY BINDS!"
+	)
 	invocation_type = "shout"
 	sound = 'sound/magic/bloodrage.ogg'
 	releasedrain = 30

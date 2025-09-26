@@ -47,18 +47,27 @@
 	effectedstats = list()
 	return ..()
 
-/datum/status_effect/process()
-	if(!owner)
+/datum/status_effect/process(wait)
+	if(QDELETED(owner))
 		qdel(src)
 		return
 	if(tick_interval < world.time)
-		tick()
+		tick(wait)
 		tick_interval = world.time + initial(tick_interval)
 	if(duration != -1 && duration < world.time)
 		qdel(src)
 
 /datum/status_effect/proc/on_apply() //Called whenever the buff is applied; returning FALSE will cause it to autoremove itself.
 	for(var/S in effectedstats)
+		if(effectedstats[S] < 0)	//We only care about negative bonuses here
+			if((owner.get_stat(S) + effectedstats[S]) < 1)	//The status effect would reduce our stats beyond the limit of !1! Not 0.
+				for(var/i in 1 to abs(effectedstats[S]))
+					if((owner.get_stat(S) + (effectedstats[S] + i)) == 1)	//We keep incrementing the status effect until it will reduce it to 1.
+						effectedstats[S] = (effectedstats[S] + i)
+						break
+		else
+			if((owner.get_stat(S) + effectedstats[S]) > 20)	//We check for overflow as well.
+				effectedstats[S] = max(((owner.get_stat(S) + effectedstats[S]) - 20), 0)
 		owner.change_stat(S, effectedstats[S])
 	return TRUE
 
@@ -126,17 +135,17 @@
 	. = FALSE
 	var/datum/status_effect/S1 = effect
 	LAZYINITLIST(status_effects)
+	var/list/arguments = args.Copy()
+	arguments[1] = src
 	for(var/datum/status_effect/S in status_effects)
 		if(S.id == initial(S1.id) && S.status_type)
 			if(S.status_type == STATUS_EFFECT_REPLACE)
-				S.be_replaced()
+				S.be_replaced(arglist(arguments))
 			else if(S.status_type == STATUS_EFFECT_REFRESH)
-				S.refresh()
+				S.refresh(arglist(arguments))
 				return
 			else
 				return
-	var/list/arguments = args.Copy()
-	arguments[1] = src
 	S1 = new effect(arguments)
 	. = S1
 
@@ -149,21 +158,24 @@
 				qdel(S)
 				. = TRUE
 
-/mob/living/proc/has_status_effect(effect) //returns the effect if the mob calling the proc owns the given status effect
-	. = FALSE
-	if(status_effects)
-		var/datum/status_effect/S1 = effect
-		for(var/datum/status_effect/S in status_effects)
-			if(initial(S1.id) == S.id)
-				return S
+/mob/living/proc/has_status_effect(datum/status_effect/checked_effect)
+	RETURN_TYPE(/datum/status_effect)
 
-/mob/living/proc/has_status_effect_list(effect) //returns a list of effects with matching IDs that the mod owns; use for effects there can be multiple of
-	. = list()
-	if(status_effects)
-		var/datum/status_effect/S1 = effect
-		for(var/datum/status_effect/S in status_effects)
-			if(initial(S1.id) == S.id)
-				. += S	
+	for(var/datum/status_effect/present_effect as anything in status_effects)
+		if(present_effect.id == initial(checked_effect.id))
+			return present_effect
+
+	return null
+
+/mob/living/proc/has_status_effect_list(datum/status_effect/checked_effect)
+	RETURN_TYPE(/list)
+
+	var/list/effects_found = list()
+	for(var/datum/status_effect/present_effect as anything in status_effects)
+		if(present_effect.id == initial(checked_effect.id))
+			effects_found += present_effect
+
+	return effects_found
 
 //////////////////////
 // STACKING EFFECTS //

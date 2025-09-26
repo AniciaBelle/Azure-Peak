@@ -68,6 +68,12 @@
 		eye_blurry = max(amount, eye_blurry)
 	update_eye_blur()
 
+/mob/proc/psydo_nyte()
+	sleep(2)
+	overlay_fullscreen("LYVES", /atom/movable/screen/fullscreen/zezuspsyst)
+	sleep(2)
+	clear_fullscreen("LYVES")
+
 /**
   * Adjust the current blurriness of the mobs vision by amount
   */
@@ -86,12 +92,16 @@
 		return
 	var/atom/movable/screen/plane_master/floor/OT = locate(/atom/movable/screen/plane_master/floor) in client.screen
 	var/atom/movable/screen/plane_master/game_world/GW = locate(/atom/movable/screen/plane_master/game_world) in client.screen
-	GW.backdrop(src)
-	OT.backdrop(src)
+	if(GW)
+		GW.backdrop(src)
+	if(OT)
+		OT.backdrop(src)
 	GW = locate(/atom/movable/screen/plane_master/game_world_fov_hidden) in client.screen
-	GW.backdrop(src)
+	if(GW)
+		GW.backdrop(src)
 	GW = locate(/atom/movable/screen/plane_master/game_world_above) in client.screen
-	GW.backdrop(src)
+	if(GW)
+		GW.backdrop(src)
 
 ///Adjust the drugginess of a mob
 /mob/proc/adjust_drugginess(amount)

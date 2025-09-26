@@ -22,7 +22,6 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 GLOBAL_LIST_INIT(our_forest_sex, typecacheof(list(
 	/area/rogue/outdoors/woods,
 	/area/rogue/indoors/shelter/woods,
-	/area/rogue/outdoors/river,
 	/area/rogue/outdoors/bog,
 	/area/rogue/indoors/shelter/bog,
 	/area/rogue/outdoors/rtfield,
@@ -105,8 +104,6 @@ GLOBAL_LIST_INIT(our_forest_sex, typecacheof(list(
 //more carbon mobs
 #define ismonkey(A) (istype(A, /mob/living/carbon/monkey))
 
-#define istruedevil(A) (istype(A, /mob/living/carbon/true_devil))
-
 //Simple animals
 #define isanimal(A) (istype(A, /mob/living/simple_animal))
 
@@ -119,8 +116,6 @@ GLOBAL_LIST_INIT(our_forest_sex, typecacheof(list(
 #define iscow(A) (istype(A, /mob/living/simple_animal/cow))
 
 #define isslime(A) (istype(A, /mob/living/simple_animal/slime))
-
-#define isdrone(A) (istype(A, /mob/living/simple_animal/drone))
 
 #define iscat(A) (istype(A, /mob/living/simple_animal/pet/cat))
 

@@ -264,7 +264,11 @@
 		qdel(I)
 		message_admins("[usr.key] has applied the Crustacean to [src].")
 		return
-
+		
+	if(istype(I, /obj/item/roguecoin/aalloy))
+		return
+	if(istype(I, /obj/item/roguecoin/inqcoin))	
+		return
 	if(istype(I, /obj/item/roguecoin))
 		var/value = I.get_real_price()
 		user.visible_message(span_notice("[user] inserts [value] mammon into [src]."))
@@ -283,7 +287,7 @@
 
 	..()
 
-	user.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_INTENTCAP)
 	if (!og_treasury)
 		og_treasury = SStreasury.treasury_value
 	var/puke_chance = (I.force > 25) ? 75 : 25

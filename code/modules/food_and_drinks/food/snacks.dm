@@ -44,6 +44,7 @@ All foods are distributed among various categories. Use common sense.
 	var/slice_path    // for sliceable food. path of the item resulting from the slicing
 	var/slice_bclass = BCLASS_CUT
 	var/slices_num
+	var/slice_name
 	var/slice_batch = TRUE
 	var/eatverb
 	var/dried_type = null
@@ -154,7 +155,7 @@ All foods are distributed among various categories. Use common sense.
 			qdel(src)
 			if(!location || !SEND_SIGNAL(location, COMSIG_TRY_STORAGE_INSERT, NU, null, TRUE, TRUE))
 				NU.forceMove(get_turf(NU.loc))
-			GLOB.azure_round_stats[STATS_FOOD_ROTTED]++
+			record_round_statistic(STATS_FOOD_ROTTED)
 			return TRUE
 	else
 		color = "#6c6897"
@@ -167,7 +168,7 @@ All foods are distributed among various categories. Use common sense.
 		cooktime = 0
 		if(istype(src.loc, /obj/item/cooking/platter/))
 			src.loc.update_icon()
-		GLOB.azure_round_stats[STATS_FOOD_ROTTED]++
+		record_round_statistic(STATS_FOOD_ROTTED)
 		return TRUE
 
 
@@ -251,6 +252,41 @@ All foods are distributed among various categories. Use common sense.
 	// check to see if what we're eating is appropriate fare for our "social class" (aka nobles shouldn't be eating sticks of butter you troglodytes)
 	if (ishuman(eater))
 		var/mob/living/carbon/human/human_eater = eater
+		if(human_eater.culinary_preferences)
+			var/favorite_food_type = human_eater.culinary_preferences[CULINARY_FAVOURITE_FOOD]
+			if(favorite_food_type == type)
+				if(human_eater.add_stress(/datum/stressevent/favourite_food))
+					to_chat(human_eater, span_green("Yum! My favorite food!"))
+			else if(ispath(type, favorite_food_type))
+				var/obj/item/reagent_containers/food/snacks/favorite_food_instance = favorite_food_type
+				var/favorite_food_name = initial(favorite_food_instance.name)
+				if(favorite_food_name == name)
+					if(human_eater.add_stress(/datum/stressevent/favourite_food))
+						to_chat(human_eater, span_green("Yum! My favorite food!"))
+			else
+				var/obj/item/reagent_containers/food/snacks/favorite_food_instance = favorite_food_type
+				var/slice_path = initial(favorite_food_instance.slice_path)
+				if(slice_path && type == slice_path)
+					if(human_eater.add_stress(/datum/stressevent/favourite_food))
+						to_chat(human_eater, span_green("Yum! My favorite food!"))
+
+			var/hated_food_type = human_eater.culinary_preferences[CULINARY_HATED_FOOD]
+			if(hated_food_type == type)
+				if(human_eater.add_stress(/datum/stressevent/hated_food))
+					to_chat(human_eater, span_red("Yuck! My hated food!"))
+			else if(ispath(type, hated_food_type))
+				var/obj/item/reagent_containers/food/snacks/hated_food_instance = hated_food_type
+				var/hated_food_name = initial(hated_food_instance.name)
+				if(hated_food_name == name)
+					if(human_eater.add_stress(/datum/stressevent/hated_food))
+						to_chat(human_eater, span_red("Yuck! My hated food!"))
+			else
+				var/obj/item/reagent_containers/food/snacks/hated_food_instance = hated_food_type
+				var/slice_path = initial(hated_food_instance.slice_path)
+				if(slice_path && type == slice_path)
+					if(human_eater.add_stress(/datum/stressevent/hated_food))
+						to_chat(human_eater, span_red("Yuck! My hated food!"))
+
 		if (!HAS_TRAIT(human_eater, TRAIT_NASTY_EATER) && !HAS_TRAIT(human_eater, TRAIT_ORGAN_EATER))
 			if (human_eater.is_noble())
 				if (!portable)
@@ -349,11 +385,11 @@ All foods are distributed among various categories. Use common sense.
 				if(0 to NUTRITION_LEVEL_STARVING)
 					user.visible_message(span_notice("[user] hungrily [eatverb]s \the [src], gobbling it down!"), span_notice("I hungrily [eatverb] \the [src], gobbling it down!"))
 					M.changeNext_move(CLICK_CD_MELEE * 0.5)
-/*			if(M.rogstam <= 50)
+/*			if(M.energy <= 50)
 				user.visible_message(span_notice("[user] hungrily [eatverb]s \the [src], gobbling it down!"), span_notice("I hungrily [eatverb] \the [src], gobbling it down!"))
-			else if(M.rogstam > 50 && M.rogstam < 500)
+			else if(M.energy > 50 && M.energy < 500)
 				user.visible_message(span_notice("[user] hungrily [eatverb]s \the [src]."), span_notice("I hungrily [eatverb] \the [src]."))
-			else if(M.rogstam > 500 && M.rogstam < 1000)
+			else if(M.energy > 500 && M.energy < 1000)
 				user.visible_message(span_notice("[user] [eatverb]s \the [src]."), span_notice("I [eatverb] \the [src]."))
 			if(HAS_TRAIT(M, TRAIT_VORACIOUS))
 			M.changeNext_move(CLICK_CD_MELEE * 0.5) nom nom nom*/
@@ -398,12 +434,48 @@ All foods are distributed among various categories. Use common sense.
 				checkLiked(fraction, M)
 				if(bitecount >= bitesize)
 					qdel(src)
+				else if(user.client?.prefs.autoconsume)
+					if(M == user && do_after(user, CLICK_CD_MELEE))
+						INVOKE_ASYNC(src, PROC_REF(attack), M, user, def_zone)
+						user.changeNext_move(CLICK_CD_MELEE)
+					else if(M != user)
+						INVOKE_ASYNC(src, PROC_REF(attack), M, user, def_zone)
+						user.changeNext_move(CLICK_CD_MELEE)
 				return TRUE
 		playsound(M.loc,'sound/misc/eat.ogg', rand(30,60), TRUE)
 		qdel(src)
 		return FALSE
 
 	return 0
+/obj/item/reagent_containers/food/snacks/proc/get_nutrition()
+	var/nutriment_count = 0
+	for(var/reagent in list_reagents)
+		if(ispath(reagent, /datum/reagent/consumable))
+			var/datum/reagent/consumable/R = reagent
+			nutriment_count += list_reagents[reagent] * R.nutriment_factor
+	return nutriment_count
+
+/obj/item/reagent_containers/food/snacks/proc/get_nutrition_to_text()
+	var/nutrition = get_nutrition()
+	switch(nutrition)
+		if(0)
+			return "an inedible item"
+		if(1 to BASE_NUTRIMENT_NUTRITION * SNACK_POOR)
+			return "a poor snack"
+		if(BASE_NUTRIMENT_NUTRITION * SNACK_POOR to BASE_NUTRIMENT_NUTRITION * SNACK_DECENT)
+			return "a decent snack"
+		if(BASE_NUTRIMENT_NUTRITION * SNACK_DECENT to BASE_NUTRIMENT_NUTRITION * SNACK_NUTRITIOUS)
+			return "a nutritious snack"
+		if(BASE_NUTRIMENT_NUTRITION * SNACK_NUTRITIOUS to BASE_NUTRIMENT_NUTRITION * SNACK_CHUNKY)
+			return "a chunky snack"
+		if(BASE_NUTRIMENT_NUTRITION * SNACK_CHUNKY to BASE_NUTRIMENT_NUTRITION * MEAL_MEAGRE)
+			return "a meagre meal"
+		if(BASE_NUTRIMENT_NUTRITION * MEAL_MEAGRE to BASE_NUTRIMENT_NUTRITION * MEAL_AVERAGE)
+			return "an adequate meal"
+		if(BASE_NUTRIMENT_NUTRITION * MEAL_AVERAGE to BASE_NUTRIMENT_NUTRITION * MEAL_FILLING)
+			return "a good meal"
+		else
+			return "a lavish, filling meal"
 
 /obj/item/reagent_containers/food/snacks/examine(mob/user)
 	. = ..()
@@ -411,35 +483,36 @@ All foods are distributed among various categories. Use common sense.
 		switch (bitecount)
 			if(0)
 			if(1)
-				. += ("[src] was bitten by someone!\n")
+				. += span_smallnotice("[src] was bitten by someone!\n")
 			if(2,3)
-				. += ("[src] was bitten [bitecount] times!\n")
+				. += span_smallnotice("[src] was bitten [bitecount] times!\n")
 			else
-				. += ("[src] was bitten multiple times!\n")
+				. += span_smallnotice("[src] was bitten multiple times!\n")
 	switch(faretype)
 		if(FARE_IMPOVERISHED)
-			. += ("It is food fit for the desperate.")
+			. += span_smallnotice("It is food fit for the desperate.")
 		if(FARE_POOR)
-			. += ("It is food fit for the poor.")
+			. += span_smallnotice("It is food fit for the poor.")
 		if(FARE_NEUTRAL)
-			. += ("It is decent food.")
+			. += span_smallnotice("It is decent food.")
 		if(FARE_FINE)
-			. += ("It is fine food.")
+			. += span_smallnotice("It is fine food.")
 		if(FARE_LAVISH)
-			. += ("It is lavish food.")
+			. += span_smallnotice("It is lavish food.")
 	if(portable)
-		. += ("It can be eaten without a table.")
+		. += span_smallnotice("It can be eaten without a table.")
 	else
-		. += ("Eating this without a table would be disgraceful for a noble.")
+		. += span_smallnotice("Eating this without a table would be disgraceful for a noble.")
+	. += span_smallnotice("It looks like [get_nutrition_to_text()]")
 	switch(eat_effect)
 		if(/datum/status_effect/debuff/uncookedfood)
-			. += span_warning("It is raw!")
+			. += span_smallred("It is raw!")
 		if(/datum/status_effect/debuff/rotfood)
-			. += span_warning("It is rotten!")
+			. += span_smallred("It is rotten!")
 		if(/datum/status_effect/debuff/burnedfood)
-			. += span_warning("It is burned!")
+			. += span_smallred("It is burned!")
 		if(/datum/status_effect/buff/foodbuff)
-			. += span_notice("It looks great!")
+			. += span_smallnotice("It looks great!")
 
 /obj/item/reagent_containers/food/snacks/attackby(obj/item/W, mob/user, params)
 	if(istype(W, /obj/item/kitchen/fork))
@@ -519,23 +592,21 @@ All foods are distributed among various categories. Use common sense.
 	if(chopping_sound)
 		playsound(get_turf(user), 'modular/Neu_Food/sound/chopping_block.ogg', 60, TRUE, -1) // added some choppy sound
 	if(slice_batch)
-		if(!do_after(user, 30, target = src))
+		var/cd = get_cooktime_divisor(user.get_skill_level(/datum/skill/craft/cooking))
+		if(!do_after(user, 1 SECONDS / cd, target = src))
 			return FALSE
 		var/reagents_per_slice = reagents.total_volume/slices_num
 		for(var/i in 1 to slices_num)
 			var/obj/item/reagent_containers/food/snacks/slice = new slice_path(loc)
-			slice.filling_color = filling_color
 			initialize_slice(slice, reagents_per_slice)
 		qdel(src)
 	else
 		var/reagents_per_slice = reagents.total_volume/slices_num
 		var/obj/item/reagent_containers/food/snacks/slice = new slice_path(loc)
-		slice.filling_color = filling_color
 		initialize_slice(slice, reagents_per_slice)
 		slices_num--
 		if(slices_num == 1)
 			slice = new slice_path(loc)
-			slice.filling_color = filling_color
 			initialize_slice(slice, reagents_per_slice)
 			qdel(src)
 			return TRUE
@@ -549,6 +620,7 @@ All foods are distributed among various categories. Use common sense.
 	slice.create_reagents(slice.volume)
 	reagents.trans_to(slice,reagents_per_slice)
 	slice.filling_color = filling_color
+	slice.name = slice_name ? slice_name : slice.name
 	slice.update_snack_overlays(src)
 //	if(name != initial(name))
 //		slice.name = "slice of [name]"

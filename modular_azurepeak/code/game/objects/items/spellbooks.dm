@@ -18,8 +18,9 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 	drop_sound = 'sound/foley/dropsound/book_drop.ogg'
 	force = 5
 	associated_skill = /datum/skill/misc/reading
+	possible_item_intents = list(/datum/intent/use, /datum/intent/special/magicarc)
 	name = "\improper tome of the arcyne"
-	desc = "A crackling, glowing book, filled with runes and symbols that hurt the mind to stare at."
+	desc = "A crackling, glowing book, filled with runes and symbols that hurt the mind to stare at. Can be used to unbind spells, or to assist the caster in arcing some of their projectiles."
 	var/picked // if the book has had it's style picked or not
 	var/born_of_rock = FALSE // was a magical stone used to make it instead of a gem
 
@@ -201,7 +202,7 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 	var/found_table = locate(/obj/structure/table) in (loc)
 	if(istype(P, /obj/item/paper/scroll))
 		if(isturf(loc)&& (found_table))
-			var/crafttime = (100 - ((user.mind?.get_skill_level(/datum/skill/magic/arcane))*5))
+			var/crafttime = (100 - ((user.get_skill_level(/datum/skill/magic/arcane))*5))
 			if(do_after(user, crafttime, target = src))
 				playsound(loc, 'sound/items/book_close.ogg', 100, TRUE)
 				to_chat(user, span_notice("I add the first few pages to the leather cover..."))
@@ -217,7 +218,7 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 	var/found_table = locate(/obj/structure/table) in (loc)
 	if(istype(P, /obj/item/paper/scroll))
 		if(isturf(loc)&& (found_table))
-			var/crafttime = (60 - ((user.mind?.get_skill_level(/datum/skill/magic/arcane))*5))
+			var/crafttime = (60 - ((user.get_skill_level(/datum/skill/magic/arcane))*5))
 			if(do_after(user, crafttime, target = src))
 				if(pages_left > 0)
 					playsound(loc, 'sound/items/book_page.ogg', 100, TRUE)
@@ -242,7 +243,7 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 	var/found_table = locate(/obj/structure/table) in (loc)
 	if(istype(P, /obj/item/roguegem))
 		if(isturf(loc)&& (found_table))
-			var/crafttime = (100 - ((user.mind?.get_skill_level(/datum/skill/magic/arcane))*5))
+			var/crafttime = (100 - ((user.get_skill_level(/datum/skill/magic/arcane))*5))
 			if(do_after(user, crafttime, target = src))
 				if(isarcyne(user))
 					playsound(loc, 'modular_azurepeak/sound/spellbooks/crystal.ogg', 100, TRUE)
@@ -273,7 +274,7 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 		var/obj/item/natural/stone/the_rock = P
 		if (the_rock.magic_power)
 			if(isturf(loc) && (found_table))
-				var/crafttime = ((130 - the_rock.magic_power) - ((user.mind?.get_skill_level(/datum/skill/magic/arcane))*5))
+				var/crafttime = ((130 - the_rock.magic_power) - ((user.get_skill_level(/datum/skill/magic/arcane))*5))
 				if(do_after(user, crafttime, target = src))
 					if (isarcyne(user))
 						playsound(loc, 'modular_azurepeak/sound/spellbooks/crystal.ogg', 100, TRUE)
@@ -306,36 +307,3 @@ decreases charge time if held opened in hand, for pure mage build + aesthetics.
 			return ..()
 	else
 		return ..()
-
-// Leaving this in for now for aesthetics, but they're now useless
-/obj/effect/roguerune/
-	name = "arcyne rune"
-	desc = "Strange symbols pulse upon the ground..."
-	anchored = TRUE
-	icon = 'icons/obj/rune.dmi'
-	icon_state = "6"
-	resistance_flags = FIRE_PROOF | UNACIDABLE | ACID_PROOF
-	layer = SIGIL_LAYER
-	color = "#3A0B61"
-
-/obj/effect/roguerunelarge/
-	name = "arcyne rune"
-	desc = "Strange symbols pulse upon the ground..."
-	anchored = TRUE
-	icon = 'icons/effects/160x160.dmi'
-	icon_state = "imbuement"
-	resistance_flags = FIRE_PROOF | UNACIDABLE | ACID_PROOF
-	layer = SIGIL_LAYER
-
-/obj/effect/roguerunelargeWall/
-	name = "The seal of Graggar"
-	desc = "Despite all their attempts, the orcs never understood how to open the gate..."
-	anchored = TRUE
-	icon = 'icons/effects/160x160.dmi'
-	icon_state = "walltest"
-	resistance_flags = FIRE_PROOF | UNACIDABLE | ACID_PROOF
-	layer = SIGIL_LAYER
-
-// helper proc
-/proc/isarcyne(mob/living/carbon/human/A)
-	return istype(A) && A.mind && (A.mind?.get_skill_level(/datum/skill/magic/arcane) > SKILL_LEVEL_NONE)

@@ -20,7 +20,7 @@
 		TRAIT_DECEIVING_MEEKNESS,
 		TRAIT_NOSTINK,
 		TRAIT_EMPATH,
-		TRAIT_NOROGSTAM,
+		TRAIT_INFINITE_STAMINA,
 		TRAIT_NOPAIN,
 		TRAIT_NOPAINSTUN,
 		TRAIT_STEELHEARTED,
@@ -42,7 +42,7 @@
 	/// Cached old stats in case we get removed
 	var/STASTR
 	var/STACON
-	var/STAEND
+	var/STAWIL
 	/// Weapons we can give to the dreamer
 	var/static/list/possible_weapons = list(
 		/obj/item/rogueweapon/huntingknife/cleaver,
@@ -91,18 +91,18 @@
 		if(ishuman(owner.current))
 			var/mob/living/carbon/human/dreamer = owner.current
 			dreamer.cmode_music = 'sound/music/combat_maniac2.ogg'
-			owner.adjust_skillrank(/datum/skill/combat/knives, 6, TRUE)
-			owner.adjust_skillrank(/datum/skill/combat/wrestling, 5, TRUE)
-			owner.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE)
-			var/medicine_skill = dreamer.mind.get_skill_level(/datum/skill/misc/medicine)
+			dreamer.adjust_skillrank(/datum/skill/combat/knives, 6, TRUE)
+			dreamer.adjust_skillrank(/datum/skill/combat/wrestling, 5, TRUE)
+			dreamer.adjust_skillrank(/datum/skill/combat/unarmed, 4, TRUE)
+			var/medicine_skill = dreamer.get_skill_level(/datum/skill/misc/medicine)
 			if(medicine_skill < 3)// Bumps his skill up to 3 for surgery, not higher
-				owner.adjust_skillrank(/datum/skill/misc/medicine, 3 - medicine_skill, TRUE)
+				dreamer.adjust_skillrank(/datum/skill/misc/medicine, 3 - medicine_skill, TRUE)
 			STASTR = dreamer.STASTR
 			STACON = dreamer.STACON
-			STAEND = dreamer.STAEND
+			STAWIL = dreamer.STAWIL
 			dreamer.STASTR = 20
 			dreamer.STACON = 20
-			dreamer.STAEND = 20
+			dreamer.STAWIL = 20
 		for(var/trait in applied_traits)
 			ADD_TRAIT(owner.current, trait, "[type]")
 	LAZYINITLIST(owner.learned_recipes)
@@ -121,7 +121,7 @@
 			var/mob/living/carbon/human/dreamer = owner.current
 			dreamer.STASTR = STASTR
 			dreamer.STACON = STACON
-			dreamer.STAEND = STAEND
+			dreamer.STAWIL = STAWIL
 		for(var/trait in applied_traits)
 			REMOVE_TRAIT(owner.current, trait, "[type]")
 		for(var/trait in final_traits)

@@ -106,8 +106,7 @@
 		if(!isliving(user) || !user.mind)
 			ore[W] = SMELTERY_LEVEL_SPOIL
 		else
-			var/datum/mind/smelter_mind = user.mind // Who smelted the ore?
-			var/smelter_exp = smelter_mind.get_skill_level(/datum/skill/craft/smelting) // 0 to 6
+			var/smelter_exp = user.get_skill_level(/datum/skill/craft/smelting) // 0 to 6
 			if(smelter_exp < 6)
 				ore[W] = min(6, floor(rand(smelter_exp*15 + 10, max(30, smelter_exp*25))/25)+1) // Math explained below
 			else
@@ -212,7 +211,7 @@
 							bronzealloy = bronzealloy + 1
 						if(I.smeltresult == /obj/item/ingot/copper)
 							bronzealloy = bronzealloy + 2
-						if(I.smeltresult == /obj/item/ingot/aalloy)
+						if(I.smeltresult == /obj/item/ingot/aaslag)
 							purifiedalloy = purifiedalloy + 3
 						if(I.smeltresult == /obj/item/ingot/gold)
 							purifiedalloy = purifiedalloy + 2
@@ -225,11 +224,12 @@
 						maxore = 3
 						alloy = /obj/item/ingot/steel
 					else if(bronzealloy == 7)
-						testing("BRONZE ALLOYED")
 						alloy = /obj/item/ingot/bronze
-					else if(purifiedalloy == 10)
-						alloy = /obj/item/ingot/purifiedaalloy // 2 aalloy, 2 gold, makes 3 purified alloy.
+					else if(purifiedalloy == 11)
+						maxore = 2
+						alloy = /obj/item/ingot/purifiedaalloy // 3 aaslag, 1 gold, makes 2 purified alloy.
 					else if(blacksteelalloy == 7)
+						maxore = 1 // Blacksteel is supposed to be rare and inefficient. 3 steel and 1 silver into one. 
 						alloy = /obj/item/ingot/blacksteel
 					else
 						alloy = null

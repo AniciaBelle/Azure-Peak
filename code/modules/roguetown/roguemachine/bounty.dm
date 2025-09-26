@@ -10,6 +10,14 @@
 
 /datum/bounty
 	var/target
+	var/target_race
+	var/gender
+	var/target_body_type
+	var/target_body
+	var/target_body_prefix
+	var/target_height
+	var/target_voice
+	var/target_voice_prefix
 	var/amount
 	var/reason
 	var/employer
@@ -96,16 +104,19 @@
 	var/list/eligible_players = list()
 
 	if(user.mind.known_people.len)
-		for(var/guys_name in user.mind.known_people)
-			eligible_players += guys_name
+		for(var/mob/living/carbon/human/H in GLOB.human_list)
+			if(H.real_name in user.mind.known_people)
+				eligible_players[H.real_name] = H
 	else
 		to_chat(user, span_warning("I don't know anyone."))
 		return
-	eligible_players = sortList(eligible_players)
-	var/target = input(user, "Whose name shall be etched on the wanted list?", src) as null|anything in eligible_players
-	if(isnull(target))
+
+	var/choice = input(user, "Whose name shall be etched on the wanted list?", src) as null|anything in eligible_players
+	if(isnull(choice))
 		say("No target selected.")
 		return
+
+	var/mob/living/carbon/human/target = eligible_players[choice]
 
 	var/amount = input(user, "How many mammons shall be stained red for their demise?", src) as null|num
 	if(isnull(amount))
@@ -146,8 +157,15 @@
 
 	amount -= royal_tax
 
+	var/race = target.dna.species
+	var/gender = target.gender
+	var/list/d_list = target.get_mob_descriptors()
+	var/descriptor_height = build_coalesce_description_nofluff(d_list, target, list(MOB_DESCRIPTOR_SLOT_HEIGHT), "%DESC1%")
+	var/descriptor_body = build_coalesce_description_nofluff(d_list, target, list(MOB_DESCRIPTOR_SLOT_BODY), "%DESC1%")
+	var/descriptor_voice = build_coalesce_description_nofluff(d_list, target, list(MOB_DESCRIPTOR_SLOT_VOICE), "%DESC1%")
+
 	// Finally create bounty
-	add_bounty(target, amount, FALSE, reason, user.real_name)
+	add_bounty(target.real_name, race, gender, descriptor_height, descriptor_body, descriptor_voice, amount, FALSE, reason, user.real_name)
 
 	//Announce it locally and on scomm
 	playsound(src, 'sound/misc/machinetalk.ogg', 100, FALSE, -1)
@@ -157,13 +175,32 @@
 
 	message_admins("[ADMIN_LOOKUPFLW(user)] has set a bounty on [ADMIN_LOOKUPFLW(target)] with the reason of: '[reason]'")
 
-/proc/add_bounty(target_realname, amount, bandit_status, reason, employer_name)
+/proc/add_bounty(target_realname, race, gender, descriptor_height, descriptor_body, descriptor_voice, amount, bandit_status, reason, employer_name)
 	var/datum/bounty/new_bounty = new /datum/bounty
 	new_bounty.amount = amount
 	new_bounty.target = target_realname
 	new_bounty.bandit = bandit_status
 	new_bounty.reason = reason
 	new_bounty.employer = employer_name
+	new_bounty.target_race = race
+	new_bounty.target_height = lowertext(descriptor_height)
+	new_bounty.target_body = lowertext(descriptor_body)
+	if(descriptor_body == "Average" || descriptor_body == "Athletic")
+		var/bro_unreal = "an "
+		new_bounty.target_body_prefix = lowertext(bro_unreal += descriptor_body)
+	else
+		var/bro_real = "a "
+		new_bounty.target_body_prefix = lowertext(bro_real += descriptor_body)
+	if(descriptor_voice == "Ordinary" || descriptor_voice == "Androgynous")
+		var/bro_unreal = "an "
+		new_bounty.target_voice_prefix = lowertext(bro_unreal += descriptor_voice)
+	else
+		var/bro_real = "a "
+		new_bounty.target_voice_prefix = lowertext(bro_real += descriptor_voice)
+	if(gender == MALE)
+		new_bounty.target_body_type = "masculine"
+	else
+		new_bounty.target_body_type = "feminine"
 	compose_bounty(new_bounty)
 	GLOB.head_bounties += new_bounty
 
@@ -173,13 +210,16 @@
 	switch(rand(1, 3))
 		if(1)
 			new_bounty.banner += "A dire bounty hangs upon the capture of [new_bounty.target], for '[new_bounty.reason]'.<BR>"
+			new_bounty.banner += "They are a criminal belonging to the [new_bounty.target_race] race, going by the following description: they are [new_bounty.target_height], of a [new_bounty.target_body_type] build and they have [new_bounty.target_body_prefix] physique. They speak with [new_bounty.target_voice_prefix] voice.'.<BR>"
 			new_bounty.banner += "The patron, [new_bounty.employer], offers [new_bounty.amount] mammons for the task.<BR>"
 		if(2)
 			new_bounty.banner += "The capture of [new_bounty.target] is wanted for '[new_bounty.reason]''.<BR>"
+			new_bounty.banner += "They are a reprobate belonging to the [new_bounty.target_race] race, going by the following description: they are [new_bounty.target_height], of a [new_bounty.target_body_type] build and they have [new_bounty.target_body_prefix] physique. They speak with [new_bounty.target_voice_prefix] voice.'.<BR>"
 			new_bounty.banner += "The employer, [new_bounty.employer], offers [new_bounty.amount] mammons for the deed.<BR>"
 		if(3)
 			new_bounty.banner += "[new_bounty.employer] hath offered to pay [new_bounty.amount] mammons for the capture of [new_bounty.target].<BR>"
 			new_bounty.banner += "By reason of the following: '[new_bounty.reason]'.<BR>"
+			new_bounty.banner += "They are a heathen belonging to the [new_bounty.target_race] race, going by the following description: they are [new_bounty.target_height], of a [new_bounty.target_body_type] build and they have [new_bounty.target_body_prefix] physique. They speak with [new_bounty.target_voice_prefix] voice.'.<BR>"
 	new_bounty.banner += "--------------<BR>"
 
 /obj/structure/roguemachine/bounty/proc/print_bounty_scroll(mob/living/carbon/human/user)
@@ -310,13 +350,25 @@
 	blade_dulling = DULLING_BASH
 	item_chair = null
 	anchored = TRUE
+	var/submission = TRUE
 	max_integrity = 999999
 
 /obj/structure/chair/arrestchair/attack_right(mob/living/carbon/human/A)
 	. = ..()
+	submission = TRUE
 	var/mob/living/carbon/human/M = null
 	for(var/l in buckled_mobs)
 		M = l
+		if(HAS_TRAIT(A, TRAIT_OUTLAW))
+			var/def_zone = "[(A.active_hand_index == 2) ? "r" : "l" ]_arm"
+			playsound(A, 'sound/combat/hits/bladed/genstab (1).ogg', 100, FALSE, -1)
+			loc.visible_message(span_warning("The castifico snaps at [A]'s hand!"))
+			to_chat(A, span_danger("The machine wants YOU!"))
+			A.flash_fullscreen("redflash3")
+			A.Stun(10)
+			A.apply_damage(10, BRUTE, def_zone)
+			A.emote("whimper")
+			return
 	if(!ismob(M))
 		say("Cannot begin skull structure analysis without a subject buckled to the Castifico.")
 		playsound(src, 'sound/misc/machineno.ogg', 100, FALSE, -1)
@@ -360,6 +412,10 @@
 		playsound(src, 'sound/misc/machineno.ogg', 100, FALSE, -1)
 		sleep(1 SECONDS)
 
+	INVOKE_ASYNC(src, PROC_REF(giveup), M)
+	say("Assessing value of lyfe...")
+	sleep(10 SECONDS)
+
 	var/list/headcrush = list('sound/combat/fracture/headcrush (2).ogg', 'sound/combat/fracture/headcrush (3).ogg', 'sound/combat/fracture/headcrush (4).ogg')
 	playsound(src, pick_n_take(headcrush), 100, FALSE, -1)
 	M.emote("scream")
@@ -385,11 +441,29 @@
 	else
 		say("This skull carries no reward, you fool.")
 		playsound(src, 'sound/misc/machineno.ogg', 100, FALSE, -1)
-	M.Unconscious(15 SECONDS)
 
-	sleep(2 SECONDS)
-	playsound(src, 'sound/combat/vite.ogg', 100, FALSE, -1)
+	if(!submission)
+		if(M.Adjacent(src))
+			say("Resistance detected...")
+			src.Shake()
+			var/obj/item/bodypart/head/victim_head = M.get_bodypart(BODY_ZONE_HEAD)
+			message_admins("[M.real_name] was killed by the Excidium.")
+			log_admin("[M.real_name] was killed by the Excidium.")
+			playsound(src, 'sound/combat/vite.ogg', 100, FALSE, -1)
+			victim_head.skeletonize()
+			submission = TRUE
+	else
+		M.Unconscious(15 SECONDS)
+		sleep(2 SECONDS)
+		playsound(src, 'sound/combat/vite.ogg', 100, FALSE, -1)
 	unbuckle_all_mobs()
+
+/obj/structure/chair/arrestchair/proc/giveup(mob/living/carbon/human/M)
+	if(alert(M, "Do you submit to the Mask, or do you die? You have 10 seconds to decide.", "CHOICE OF LYFE", "Submit", "Perish") == "Perish")
+		message_admins("[M.real_name] chose to die to the Excidium.")
+		log_admin("[M.real_name] opted to die to the Excidium.")
+		if(M.Adjacent(src))	//No buffering this for later
+			submission = FALSE
 
 /obj/structure/chair/arrestchair/proc/budget2change(budget, mob/user, specify)
 	var/turf/T

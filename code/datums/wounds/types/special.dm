@@ -189,13 +189,12 @@
 		"The nose is mangled beyond recognition!",
 		"The nose is destroyed!",
 	)
+	mortal = TRUE
 	woundpain = 10
 
 /datum/wound/facial/disfigurement/nose/on_mob_gain(mob/living/affected)
 	. = ..()
 	ADD_TRAIT(affected, TRAIT_MISSING_NOSE, "[type]")
-	if(HAS_TRAIT(affected, TRAIT_CRITICAL_WEAKNESS))
-		affected.death()
 
 /datum/wound/facial/disfigurement/nose/on_mob_loss(mob/living/affected)
 	. = ..()
@@ -216,6 +215,7 @@
 	can_cauterize = FALSE
 	disabling = TRUE
 	critical = TRUE
+	mortal = TRUE
 
 /datum/wound/cbt/can_stack_with(datum/wound/other)
 	if(istype(other, /datum/wound/cbt))
@@ -241,8 +241,6 @@
 			"The testicles are twisted!",
 			"The testicles are torsioned!",
 		)
-	if(HAS_TRAIT(affected, TRAIT_CRITICAL_WEAKNESS))
-		affected.death()
 
 /datum/wound/cbt/on_life()
 	. = ..()
@@ -306,3 +304,78 @@
 	if(istype(other, /datum/wound/scarring))
 		return FALSE
 	return TRUE
+
+/datum/wound/sunder
+	name = "sundered"
+	check_name = "<span class='userdanger'><B>SUNDERED</B></span>"
+	crit_message = list(
+		"The %BODYPART is engulfed in blessed fire!",
+	)
+	sound_effect = 'sound/combat/crit.ogg'
+	whp = 80
+	woundpain = 30
+	can_sew = FALSE
+	can_cauterize = FALSE
+	disabling = TRUE
+	bypass_bloody_wound_check = FALSE
+
+/datum/wound/sunder/chest
+	name = "sundered lux"
+	check_name = span_artery("<B>SUNDERED LUX</B>")
+	crit_message = list(
+		"Blessed flames erupt from %VICTIM's chest!",
+		"Molten lux splatters out from %VICTIM's sundered ribs!",
+	)
+	severity = WOUND_SEVERITY_FATAL
+	bypass_bloody_wound_check = TRUE
+	whp = 100
+	sewn_whp = 35
+	bleed_rate = 50
+	sewn_bleed_rate = 0.8
+	woundpain = 100
+	sewn_woundpain = 50
+
+/datum/wound/sunder/chest/on_mob_gain(mob/living/affected)
+	. = ..()
+	if(iscarbon(affected))
+		var/mob/living/carbon/carbon_affected = affected
+		carbon_affected.vomit(blood = TRUE)
+	var/goodbye = list(\
+		"PSYDON GRABS MY WEARY... LUX?!",\
+		"MY LUX MELTS AWAY FROM THIS PIERCED HEART!",\
+		"OH, SHIT!"\
+	)
+	to_chat(affected, span_userdanger(pick(goodbye)))
+	affected.apply_status_effect(/datum/status_effect/debuff/devitalised)
+	if(HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && !owner.has_status_effect(STATUS_EFFECT_ANTIMAGIC))
+		affected.death()
+
+/datum/wound/sunder/head
+	name = "sundered head"
+	check_name = span_artery("<B>SUNDERED HEAD</B>")
+	crit_message = list(
+		"Blessed flames erupt from %VICTIM's head!",
+		"%VICTIM's head is set on fire by the SACRED FLAMES!",
+	)
+	severity = WOUND_SEVERITY_FATAL
+	bypass_bloody_wound_check = TRUE
+	whp = 100
+	sewn_whp = 35
+	bleed_rate = 50
+	sewn_bleed_rate = 0.8
+	woundpain = 100
+	sewn_woundpain = 50
+
+/datum/wound/sunder/head/on_mob_gain(mob/living/affected)
+	. = ..()
+	if(iscarbon(affected))
+		var/mob/living/carbon/carbon_affected = affected
+		carbon_affected.vomit(blood = TRUE)
+	var/goodbye = list(\
+		"MY HEAD, MY HEAD! IT BURNS!!!",\
+		"MY HEAD IS ENGULFED IN FLAMES!!!",\
+		"OH, SHIT!"\
+	)
+	to_chat(affected, span_userdanger(pick(goodbye)))
+	if(HAS_TRAIT(owner, TRAIT_SILVER_WEAK) && !owner.has_status_effect(STATUS_EFFECT_ANTIMAGIC))
+		affected.death()

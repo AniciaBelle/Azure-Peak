@@ -1,18 +1,11 @@
 	
-#define STAT_STRENGTH "strength"
-#define STAT_PERCEPTION "perception"
-#define STAT_INTELLIGENCE "intelligence"
-#define STAT_CONSTITUTION "constitution"
-#define STAT_ENDURANCE "endurance"
-#define STAT_SPEED "speed"
-#define STAT_FORTUNE "fortune"
 
 /mob/living
 	var/STASTR = 10
 	var/STAPER = 10
 	var/STAINT = 10
 	var/STACON = 10
-	var/STAEND = 10
+	var/STAWIL = 10
 	var/STASPD = 10
 	var/STALUC = 10
 	//buffers, the 'true' amount of each stat
@@ -53,7 +46,7 @@
 	STAPER = 10
 	STAINT = 10
 	STACON = 10
-	STAEND = 10
+	STAWIL = 10
 	STASPD = 10
 	STALUC = 10
 	if(ishuman(src))
@@ -69,26 +62,48 @@
 					H.change_stat(stat, amt)
 		switch(H.age)
 			if(AGE_MIDDLEAGED)
-				change_stat("speed", -1)
-				change_stat("endurance", 1)
+				change_stat(STATKEY_SPD, -1)
+				change_stat(STATKEY_WIL, 1)
 			if(AGE_OLD)
-				change_stat("strength", -1)
-				change_stat("speed", -2)
-				change_stat("perception", -1)
-				change_stat("constitution", -2)
-				change_stat("intelligence", 2)
+				change_stat(STATKEY_STR, -1)
+				change_stat(STATKEY_SPD, -2)
+				change_stat(STATKEY_PER, -1)
+				change_stat(STATKEY_CON, -2)
+				change_stat(STATKEY_INT, 2)
+				change_stat(STATKEY_LCK, 1)
 		if(key)
 			if(check_blacklist(ckey(key)))
-				change_stat("strength", -5)
-				change_stat("speed", -20)
-				change_stat("endurance", -2)
-				change_stat("constitution", -2)
-				change_stat("intelligence", -20)
-				change_stat("fortune", -20)
+				change_stat(STATKEY_STR, -5)
+				change_stat(STATKEY_SPD, -20)
+				change_stat(STATKEY_WIL, -2)
+				change_stat(STATKEY_CON, -2)
+				change_stat(STATKEY_INT, -20)
+				change_stat(STATKEY_LCK, -20)
 			if(check_psychokiller(ckey(key)))
 				testing("foundpsych")
 				H.eye_color = "ff0000"
 				H.voice_color = "ff0000"
+
+/mob/living/proc/get_stat(stat)
+	if(!stat)
+		return
+	switch(stat)
+		if(STAT_STRENGTH)
+			return STASTR
+		if(STAT_PERCEPTION)
+			return STAPER
+		if(STAT_INTELLIGENCE)
+			return STAINT
+		if(STAT_CONSTITUTION)
+			return STACON
+		if(STAT_WILLPOWER)
+			return STAWIL
+		if(STAT_SPEED)
+			return STASPD
+		if(STAT_FORTUNE)
+			return STALUC
+		else
+			CRASH("get_stat called on [src] with an erroneous stat flag: [stat]")
 
 /mob/living/proc/change_stat(stat, amt, index)
 	if(!stat)
@@ -109,7 +124,7 @@
 //			statindex[index]["amt"] = amt
 	var/newamt = 0
 	switch(stat)
-		if("strength")
+		if(STATKEY_STR)
 			newamt = STASTR + amt
 			if(BUFSTR < 0)
 				BUFSTR = BUFSTR + amt
@@ -129,7 +144,7 @@
 				BUFSTR++
 			STASTR = newamt
 
-		if("perception")
+		if(STATKEY_PER)
 			newamt = STAPER + amt
 			if(BUFPER < 0)
 				BUFPER = BUFPER + amt
@@ -151,7 +166,7 @@
 
 			update_fov_angles()
 
-		if("intelligence")
+		if(STATKEY_INT)
 			newamt = STAINT + amt
 			if(BUFINT < 0)
 				BUFINT = BUFINT + amt
@@ -171,7 +186,7 @@
 				BUFINT++
 			STAINT = newamt
 
-		if("constitution")
+		if(STATKEY_CON)
 			newamt = STACON + amt
 			if(BUFCON < 0)
 				BUFCON = BUFCON + amt
@@ -191,17 +206,17 @@
 				BUFCON++
 			STACON = newamt
 
-		if("endurance")
-			newamt = STAEND + amt
+		if(STATKEY_WIL)
+			newamt = STAWIL + amt
 			if(BUFEND < 0)
 				BUFEND = BUFEND + amt
 				if(BUFEND > 0)
-					newamt = STAEND + BUFEND
+					newamt = STAWIL + BUFEND
 					BUFEND = 0
 			if(BUFEND > 0)
 				BUFEND = BUFEND + amt
 				if(BUFEND < 0)
-					newamt = STAEND + BUFEND
+					newamt = STAWIL + BUFEND
 					BUFEND = 0
 			while(newamt < 1)
 				newamt++
@@ -209,9 +224,9 @@
 			while(newamt > 20)
 				newamt--
 				BUFEND++
-			STAEND = newamt
+			STAWIL = newamt
 
-		if("speed")
+		if(STATKEY_SPD)
 			newamt = STASPD + amt
 			if(BUFSPE < 0)
 				BUFSPE = BUFSPE + amt
@@ -230,8 +245,9 @@
 				newamt--
 				BUFSPE++
 			STASPD = newamt
+			update_move_intent_slowdown()
 
-		if("fortune")
+		if(STATKEY_LCK)
 			newamt = STALUC + amt
 			if(BUFLUC < 0)
 				BUFLUC = BUFLUC + amt
@@ -272,8 +288,8 @@
 			return STASTR
 		if(STATKEY_PER)
 			return STAPER
-		if(STATKEY_END)
-			return STAEND
+		if(STATKEY_WIL)
+			return STAWIL
 		if(STATKEY_CON)
 			return STACON
 		if(STATKEY_INT)

@@ -19,7 +19,7 @@
 	///amount of brewed creations used when either canning or bottling
 	var/brewed_amount = 1
 	///each bottle or canning gives how this much reagents
-	var/per_brew_amount = 48
+	var/per_brew_amount = 50
 	///helpful hints
 	var/helpful_hints
 	///if we have a secondary name some do if you want to hide the ugly info
@@ -34,6 +34,9 @@
 	var/list/age_times = list()
 	///the heat we need to be kept at
 	var/heat_required
+	// The name & description on the bottle, if any. Lowercase for the name. 
+	var/bottle_name = "generic brew"
+	var/bottle_desc = null
 
 /datum/brewing_recipe/proc/after_finish_attackby(mob/user, obj/item/attacked_item, atom/source)
 	return FALSE
@@ -78,11 +81,11 @@
 		html += "<h3>Liquids Required</h3>"
 		for(var/atom/path as anything in needed_reagents)
 			var/count = needed_reagents[path]
-			html += "[FLOOR(count / 3, 1)] oz of [initial(path.name)]<br>"
+			html += "[FLOOR(count, 1)] [UNIT_FORM_STRING(FLOOR(count, 1))] of [initial(path.name)]<br>"
 		html += "<br>"
 
 	if(brewed_amount)
-		html += "Produces: [FLOOR((per_brew_amount * brewed_amount) / 3, 1)] oz of [name]"
+		html += "Produces: [FLOOR((per_brew_amount * brewed_amount), 1)] [UNIT_FORM_STRING(FLOOR((per_brew_amount * brewed_amount), 1))] of [name]"
 	if(brewed_item)
 		html += "Produces:[icon2html(new brewed_item, user)] [(brewed_item_count)] [initial(brewed_item.name)]"
 	html += {"

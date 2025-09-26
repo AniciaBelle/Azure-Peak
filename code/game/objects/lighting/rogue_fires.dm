@@ -1,5 +1,5 @@
 #define MIN_STEW_TEMPERATURE 374 // For cooking
-#define VOLUME_PER_STEW_COOK 32 // Volume to cook per ingredient
+#define VOLUME_PER_STEW_COOK 30 // Volume to cook per ingredient
 #define VOLUME_PER_STEW_COOK_AFTER 1 // Volume to deduct after the sleep is over
 #define DEEP_FRY_TIME 5 SECONDS // Default deep fry time
 #define OIL_CONSUMED 5 // Amount of oil consumed per deep fry (1 fat = 4 fry)
@@ -40,7 +40,7 @@
 		var/mob/living/carbon/human/H = user
 
 		if(istype(H))
-			H.visible_message("<span class='info'>[H] warms \his hand over the fire.</span>")
+			H.visible_message("<span class='info'>[H] warms [user.p_their()] hand over the fire.</span>")
 
 			if(do_after(H, 15, target = src))
 				var/obj/item/bodypart/affecting = H.get_bodypart("[(user.active_hand_index % 2 == 0) ? "r" : "l" ]_arm")
@@ -445,7 +445,7 @@
 		. += span_notice("Right click to start fanning the flame and make it cook faster.")
 
 /obj/machinery/light/rogue/hearth/attack_right(mob/user)
-	var/datum/skill/craft/cooking/cs = user?.mind?.get_skill_level(/datum/skill/craft/cooking)
+	var/datum/skill/craft/cooking/cs = user?.get_skill_level(/datum/skill/craft/cooking)
 	var/cooktime_divisor = get_cooktime_divisor(cs)
 	if(do_after(user, 2 SECONDS / cooktime_divisor, target = src))
 		to_chat(user, span_info("I fan the flame on [src].")) // Until line combine is on by default gotta do this to avoid spam
@@ -454,7 +454,7 @@
 
 /obj/machinery/light/rogue/hearth/attackby(obj/item/W, mob/living/user, params)
 	lastuser = user // For processing food
-	var/datum/skill/craft/cooking/cs = lastuser?.mind?.get_skill_level(/datum/skill/craft/cooking)
+	var/datum/skill/craft/cooking/cs = lastuser?.get_skill_level(/datum/skill/craft/cooking)
 	var/cooktime_divisor = get_cooktime_divisor(cs)
 
 	if(!attachment)
@@ -577,7 +577,7 @@
 		if(on)
 			var/mob/living/carbon/human/H = user
 			if(istype(H))
-				H.visible_message(span_info("[H] warms \his hand over the embers."))
+				H.visible_message(span_info("[H] warms [user.p_their()] hand over the embers."))
 				if(do_after(H, 50, target = src))
 					var/obj/item/bodypart/affecting = H.get_bodypart("[(user.active_hand_index % 2 == 0) ? "r" : "l" ]_arm")
 					to_chat(H, span_warning("HOT!"))
@@ -587,7 +587,7 @@
 
 /obj/machinery/light/rogue/hearth/process()
 	// Edge case is that this depends on the last person to put the pan on the hearth and not the last person to put the food on the pan
-	var/datum/skill/craft/cooking/cs = lastuser?.mind?.get_skill_level(/datum/skill/craft/cooking)
+	var/datum/skill/craft/cooking/cs = lastuser?.get_skill_level(/datum/skill/craft/cooking)
 	var/cooktime_divisor = get_cooktime_divisor(cs)
 
 	if(isopenturf(loc))
@@ -762,7 +762,7 @@
 		var/mob/living/carbon/human/H = user
 
 		if(istype(H))
-			H.visible_message("<span class='info'>[H] warms \his hand near the fire.</span>")
+			H.visible_message("<span class='info'>[H] warms [user.p_their()] hand near the fire.</span>")
 
 			if(do_after(H, 100, target = src))
 				H.apply_status_effect(/datum/status_effect/buff/healing, 1)

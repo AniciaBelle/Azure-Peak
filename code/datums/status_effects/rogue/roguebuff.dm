@@ -5,7 +5,7 @@
 /datum/status_effect/buff/drunk
 	id = "drunk"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/drunk
-	effectedstats = list("intelligence" = -2, "endurance" = 1)
+	effectedstats = list(STATKEY_INT = -2, STATKEY_WIL = 1)
 	duration = 5 MINUTES
 
 /atom/movable/screen/alert/status_effect/buff/drunk
@@ -26,19 +26,19 @@
 /datum/status_effect/buff/murkwine
 	id = "murkwine"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/drunkmurk
-	effectedstats = list("intelligence" = 5)
+	effectedstats = list(STATKEY_INT = 5)
 	duration = 2 MINUTES
 
 /datum/status_effect/buff/nocshine
 	id = "nocshine"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/drunknoc
-	effectedstats = list("strength" = 1, "endurance" = 1)
+	effectedstats = list(STATKEY_STR = 1, STATKEY_WIL = 1)
 	duration = 2 MINUTES
 
 /datum/status_effect/buff/foodbuff
 	id = "foodbuff"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/foodbuff
-	effectedstats = list("constitution" = 1,"endurance" = 1)
+	effectedstats = list(STATKEY_CON = 1,STATKEY_WIL = 1)
 	duration = 15 MINUTES
 
 /atom/movable/screen/alert/status_effect/buff/foodbuff
@@ -49,7 +49,7 @@
 /datum/status_effect/buff/druqks
 	id = "druqks"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
-	effectedstats = list("intelligence" = 5,"speed" = 3,"fortune" = -5)
+	effectedstats = list(STATKEY_INT = 5,STATKEY_SPD = 3,STATKEY_LCK = -5)
 	duration = 2 MINUTES
 
 /datum/status_effect/buff/druqks/baotha
@@ -65,7 +65,6 @@
 
 /datum/status_effect/buff/druqks/on_apply()
 	. = ..()
-	owner.add_stress(/datum/stressevent/high)
 	if(owner?.client)
 		if(owner.client.screen && owner.client.screen.len)
 			var/atom/movable/screen/plane_master/game_world/PM = locate(/atom/movable/screen/plane_master/game_world) in owner.client.screen
@@ -74,9 +73,9 @@
 			PM.backdrop(owner)
 			PM = locate(/atom/movable/screen/plane_master/game_world_above) in owner.client.screen
 			PM.backdrop(owner)
+			owner.add_stress(/datum/stressevent/high)
 
 /datum/status_effect/buff/druqks/on_remove()
-	owner.remove_stress(/datum/stressevent/high)
 	if(owner?.client)
 		if(owner.client.screen && owner.client.screen.len)
 			var/atom/movable/screen/plane_master/game_world/PM = locate(/atom/movable/screen/plane_master/game_world) in owner.client.screen
@@ -85,6 +84,7 @@
 			PM.backdrop(owner)
 			PM = locate(/atom/movable/screen/plane_master/game_world_above) in owner.client.screen
 			PM.backdrop(owner)
+			owner.remove_stress(/datum/stressevent/high)
 
 	. = ..()
 
@@ -96,23 +96,23 @@
 /datum/status_effect/buff/ozium
 	id = "ozium"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
-	effectedstats = list("speed" = -5, "perception" = 2)
+	effectedstats = list(STATKEY_SPD = -5, STATKEY_PER = 2)
 	duration = 30 SECONDS
 
 /datum/status_effect/buff/ozium/on_apply()
 	. = ..()
 	owner.add_stress(/datum/stressevent/ozium)
-	ADD_TRAIT(owner, TRAIT_NOPAIN, TRAIT_GENERIC)
+	ADD_TRAIT(owner, TRAIT_NOPAIN, id)
 
 /datum/status_effect/buff/ozium/on_remove()
 	owner.remove_stress(/datum/stressevent/ozium)
-	REMOVE_TRAIT(owner, TRAIT_NOPAIN, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_NOPAIN, id)
 	. = ..()
 
 /datum/status_effect/buff/moondust
 	id = "moondust"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
-	effectedstats = list("speed" = 2, "endurance" = 2, "intelligence" = -2)
+	effectedstats = list(STATKEY_SPD = 2, STATKEY_WIL = 2, STATKEY_INT = -2)
 	duration = 30 SECONDS
 
 /datum/status_effect/buff/moondust/nextmove_modifier()
@@ -125,7 +125,7 @@
 /datum/status_effect/buff/moondust_purest
 	id = "purest moondust"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
-	effectedstats = list("speed" = 3, "endurance" = 3, "intelligence" = -2)
+	effectedstats = list(STATKEY_SPD = 3, STATKEY_WIL = 3, STATKEY_INT = -2)
 	duration = 40 SECONDS
 
 /datum/status_effect/buff/moondust_purest/nextmove_modifier()
@@ -138,11 +138,9 @@
 /datum/status_effect/buff/herozium
 	id = "herozium"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
-	effectedstats = list("speed" = -5, "endurance" = 4, "intelligence" = -3, "constitution" = 3)
+	effectedstats = list(STATKEY_SPD = -5, STATKEY_WIL = 4, STATKEY_INT = -3, STATKEY_CON = 3)
 	duration = 80 SECONDS
 	var/originalcmode = ""
-	var/hadcritres = FALSE
-	var/hadpainres = FALSE
 
 /datum/status_effect/buff/herozium/nextmove_modifier()
 	return 1.2
@@ -150,34 +148,24 @@
 /datum/status_effect/buff/herozium/on_apply()
 	. = ..()
 	owner.add_stress(/datum/stressevent/ozium)
-	if(!HAS_TRAIT(owner, TRAIT_NOPAIN))
-		ADD_TRAIT(owner, TRAIT_NOPAIN, TRAIT_GENERIC)
-	else
-		hadpainres = TRUE
-	if(!HAS_TRAIT(owner, TRAIT_CRITICAL_RESISTANCE))
-		ADD_TRAIT(owner, TRAIT_CRITICAL_RESISTANCE, TRAIT_GENERIC)
-	else
-		hadcritres = TRUE
+	ADD_TRAIT(owner, TRAIT_NOPAIN, id)
+	ADD_TRAIT(owner, TRAIT_CRITICAL_RESISTANCE, id)
 	originalcmode = owner.cmode_music
 	owner.cmode_music = 'sound/music/combat_ozium.ogg'
 
 /datum/status_effect/buff/herozium/on_remove()
 	owner.remove_stress(/datum/stressevent/ozium)
-	if(!hadpainres)
-		REMOVE_TRAIT(owner, TRAIT_NOPAIN, TRAIT_GENERIC)
-	if(!hadcritres)
-		REMOVE_TRAIT(owner, TRAIT_CRITICAL_RESISTANCE, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_NOPAIN, id)
+	REMOVE_TRAIT(owner, TRAIT_CRITICAL_RESISTANCE, id)
 	owner.cmode_music = originalcmode
 	. = ..()
 
 /datum/status_effect/buff/starsugar
 	id = "starsugar"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
-	effectedstats = list("speed" = 4, "endurance" = 4, "intelligence" = -3, "constitution" = -3)
+	effectedstats = list(STATKEY_SPD = 4, STATKEY_WIL = 4, STATKEY_INT = -3, STATKEY_CON = -3)
 	duration = 80 SECONDS
 	var/originalcmode = ""
-	var/haddodge = FALSE
-	var/haddarkvision = FALSE
 
 /datum/status_effect/buff/starsugar/nextmove_modifier()
 	return 0.7
@@ -185,14 +173,8 @@
 /datum/status_effect/buff/starsugar/on_apply()
 	. = ..()
 	owner.add_stress(/datum/stressevent/starsugar)
-	if(!HAS_TRAIT(owner, TRAIT_DODGEEXPERT))
-		ADD_TRAIT(owner, TRAIT_DODGEEXPERT, TRAIT_GENERIC)
-	else
-		haddodge = TRUE
-	if(!HAS_TRAIT(owner, TRAIT_DARKVISION))
-		ADD_TRAIT(owner, TRAIT_DARKVISION, TRAIT_GENERIC)
-	else
-		haddarkvision = TRUE
+	ADD_TRAIT(owner, TRAIT_DODGEEXPERT, id)
+	ADD_TRAIT(owner, TRAIT_DARKVISION, id)
 	if(owner.has_status_effect(/datum/status_effect/debuff/sleepytime))
 		owner.remove_status_effect(/datum/status_effect/debuff/sleepytime)
 	originalcmode = owner.cmode_music
@@ -200,10 +182,8 @@
 
 
 /datum/status_effect/buff/starsugar/on_remove()
-	if(!haddodge)
-		REMOVE_TRAIT(owner, TRAIT_DODGEEXPERT, TRAIT_GENERIC)
-	if(!haddarkvision)
-		REMOVE_TRAIT(owner, TRAIT_DARKVISION, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_DODGEEXPERT, id)
+	REMOVE_TRAIT(owner, TRAIT_DARKVISION, id)
 	owner.remove_stress(/datum/stressevent/starsugar)
 	owner.cmode_music = originalcmode
 	. = ..()
@@ -211,7 +191,7 @@
 /datum/status_effect/buff/weed
 	id = "weed"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/weed
-	effectedstats = list("intelligence" = 2,"speed" = -2,"fortune" = 2)
+	effectedstats = list(STATKEY_INT = 2,STATKEY_SPD = -2,STATKEY_LCK = 2)
 	duration = 10 SECONDS
 
 /datum/status_effect/buff/weed/on_apply()
@@ -246,7 +226,7 @@
 /datum/status_effect/buff/vitae
 	id = "druqks"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/vitae
-	effectedstats = list("fortune" = 2)
+	effectedstats = list(STATKEY_LCK = 2)
 	duration = 1 MINUTES
 
 /datum/status_effect/buff/vitae/on_apply()
@@ -337,7 +317,7 @@
 /datum/status_effect/buff/magearmor/on_apply()
 	. = ..()
 	playsound(owner, 'sound/magic/magearmordown.ogg', 75, FALSE)
-	duration = (7-owner.mind.get_skill_level(/datum/skill/magic/arcane)) MINUTES
+	duration = (7-owner.get_skill_level(/datum/skill/magic/arcane)) MINUTES
 
 /datum/status_effect/buff/magearmor/on_remove()
 	. = ..()
@@ -373,12 +353,12 @@
 /datum/status_effect/buff/wardenbuff
 	id = "wardenbuff"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/wardenbuff
-	effectedstats = list("speed" = 1, "perception" = 3) 
+	effectedstats = list(STATKEY_SPD = 1, STATKEY_PER = 3)
 
 /datum/status_effect/buff/barkeepbuff
 	id = "barkeepbuff"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/barkeepbuff
-	effectedstats = list("constitution" = 1,"endurance" = 1, "speed" = 1, "strength" = 3) 
+	effectedstats = list(STATKEY_CON = 1,STATKEY_WIL = 1, STATKEY_SPD = 1, STATKEY_STR = 3)
 
 /datum/status_effect/buff/barkeepbuff/process()
 
@@ -390,12 +370,12 @@
 /datum/status_effect/buff/guardbuffone
 	id = "guardbuffone"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/guardbuffone
-	effectedstats = list("constitution" = 1,"endurance" = 1, "speed" = 1, "perception" = 2) 
+	effectedstats = list(STATKEY_CON = 1,STATKEY_WIL = 1, STATKEY_SPD = 1, STATKEY_PER = 2)
 
 /datum/status_effect/buff/dungeoneerbuff
 	id = "dungeoneerbuff"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/dungeoneerbuff
-	effectedstats = list("constitution" = 1,"endurance" = 1, "strength" = 2)//This only works in 2 small areas on the entire map
+	effectedstats = list(STATKEY_CON = 1,STATKEY_WIL = 1, STATKEY_STR = 2)//This only works in 2 small areas on the entire map
 
 /datum/status_effect/buff/guardbuffone/process()
 
@@ -413,11 +393,11 @@
 
 /datum/status_effect/buff/wardenbuff/on_apply()
 	. = ..()
-	ADD_TRAIT(owner, TRAIT_LONGSTRIDER, TRAIT_GENERIC)
+	ADD_TRAIT(owner, TRAIT_LONGSTRIDER, id)
 
 /datum/status_effect/buff/wardenbuff/on_remove()
 	. = ..()
-	REMOVE_TRAIT(owner, TRAIT_LONGSTRIDER, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_LONGSTRIDER, id)
 
 /datum/status_effect/buff/dungeoneerbuff/process()
 
@@ -428,12 +408,13 @@
 
 /datum/status_effect/buff/dungeoneerbuff/on_apply()
 	. = ..()
-	ADD_TRAIT(owner, TRAIT_CIVILIZEDBARBARIAN, TRAIT_GENERIC)
+	ADD_TRAIT(owner, TRAIT_CIVILIZEDBARBARIAN, id)
 
 /datum/status_effect/buff/dungeoneerbuff/on_remove()
 	. = ..()
-	REMOVE_TRAIT(owner, TRAIT_CIVILIZEDBARBARIAN, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_CIVILIZEDBARBARIAN, id)
 
+// Lesser Miracle effect
 /atom/movable/screen/alert/status_effect/buff/healing
 	name = "Healing Miracle"
 	desc = "Divine intervention relieves me of my ailments."
@@ -466,7 +447,7 @@
 	var/list/wCount = owner.get_wounds()
 	if(!owner.construct)
 		if(owner.blood_volume < BLOOD_VOLUME_NORMAL)
-			owner.blood_volume = min(owner.blood_volume+10, BLOOD_VOLUME_NORMAL)
+			owner.blood_volume = min(owner.blood_volume+healing_on_tick, BLOOD_VOLUME_NORMAL)
 		if(wCount.len > 0)
 			owner.heal_wounds(healing_on_tick)
 			owner.update_damage_overlays()
@@ -476,7 +457,62 @@
 		owner.adjustToxLoss(-healing_on_tick, 0)
 		owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -healing_on_tick)
 		owner.adjustCloneLoss(-healing_on_tick, 0)
+// Lesser miracle effect end
 
+#define BLOODHEAL_DUR_SCALE_PER_LEVEL 3 SECONDS
+#define BLOODHEAL_RESTORE_DEFAULT 5
+#define BLOODHEAL_RESTORE_SCALE_PER_LEVEL 2
+#define BLOODHEAL_DUR_DEFAULT 10 SECONDS
+// Bloodheal miracle effect
+/atom/movable/screen/alert/status_effect/buff/bloodheal
+	name = "Blood Miracle"
+	desc = "Divine intervention is infusing me with lyfe's blood."
+	icon_state = "bloodheal"
+
+#define MIRACLE_BLOODHEAL_FILTER "miracle_bloodheal_glow"
+
+/datum/status_effect/buff/bloodheal
+	id = "bloodheal"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/bloodheal
+	duration = BLOODHEAL_DUR_DEFAULT
+	examine_text = "SUBJECTPRONOUN is bathed in a thick, pungent aura of iron!"
+	var/healing_on_tick = BLOODHEAL_RESTORE_DEFAULT
+	var/skill_level
+	var/outline_colour = "#c42424"
+
+/datum/status_effect/buff/bloodheal/on_creation(mob/living/new_owner, associated_skill)
+	healing_on_tick = BLOODHEAL_RESTORE_DEFAULT + ((associated_skill > SKILL_LEVEL_NOVICE) ? (BLOODHEAL_RESTORE_SCALE_PER_LEVEL * associated_skill) : 0)
+	skill_level = associated_skill
+	duration = BLOODHEAL_DUR_DEFAULT + ((associated_skill > SKILL_LEVEL_NOVICE) ? (BLOODHEAL_DUR_SCALE_PER_LEVEL * associated_skill) : 0)
+	return ..()
+
+/datum/status_effect/buff/bloodheal/on_apply()
+	var/filter = owner.get_filter(MIRACLE_BLOODHEAL_FILTER)
+	if (!filter)
+		owner.add_filter(MIRACLE_BLOODHEAL_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 60, "size" = 1))
+	return TRUE
+
+/datum/status_effect/buff/bloodheal/on_remove()
+	. = ..()
+	owner.remove_filter(MIRACLE_BLOODHEAL_FILTER)
+
+/datum/status_effect/buff/bloodheal/tick()
+	var/obj/effect/temp_visual/heal/H = new /obj/effect/temp_visual/heal_blood(get_turf(owner))
+	H.color = "#FF0000"
+	if(!owner.construct)
+		if(skill_level >= SKILL_LEVEL_JOURNEYMAN)
+			if(owner.blood_volume < BLOOD_VOLUME_SURVIVE)
+				owner.blood_volume = BLOOD_VOLUME_SURVIVE
+		if(owner.blood_volume < BLOOD_VOLUME_NORMAL)
+			owner.blood_volume = min(owner.blood_volume + healing_on_tick, BLOOD_VOLUME_NORMAL)
+
+#undef BLOODHEAL_DUR_SCALE_PER_LEVEL
+#undef BLOODHEAL_RESTORE_DEFAULT
+#undef BLOODHEAL_RESTORE_SCALE_PER_LEVEL
+#undef BLOODHEAL_DUR_DEFAULT
+// Bloodheal miracle effect end
+
+// Necra's Vow healing effect
 /datum/status_effect/buff/healing/necras_vow
 	id = "healing"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/healing
@@ -485,7 +521,7 @@
 	outline_colour = "#bbbbbb"
 
 /datum/status_effect/buff/healing/necras_vow/on_apply()
-	healing_on_tick = max(owner.mind?.get_skill_level(/datum/skill/magic/holy), 3)
+	healing_on_tick = max(owner.get_skill_level(/datum/skill/magic/holy), 3)
 	return TRUE
 
 /datum/status_effect/buff/healing/necras_vow/tick()
@@ -504,6 +540,71 @@
 		owner.adjustToxLoss(-healing_on_tick, 0)
 		owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -healing_on_tick)
 		owner.adjustCloneLoss(-healing_on_tick, 0)
+
+/atom/movable/screen/alert/status_effect/buff/psyhealing
+	name = "Enduring"
+	desc = "I am awash with sentimentality."
+	icon_state = "buff"
+
+/atom/movable/screen/alert/status_effect/buff/psyvived
+	name = "Absolved"
+	desc = "I feel a strange sense of peace."
+	icon_state = "buff"
+
+#define PSYDON_HEALING_FILTER "psydon_heal_glow"
+#define PSYDON_REVIVED_FILTER "psydon_revival_glow"
+
+/datum/status_effect/buff/psyhealing
+	id = "psyhealing"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/psyhealing
+	duration = 15 SECONDS
+	examine_text = "SUBJECTPRONOUN stirs with a sense of ENDURING!"
+	var/healing_on_tick = 1
+	var/outline_colour = "#d3d3d3"
+
+/datum/status_effect/buff/psyhealing/on_creation(mob/living/new_owner, new_healing_on_tick)
+	healing_on_tick = new_healing_on_tick
+	return ..()
+
+/datum/status_effect/buff/psyhealing/on_apply()
+	SEND_SIGNAL(owner, COMSIG_LIVING_MIRACLE_HEAL_APPLY, healing_on_tick, src)
+	var/filter = owner.get_filter(PSYDON_HEALING_FILTER)
+	if (!filter)
+		owner.add_filter(PSYDON_HEALING_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 60, "size" = 1))
+	return TRUE
+
+/datum/status_effect/buff/psyhealing/tick()
+	var/obj/effect/temp_visual/heal/H = new /obj/effect/temp_visual/psyheal_rogue(get_turf(owner))
+	H.color = "#d3d3d3"
+	var/list/wCount = owner.get_wounds()
+	if(!owner.construct)
+		if(wCount.len > 0)
+			owner.heal_wounds(healing_on_tick * 1.75)
+			owner.update_damage_overlays()
+		owner.adjustOxyLoss(-healing_on_tick, 0)
+		owner.adjustToxLoss(-healing_on_tick, 0)
+		owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -healing_on_tick)
+		owner.adjustCloneLoss(-healing_on_tick, 0)
+
+/datum/status_effect/buff/psyvived
+	id = "psyvived"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/psyvived
+	duration = 30 SECONDS
+	examine_text = "SUBJECTPRONOUN moves with an air of ABSOLUTION!"
+	var/outline_colour = "#aa1717"
+
+/datum/status_effect/buff/psyvived/on_creation(mob/living/new_owner)
+	return ..()
+
+/datum/status_effect/buff/psyvived/on_apply()
+	var/filter = owner.get_filter(PSYDON_REVIVED_FILTER)
+	if (!filter)
+		owner.add_filter(PSYDON_REVIVED_FILTER, 2, list("type" = "outline", "color" = outline_colour, "alpha" = 60, "size" = 1))
+	return TRUE
+
+/datum/status_effect/buff/psyvived/tick()
+	var/obj/effect/temp_visual/heal/H = new /obj/effect/temp_visual/psyheal_rogue(get_turf(owner))
+	H.color = "#aa1717"
 
 /datum/status_effect/buff/rockmuncher
 	id = "rockmuncher"
@@ -532,7 +633,15 @@
 /datum/status_effect/buff/healing/on_remove()
 	owner.remove_filter(MIRACLE_HEALING_FILTER)
 	owner.update_damage_hud()
-	
+
+/datum/status_effect/buff/psyhealing/on_remove()
+	owner.remove_filter(PSYDON_HEALING_FILTER)
+	owner.update_damage_hud()
+
+/datum/status_effect/buff/psyvived/on_remove()
+	owner.remove_filter(PSYDON_REVIVED_FILTER)
+	owner.update_damage_hud()
+
 /atom/movable/screen/alert/status_effect/buff/fortify
 	name = "Fortifying Miracle"
 	desc = "Divine intervention bolsters me and aids my recovery."
@@ -562,7 +671,7 @@
 	id = "censer"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/censerbuff
 	duration = 15 MINUTES
-	effectedstats = list("endurance" = 1, "constitution" = 1)
+	effectedstats = list(STATKEY_WIL = 1, STATKEY_CON = 1)
 
 /datum/status_effect/buff/convergence //Increases all healing while it lasts.
 	id = "convergence"
@@ -637,7 +746,7 @@
 	alert_type = /atom/movable/screen/alert/status_effect/buff/guidinglight
 	duration = 30 MINUTES // Lasts for 30 minutes, roughly an ingame day. This should be the gold standard for rituals, unless its some particularly powerul effect or one-time effect(Flylord's triage)
 	status_type = STATUS_EFFECT_REFRESH
-	effectedstats = list("perception" = 2) // This is for basic stat effects, I would consider these a 'little topping' and not what you should rlly aim for for rituals. Ideally we have cool flavor boons, rather than combat stims.
+	effectedstats = list(STATKEY_PER = 2) // This is for basic stat effects, I would consider these a 'little topping' and not what you should rlly aim for for rituals. Ideally we have cool flavor boons, rather than combat stims.
 	examine_text = "SUBJECTPRONOUN walks with Her Light!"
 	var/list/mobs_affected
 	var/obj/effect/dummy/lighting_obj/moblight/mob_light_obj
@@ -666,7 +775,7 @@
 /datum/status_effect/buff/moonlightdance
 	id = "Moonsight"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/moonlightdance
-	effectedstats = list("intelligence" = 2)
+	effectedstats = list(STATKEY_INT = 2)
 	duration = 25 MINUTES
 
 /atom/movable/screen/alert/status_effect/buff/moonlightdance
@@ -747,11 +856,11 @@
 	. = ..()
 	to_chat(owner, span_danger("You feel as though some horrible deal has been prepared in your name. May you never see it fulfilled..."))
 	playsound(owner, 'sound/misc/bell.ogg', 100, FALSE, -1)
-	ADD_TRAIT(owner, TRAIT_DEATHBARGAIN, TRAIT_GENERIC)
+	ADD_TRAIT(owner, TRAIT_DEATHBARGAIN, id)
 
 /datum/status_effect/buff/undermaidenbargain/on_remove()
 	. = ..()
-	REMOVE_TRAIT(owner, TRAIT_DEATHBARGAIN, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_DEATHBARGAIN, id)
 
 
 /datum/status_effect/buff/undermaidenbargainheal/on_apply()
@@ -759,7 +868,7 @@
 	owner.remove_status_effect(/datum/status_effect/buff/undermaidenbargain)
 	to_chat(owner, span_warning("You feel the deal struck in your name is being fulfilled..."))
 	playsound(owner, 'sound/misc/deadbell.ogg', 100, FALSE, -1)
-	ADD_TRAIT(owner, TRAIT_NODEATH, TRAIT_GENERIC)
+	ADD_TRAIT(owner, TRAIT_NODEATH, id)
 	var/dirgeline = rand(1,6)
 	spawn(15)
 		switch(dirgeline)
@@ -770,7 +879,7 @@
 			if(3)
 				to_chat(owner, span_cultsmall("A sailor's leg is caught in naval rope. Their last thoughts are of home."))
 			if(4)
-				to_chat(owner, span_cultsmall("She sobbed over the vulpkian's corpse. The Brigand's mace stemmed her tears."))
+				to_chat(owner, span_cultsmall("She sobbed over the Venardine's corpse. The Brigand's mace stemmed her tears."))
 			if(5)
 				to_chat(owner, span_cultsmall("A farm son chokes up his last. At his bedside, a sister and mother weep."))
 			if(6)
@@ -780,7 +889,7 @@
 	. = ..()
 	to_chat(owner, span_warning("The Bargain struck in my name has been fulfilled... I am thrown from Necra's embrace, another in my place..."))
 	playsound(owner, 'sound/misc/deadbell.ogg', 100, FALSE, -1)
-	REMOVE_TRAIT(owner, TRAIT_NODEATH, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_NODEATH, id)
 
 /datum/status_effect/buff/undermaidenbargainheal
 	id = "undermaidenbargainheal"
@@ -822,14 +931,14 @@
 /datum/status_effect/buff/lesserwolf/on_apply()
 	. = ..()
 	to_chat(owner, span_warning("I feel my leg muscles grow taut, my teeth sharp, I am embued with the power of a predator. Branches and brush reach out for my soul..."))
-	ADD_TRAIT(owner, TRAIT_LONGSTRIDER, TRAIT_GENERIC)
-	ADD_TRAIT(owner, TRAIT_STRONGBITE, TRAIT_GENERIC)
+	ADD_TRAIT(owner, TRAIT_LONGSTRIDER, id)
+	ADD_TRAIT(owner, TRAIT_STRONGBITE, id)
 
 /datum/status_effect/buff/lesserwolf/on_remove()
 	. = ..()
 	to_chat(owner, span_warning("I feel Dendor's blessing leave my body..."))
-	REMOVE_TRAIT(owner, TRAIT_LONGSTRIDER, TRAIT_GENERIC)
-	REMOVE_TRAIT(owner, TRAIT_STRONGBITE, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_LONGSTRIDER, id)
+	REMOVE_TRAIT(owner, TRAIT_STRONGBITE, id)
 
 /atom/movable/screen/alert/status_effect/buff/pacify
 	name = "Blessing of Eora"
@@ -845,19 +954,42 @@
 	. = ..()
 	to_chat(owner, span_green("Everything feels great!"))
 	owner.add_stress(/datum/stressevent/pacified)
-	ADD_TRAIT(owner, TRAIT_PACIFISM, TRAIT_GENERIC)
+	ADD_TRAIT(owner, TRAIT_PACIFISM, id)
 	playsound(owner, 'sound/misc/peacefulwake.ogg', 100, FALSE, -1)
 
 /datum/status_effect/buff/pacify/on_remove()
 	. = ..()
 	to_chat(owner, span_warning("My mind is my own again, no longer awash with foggy peace!"))
-	REMOVE_TRAIT(owner, TRAIT_PACIFISM, TRAIT_GENERIC)
+	REMOVE_TRAIT(owner, TRAIT_PACIFISM, id)
+
+//A lesser variant of Eoran blessing meant for peacecake consumption.
+/atom/movable/screen/alert/status_effect/buff/peacecake
+	name = "Lesser blessing of Eora"
+	desc = "I feel my heart lighten. All my worries ease away."
+	icon_state = "buff"
+
+/datum/status_effect/buff/peacecake
+	id = "peacecake"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/peacecake
+	duration = 5 MINUTES
+
+/datum/status_effect/buff/peacecake/on_apply()
+	. = ..()
+	to_chat(owner, span_green("Everything feels better."))
+	owner.add_stress(/datum/stressevent/pacified)
+	ADD_TRAIT(owner, TRAIT_PACIFISM, id)
+	playsound(owner, 'sound/misc/peacefulwake.ogg', 100, FALSE, -1)
+
+/datum/status_effect/buff/peacecake/on_remove()
+	. = ..()
+	to_chat(owner, span_warning("My mind is clear again, no longer clouded with foggy peace!"))
+	REMOVE_TRAIT(owner, TRAIT_PACIFISM, id)
 
 /datum/status_effect/buff/call_to_arms
 	id = "call_to_arms"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/call_to_arms
 	duration = 2.5 MINUTES
-	effectedstats = list("strength" = 1, "endurance" = 2, "constitution" = 1)
+	effectedstats = list(STATKEY_STR = 1, STATKEY_WIL = 2, STATKEY_CON = 1)
 
 /atom/movable/screen/alert/status_effect/buff/call_to_arms
 	name = "Call to Arms"
@@ -868,7 +1000,7 @@
 	id = "call_to_slaughter"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/call_to_slaughter
 	duration = 2.5 MINUTES
-	effectedstats = list("strength" = 1, "endurance" = 2, "constitution" = 1)
+	effectedstats = list(STATKEY_STR = 1, STATKEY_WIL = 2, STATKEY_CON = 1)
 
 /atom/movable/screen/alert/status_effect/buff/call_to_slaughter
 	name = "Call to Slaughter"
@@ -883,7 +1015,7 @@
 /datum/status_effect/buff/xylix_joy
 	id = "xylix_joy"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/xylix_joy
-	effectedstats = list("fortune" = 1)
+	effectedstats = list(STATKEY_LCK = 1)
 	duration = 5 MINUTES
 	status_type = STATUS_EFFECT_REFRESH
 
@@ -899,7 +1031,7 @@
 	id = "vigorized"
 	alert_type = /atom/movable/screen/alert/status_effect/vigorized
 	duration = 10 MINUTES
-	effectedstats = list("speed" = 1, "intelligence" = 1)
+	effectedstats = list(STATKEY_SPD = 1, STATKEY_INT = 1)
 
 /atom/movable/screen/alert/status_effect/vigorized
 	name = "Vigorized"
@@ -917,7 +1049,7 @@
 /datum/status_effect/buff/seelie_drugs
 	id = "seelie drugs"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/druqks
-	effectedstats = list("intelligence" = 2, "endurance" = 4, "speed" = -3)
+	effectedstats = list(STATKEY_INT = 2, STATKEY_WIL = 4, STATKEY_SPD = -3)
 	duration = 20 SECONDS
 
 
@@ -971,20 +1103,20 @@
 
 /datum/status_effect/buff/bloodrage/on_apply()
 	ADD_TRAIT(owner, TRAIT_STRENGTH_UNCAPPED, TRAIT_MIRACLE)
-	var/holyskill = owner.mind?.get_skill_level(/datum/skill/magic/holy)
+	var/holyskill = owner.get_skill_level(/datum/skill/magic/holy)
 	duration = ((15 SECONDS) * holyskill)
 	var/filter = owner.get_filter(BLOODRAGE_FILTER)
 	if(!filter)
 		owner.add_filter(BLOODRAGE_FILTER, 2, list("type" = "outline", "color" = outline_color, "alpha" = 60, "size" = 2))
 	if(!HAS_TRAIT(owner, TRAIT_DODGEEXPERT))
 		if(owner.STASTR < STRENGTH_SOFTCAP)
-			effectedstats = list("strength" = (STRENGTH_SOFTCAP - owner.STASTR))
+			effectedstats = list(STATKEY_STR = (STRENGTH_SOFTCAP - owner.STASTR))
 			. = ..()
 			return TRUE
 	if(holyskill >= SKILL_LEVEL_APPRENTICE)
-		effectedstats = list("strength" = 2)
+		effectedstats = list(STATKEY_STR = 2)
 	else
-		effectedstats = list("strength" = 1)
+		effectedstats = list(STATKEY_STR = 1)
 	. = ..()
 	return TRUE
 
@@ -997,4 +1129,214 @@
 	owner.emote("breathgasp", forced = TRUE)
 	owner.Slowdown(3)
 
+/datum/status_effect/buff/psydonic_endurance
+	id = "psydonic_endurance"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/psydonic_endurance
+	effectedstats = list(STATKEY_CON = 1,STATKEY_WIL = 1)
+
+/datum/status_effect/buff/psydonic_endurance/on_apply()
+	. = ..()
+	if(HAS_TRAIT(owner, TRAIT_MEDIUMARMOR) && !HAS_TRAIT(owner, TRAIT_HEAVYARMOR))
+		ADD_TRAIT(owner, TRAIT_HEAVYARMOR, src)
+
+/datum/status_effect/buff/psydonic_endurance/on_remove()
+	. = ..()
+	REMOVE_TRAIT(owner, TRAIT_HEAVYARMOR, src)
+
+/atom/movable/screen/alert/status_effect/buff/psydonic_endurance
+	name = "Psydonic Endurance"
+	desc = "I am protected by blessed Psydonian plate armor."
+	icon_state = "buff"
+
 #undef BLOODRAGE_FILTER
+
+/datum/status_effect/buff/sermon
+	id = "sermon"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/sermon
+	effectedstats = list(STATKEY_LCK = 1, STATKEY_CON = 1, STATKEY_WIL = 1, STATKEY_INT = 2)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/sermon
+	name = "sermon"
+	desc = "I feel inspired by the sermon!"
+	icon_state = "buff"
+
+/datum/status_effect/buff/griefflower
+	id = "griefflower"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/griefflower
+	effectedstats = list(STATKEY_CON = 1,STATKEY_WIL = 1)
+
+/datum/status_effect/buff/griefflower/on_apply()
+	. = ..()
+	to_chat(owner, span_notice("The Rosa’s ring draws blood, but it’s the memories that truly wound. Failure after failure surging through you like thorns blooming inward."))
+	ADD_TRAIT(owner, TRAIT_CRACKHEAD, src)
+
+/datum/status_effect/buff/griefflower/on_remove()
+	. = ..()
+	to_chat(owner, span_notice("You part from the Rosa’s touch. The ache retreats..."))
+	REMOVE_TRAIT(owner, TRAIT_CRACKHEAD, src)
+
+/atom/movable/screen/alert/status_effect/buff/griefflower
+	name = "Rosa Ring"
+	desc = "The Rosa's ring draws blood, but it's the memories that truly wound. Failure after failure surging through you like thorns blooming inward."
+	icon_state = "buff"
+
+/atom/movable/screen/alert/status_effect/buff/adrenaline_rush
+	name = "Adrenaline Rush"
+	desc = "The gambit worked! I can do anything! My heart races, the throb of my wounds wavers."
+	icon_state = "adrrush"
+
+/datum/status_effect/buff/adrenaline_rush
+	id = "adrrush"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/adrenaline_rush
+	duration = 18 SECONDS
+	examine_text = "SUBJECTPRONOUN is amped up!"
+	effectedstats = list(STATKEY_WIL = 1)
+	var/blood_restore = 30
+
+/datum/status_effect/buff/adrenaline_rush/on_apply()
+	. = ..()
+	ADD_TRAIT(owner, TRAIT_ADRENALINE_RUSH, INNATE_TRAIT)
+	if(ishuman(owner))
+		var/mob/living/carbon/human/H = owner
+		H.playsound_local(get_turf(H), 'sound/misc/adrenaline_rush.ogg', 100, TRUE)
+		H.blood_volume = min((H.blood_volume + blood_restore), BLOOD_VOLUME_NORMAL)
+		H.stamina -= max((H.stamina - (H.max_stamina / 2)), 0)
+
+/datum/status_effect/buff/adrenaline_rush/on_remove()
+	. = ..()
+	REMOVE_TRAIT(owner, TRAIT_ADRENALINE_RUSH, INNATE_TRAIT)
+
+/datum/status_effect/buff/magicknowledge
+	id = "intelligence"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/knowledge
+	effectedstats = list("intelligence" = 2)
+	duration = 10 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/knowledge
+	name = "runic cunning"
+	desc = "I am magically astute."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicstrength
+	id = "strength"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/strength
+	effectedstats = list("strength" = 3)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/strength
+	name = "arcane reinforced strength"
+	desc = "I am magically strengthened."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicstrength/lesser
+	id = "lesser strength"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/strength/lesser
+	effectedstats = list("strength" = 1)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/strength/lesser
+	name = "lesser arcane strength"
+	desc = "I am magically strengthened."
+	icon_state = "buff"
+
+
+/datum/status_effect/buff/magicspeed
+	id = "speed"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/speed
+	effectedstats = list("speed" = 3)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/speed
+	name = "arcane swiftness"
+	desc = "I am magically swift."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicspeed/lesser
+	id = "lesser speed"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/speed/lesser
+	effectedstats = list("speed" = 1)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/speed/lesser
+	name = "arcane swiftness"
+	desc = "I am magically swift."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicwillpower
+	id = "willpower"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/willpower
+	effectedstats = list("willpower" = 3)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/willpower
+	name = "arcane willpower"
+	desc = "I am magically resilient."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicwillpower/lesser
+	id = "lesser willpower"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/willpower/lesser
+	effectedstats = list("willpower" = 1)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/willpower/lesser
+	name = "lesser arcane willpower"
+	desc = "I am magically resilient."
+	icon_state = "buff"
+
+
+/datum/status_effect/buff/magicconstitution
+	id = "constitution"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/constitution
+	effectedstats = list("constitution" = 3)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/constitution
+	name = "arcane constitution"
+	desc = "I feel reinforced by magick."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicconstitution/lesser
+	id = "lesser constitution"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/constitution/lesser
+	effectedstats = list("constitution" = 1)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/constitution/lesser
+	name = "lesser arcane constitution"
+	desc = "I feel reinforced by magick."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicperception
+	id = "perception"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/perception
+	effectedstats = list("perception" = 3)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/perception
+	name = "arcane perception"
+	desc = "I can see everything."
+	icon_state = "buff"
+
+/datum/status_effect/buff/magicperception/lesser
+	id = "lesser perception"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/perception/lesser
+	effectedstats = list("perception" = 1)
+	duration = 20 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/perception/lesser
+	name = "lesser arcane perception"
+	desc = "I can see somethings."
+	icon_state = "buff"
+
+/datum/status_effect/buff/nocblessing
+	id = "nocblessing"
+	alert_type = /atom/movable/screen/alert/status_effect/buff/nocblessing
+	effectedstats = list("intelligence" = 1)
+	duration = 30 MINUTES
+
+/atom/movable/screen/alert/status_effect/buff/nocblessing
+	name = "Noc's blessing"
+	desc = "Gazing Noc helps me think."
+	icon_state = "buff"

@@ -1,7 +1,7 @@
 // Lich / Vampire shared list only
 /obj/effect/proc_holder/spell/invoked/projectile/bloodsteal
 	name = "Blood Steal"
-	desc = ""
+	desc = "Steal anothers blood for your own collection."
 	clothes_req = FALSE
 	overlay_state = "bloodsteal"
 	sound = 'sound/magic/vlightning.ogg'
@@ -15,7 +15,7 @@
 	no_early_release = TRUE
 	movement_interrupt = FALSE
 	spell_tier = 2
-	invocation = "Sanguis Furtum!"
+	invocations = list("Sanguis Furtum!")
 	invocation_type = "shout"
 	glow_color = GLOW_COLOR_VAMPIRIC
 	glow_intensity = GLOW_INTENSITY_MEDIUM

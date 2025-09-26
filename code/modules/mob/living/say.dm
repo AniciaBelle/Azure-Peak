@@ -148,10 +148,10 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	if(check_subtler(original_message, forced) || !can_speak_basic(original_message, ignore_spam, forced))
 		return
 	//RATWOOD SUBTLER END
-	if(in_critical)
+	if(in_critical && !forced)
 		if(!(crit_allowed_modes[message_mode]))
 			return
-	else if(stat == UNCONSCIOUS)
+	else if(stat == UNCONSCIOUS && !forced)
 		if(!(unconscious_allowed_modes[message_mode]))
 			return
 
@@ -210,10 +210,11 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	else
 		src.log_talk(message, LOG_SAY, forced_by=forced)
 
-	if(src.client)
+	if(client)
+		last_words = message
 		record_featured_stat(FEATURED_STATS_SPEAKERS, src)	//Yappin'
 	if(findtext(message, "Abyssor"))	//funni
-		GLOB.azure_round_stats[STATS_ABYSSOR_REMEMBERED]++
+		record_round_statistic(STATS_ABYSSOR_REMEMBERED)
 
 	spans |= speech_span
 
@@ -314,7 +315,11 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	//time for emoting!!
 	var/datum/language/D = GLOB.language_datum_instances[message_language]
 	var/sign_verb = pick(D.signlang_verb)
-	var/chatmsg = "<b>[src]</b> " + sign_verb + "."
+	var/mob_color = "FFFFFF"
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		mob_color = H.voice_color
+	var/chatmsg = "<font color = #[mob_color]><b>[src]</b></font> " + sign_verb + "."
 	visible_message(chatmsg, runechat_message = sign_verb, log_seen = SEEN_LOG_EMOTE, ignored_mobs = understanders)
 
 	//speech bubble
@@ -361,6 +366,9 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	// Create map text prior to modifying message for goonchat
 	if(can_see_runechat(speaker) && can_hear())
 		create_chat_message(speaker, message_language, raw_message, spans, message_mode)
+	if(raw_message == last_heard_raw_message)
+		return
+	last_heard_raw_message = raw_message
 	// Recompose message for AI hrefs, language incomprehension.
 	message = compose_message(speaker, message_language, raw_message, radio_freq, spans, message_mode)
 	show_message(message, MSG_AUDIBLE, deaf_message, deaf_type)
@@ -374,7 +382,6 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	var/Zs_yell = FALSE
 	var/listener_has_ceiling	= TRUE
 	var/speaker_has_ceiling		= TRUE
-
 	var/turf/speaker_turf = get_turf(src)
 	var/turf/speaker_ceiling = get_step_multiz(speaker_turf, UP)
 	if(speaker_ceiling)
@@ -442,18 +449,22 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 
 	var/rendered = compose_message(src, message_language, message, , spans, message_mode)
 	for(var/_AM in listening)
+		var/hearall = FALSE
 		var/atom/movable/AM = _AM
 		var/turf/listener_turf = get_turf(AM)
 		var/turf/listener_ceiling = get_step_multiz(listener_turf, UP)
+		if(istype(_AM, /obj/item/listeningdevice)) // Very evil snowflake code.
+			hearall = TRUE
 		if(listener_ceiling)
 			listener_has_ceiling = TRUE
 			if(istransparentturf(listener_ceiling))
 				listener_has_ceiling = FALSE
-		if((!Zs_too && !isobserver(AM)) || message_mode == MODE_WHISPER)
-			if(AM.z != src.z)
-				continue
-		if(Zs_too && AM.z != src.z && !Zs_all)
-			if(!Zs_yell && !HAS_TRAIT(AM, TRAIT_KEENEARS))
+		if(!hearall)		
+			if((!Zs_too && !isobserver(AM)) || message_mode == MODE_WHISPER)
+				if(AM.z != src.z)
+					continue
+		if(Zs_too && listener_turf.z != speaker_turf.z && !Zs_all)
+			if(!Zs_yell && !HAS_TRAIT(AM, TRAIT_KEENEARS) && !hearall)
 				if(listener_turf.z < speaker_turf.z && listener_has_ceiling)	//Listener is below the speaker and has a ceiling above them
 					continue
 				if(listener_turf.z > speaker_turf.z && speaker_has_ceiling)		//Listener is above the speaker and the speaker has a ceiling above
@@ -465,7 +476,7 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 					continue
 			var/listener_obstructed = TRUE
 			var/speaker_obstructed = TRUE
-			if(src != AM && !Zs_yell && !HAS_TRAIT(AM, TRAIT_KEENEARS))	//We always hear ourselves. Zs_yell will allow a "!" shout to bypass walls one z level up or below.
+			if(src != AM && !Zs_yell && !HAS_TRAIT(AM, TRAIT_KEENEARS) && !hearall)	//We always hear ourselves. Zs_yell will allow a "!" shout to bypass walls one z level up or below.
 				if(!speaker_has_ceiling && isliving(AM))
 					var/mob/living/M = AM
 					for(var/mob/living/MH in viewers(world.view, speaker_ceiling))
@@ -523,8 +534,8 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	return TRUE
 
 /mob/living/proc/can_speak_vocal(message) //Check AFTER handling of xeno and ling channels
-	if(HAS_TRAIT(src, TRAIT_MUTE)|| HAS_TRAIT(src, TRAIT_PERMAMUTE))
-		return FALSE
+	if(HAS_TRAIT(src, TRAIT_MUTE)|| HAS_TRAIT(src, TRAIT_PERMAMUTE) || HAS_TRAIT(src, TRAIT_BAGGED))
+		return FALSE	
 
 	if(is_muzzled())
 		return FALSE

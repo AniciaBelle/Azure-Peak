@@ -2,6 +2,7 @@
 	name = "Enlarge Person"
 	desc = "For a time, enlarges your target to a giant hulking version of themselves capable of bashing into doors. Does not work on folk who are already large."
 	cost = 2
+	overlay_state = "enlarge"
 	releasedrain = 35
 	chargedrain = 1
 	chargetime = 1 SECONDS
@@ -11,7 +12,7 @@
 	movement_interrupt = FALSE
 	charging_slowdown = 3
 	spell_tier = 2
-	invocation = "Dilatare!"
+	invocations = list("Dilatare!")
 	invocation_type = "shout"
 	chargedloop = /datum/looping_sound/wind
 	associated_skill = /datum/skill/magic/arcane

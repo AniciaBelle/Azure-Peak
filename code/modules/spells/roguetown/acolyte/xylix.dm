@@ -1,5 +1,6 @@
 /obj/effect/proc_holder/spell/invoked/wheel
 	name = "The Wheel"
+	desc = "Spins the wheel, either buffing or debuffing the targets fortune."
 	releasedrain = 10
 	chargedrain = 0
 	chargetime = 3
@@ -22,8 +23,72 @@
 	revert_cast()
 	return FALSE
 
+/obj/effect/proc_holder/spell/invoked/mastersillusion
+	name = "Set Decoy"
+	desc = "Creates a body double of yourself and makes you invisible, after a delay your clone explodes into smoke."
+	releasedrain = 10
+	chargedrain = 0
+	chargetime = 0
+	range = 1
+	no_early_release = TRUE
+	movement_interrupt = FALSE
+	chargedloop = /datum/looping_sound/invokeholy
+	associated_skill = /datum/skill/magic/holy
+	antimagic_allowed = TRUE
+	recharge_time = 30 SECONDS
+	var/firstcast = TRUE
+	var/icon/clone_icon
+
+/obj/effect/proc_holder/spell/invoked/mastersillusion/cast(list/targets, mob/living/carbon/human/user = usr)
+	if(firstcast)
+		to_chat(user, span_italics("...Oh, oh, thy visage is so grand! Let us prepare it for tricks!"))
+		clone_icon = get_flat_human_icon("[user.real_name] decoy", null, null, DUMMY_HUMAN_SLOT_MANIFEST, GLOB.cardinals, TRUE, user, TRUE) // We can only set our decoy icon once. This proc is sort of expensive on generation.
+		firstcast = FALSE
+		name = "Master's Illusion"
+		to_chat(user, "There we are... Perfect.")
+		revert_cast()
+		return
+	var/turf/T = get_turf(user)
+	new /mob/living/simple_animal/hostile/rogue/xylixdouble(T, user, clone_icon)
+	animate(user, alpha = 0, time = 0 SECONDS, easing = EASE_IN)
+	user.mob_timers[MT_INVISIBILITY] = world.time + 7 SECONDS
+	addtimer(CALLBACK(user, TYPE_PROC_REF(/mob/living/carbon/human, update_sneak_invis), TRUE), 7 SECONDS)
+	addtimer(CALLBACK(user, TYPE_PROC_REF(/atom/movable, visible_message), span_warning("[user] fades back into view."), span_notice("You become visible again.")), 7 SECONDS)
+	return TRUE
+
+/mob/living/simple_animal/hostile/rogue/xylixdouble
+	name = "Xylixian Double - You shouldnt be seeing this."
+	desc = ""
+	gender = NEUTER
+	mob_biotypes = MOB_HUMANOID
+	maxHealth = 20
+	health = 20
+	canparry = TRUE
+	d_intent = INTENT_PARRY
+	defprob = 50
+	footstep_type = FOOTSTEP_MOB_BAREFOOT
+	del_on_death = TRUE
+	loot = list(/obj/item/smokebomb/decoy)
+	can_have_ai = FALSE
+	AIStatus = AI_OFF
+	ai_controller = /datum/ai_controller/mudcrab // doesnt really matter
+
+
+/obj/item/smokebomb/decoy/Initialize()
+	. = ..()
+	playsound(loc, 'sound/magic/decoylaugh.ogg', 50)
+	explode()
+
+/mob/living/simple_animal/hostile/rogue/xylixdouble/Initialize(mapload, mob/living/carbon/human/copycat, icon/I)
+	. = ..()
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/mob/living/simple_animal, death), TRUE), 7 SECONDS)
+	icon = I
+	name = copycat.name
+	
+
 /obj/effect/proc_holder/spell/invoked/mockery
 	name = "Vicious Mockery"
+	desc = "Mock your target, reducing their INT, SPD, STR and END for a time."
 	releasedrain = 50
 	associated_skill = /datum/skill/misc/music
 	recharge_time = 2 MINUTES
@@ -40,7 +105,7 @@
 			return FALSE
 		target.apply_status_effect(/datum/status_effect/debuff/viciousmockery)
 		SEND_SIGNAL(user, COMSIG_VICIOUSLY_MOCKED, target)
-		GLOB.azure_round_stats[STATS_PEOPLE_MOCKED]++
+		record_round_statistic(STATS_PEOPLE_MOCKED)
 		return TRUE
 	revert_cast()
 	return FALSE
@@ -79,7 +144,7 @@
 	id = "viciousmockery"
 	alert_type = /atom/movable/screen/alert/status_effect/debuff/viciousmockery
 	duration = 600 // One minute
-	effectedstats = list("strength" = -1, "speed" = -1,"endurance" = -1, "intelligence" = -3)
+	effectedstats = list(STATKEY_STR = -1, STATKEY_SPD = -1,STATKEY_WIL = -1, STATKEY_INT = -3)
 
 /atom/movable/screen/alert/status_effect/debuff/viciousmockery
 	name = "Vicious Mockery"
@@ -88,6 +153,7 @@
 
 /obj/effect/proc_holder/spell/self/xylixslip
 	name = "Xylixian Slip"
+	desc = "Jumps you up to 3 tiles away."
 	overlay_state = "xylix_slip"
 	releasedrain = 10
 	chargedrain = 0

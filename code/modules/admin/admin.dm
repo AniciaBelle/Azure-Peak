@@ -5,6 +5,11 @@
 		if(check_rights_for(C, R_ADMIN))
 			to_chat(C, msg)
 
+/proc/spawn_message_admins(msg)
+	msg = "<span class=\"admin\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message linkify\">[msg]</span></span>"
+	for(var/client/C in GLOB.admins)
+		if(check_rights_for(C, R_ADMIN) && (C.prefs.admin_chat_toggles & CHAT_ADMINSPAWN))
+			to_chat(C, msg)
 
 /proc/relay_msg_admins(msg)
 	msg = "<span class=\"admin\"><span class=\"prefix\">RELAY:</span> <span class=\"message linkify\">[msg]</span></span>"
@@ -163,15 +168,14 @@
 
 	body += "<div id='skills-section'>"
 	body += "<h3>Skills</h3><ul>"
-	if(M.mind)
-		for(var/skill_type in SSskills.all_skills)
-			var/datum/skill/skill = GetSkillRef(skill_type)
-			if(skill in M.mind.known_skills)
-				body += "<li>[initial(skill.name)]: [M.mind.known_skills[skill]] "
-			else
-				body += "<li>[initial(skill.name)]: 0"
-			body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];increase_skill=[REF(M)];skill=[skill.type]'>+</a> "
-			body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];decrease_skill=[REF(M)];skill=[skill.type]'>-</a></li>"
+	for(var/skill_type in SSskills.all_skills)
+		var/datum/skill/skill = GetSkillRef(skill_type)
+		if(skill in M.skills?.known_skills)
+			body += "<li>[initial(skill.name)]: [M.skills?.known_skills[skill]] "
+		else
+			body += "<li>[initial(skill.name)]: 0"
+		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];increase_skill=[REF(M)];skill=[skill.type]'>+</a> "
+		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];decrease_skill=[REF(M)];skill=[skill.type]'>-</a></li>"
 	body += "</ul></div>"
 
 	body += "<div id='languages-section'>"
@@ -197,9 +201,9 @@
 		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];add_stat=[REF(M)];stat=perception'>+</a> "
 		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];lower_stat=[REF(M)];stat=perception'>-</a></li>"
 
-		body += "<li>Endurance: [living.STAEND] "
-		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];add_stat=[REF(M)];stat=endurance'>+</a> "
-		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];lower_stat=[REF(M)];stat=endurance'>-</a></li>"
+		body += "<li>Willpower: [living.STAWIL] "
+		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];add_stat=[REF(M)];stat=willpower'>+</a> "
+		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];lower_stat=[REF(M)];stat=willpower'>-</a></li>"
 
 		body += "<li>Constitution: [living.STACON] "
 		body += "<a class='skill-btn' href='?_src_=holder;[HrefToken()];add_stat=[REF(M)];stat=constitution'>+</a> "

@@ -116,7 +116,7 @@
 	user.emote("sexmoanhvy", forced = TRUE)
 	user.playsound_local(user, 'sound/misc/mat/end.ogg', 100)
 	last_ejaculation_time = world.time
-	GLOB.azure_round_stats[STATS_PLEASURES]++
+	record_round_statistic(STATS_PLEASURES)
 
 /datum/sex_controller/proc/after_intimate_climax()
 	if(user == target)
@@ -453,7 +453,7 @@
 	while(TRUE)
 		if(!isnull(target.client) && target.client.prefs.sexable == FALSE) //Vrell - Needs changed to let me test sex mechanics solo
 			break
-		if(!user.rogfat_add(action.stamina_cost * get_stamina_cost_multiplier()))
+		if(!user.stamina_add(action.stamina_cost * get_stamina_cost_multiplier()))
 			break
 		if(!do_after(user, (action.do_time / get_speed_multiplier()), target = target))
 			break

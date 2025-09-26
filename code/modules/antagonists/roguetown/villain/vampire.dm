@@ -56,17 +56,18 @@
 
 /datum/antagonist/vampire/on_gain()
 	if(!is_lesser)
-		owner.adjust_skillrank(/datum/skill/combat/wrestling, 6, TRUE)
-		owner.adjust_skillrank(/datum/skill/combat/unarmed, 6, TRUE)
-		ADD_TRAIT(owner.current, TRAIT_NOBLE, TRAIT_GENERIC)
+		owner.current.adjust_skillrank(/datum/skill/combat/wrestling, 6, TRUE)
+		owner.current.adjust_skillrank(/datum/skill/combat/unarmed, 6, TRUE)
+		ADD_TRAIT(owner.current, TRAIT_NOBLE, src)
 	owner.special_role = name
-	ADD_TRAIT(owner.current, TRAIT_STRONGBITE, TRAIT_GENERIC)
-	ADD_TRAIT(owner.current, TRAIT_NOHUNGER, TRAIT_GENERIC)
-	ADD_TRAIT(owner.current, TRAIT_NOBREATH, TRAIT_GENERIC)
-	ADD_TRAIT(owner.current, TRAIT_NOPAIN, TRAIT_GENERIC)
-	ADD_TRAIT(owner.current, TRAIT_TOXIMMUNE, TRAIT_GENERIC)
-	ADD_TRAIT(owner.current, TRAIT_STEELHEARTED, TRAIT_GENERIC)
-	owner.current.cmode_music = 'sound/music/combat_vamp2.ogg'
+	ADD_TRAIT(owner.current, TRAIT_STRONGBITE, src)
+	ADD_TRAIT(owner.current, TRAIT_NOHUNGER, src)
+	ADD_TRAIT(owner.current, TRAIT_NOBREATH, src)
+	ADD_TRAIT(owner.current, TRAIT_NOPAIN, src)
+	ADD_TRAIT(owner.current, TRAIT_TOXIMMUNE, src)
+	ADD_TRAIT(owner.current, TRAIT_STEELHEARTED, src)
+	ADD_TRAIT(owner.current, TRAIT_SILVER_WEAK, src)
+	owner.current.cmode_music = 'sound/music/cmode/antag/combat_thrall.ogg'
 	var/obj/item/organ/eyes/eyes = owner.current.getorganslot(ORGAN_SLOT_EYES)
 	if(eyes)
 		eyes.Remove(owner.current,1)
@@ -193,26 +194,43 @@
 	VD.disguised = TRUE
 	skin_tone = VD.cache_skin
 	hair_color = VD.cache_hair
-	eye_color = VD.cache_eyes
 	facial_hair_color = VD.cache_hair
+	var/obj/item/organ/eyes/eyes = getorganslot(ORGAN_SLOT_EYES)
+	if(eyes)
+		eyes.Remove(src,1)
+		QDEL_NULL(eyes)
+	eyes = new VD.cache_eyes
+	eyes.Insert(src)
+	set_eye_color(src, VD.cache_eye_color, VD.cache_eye_color)
 	update_body()
 	update_hair()
 	update_body_parts(redraw = TRUE)
+	eyes.update_accessory_colors()
+	mob_biotypes &= ~MOB_UNDEAD
+	faction = list()
+	to_chat(src, span_notice("My true form is hidden."))
 
 /mob/living/carbon/human/proc/vampire_undisguise(datum/antagonist/vampirelord/VD)
 	if(!VD)
 		return
 	VD.disguised = FALSE
-//	VD.cache_skin = skin_tone
-//	VD.cache_eyes = eye_color
-//	VD.cache_hair = hair_color
 	skin_tone = "c9d3de"
 	hair_color = "181a1d"
 	facial_hair_color = "181a1d"
-	eye_color = "ff0000"
+	var/obj/item/organ/eyes/eyes = getorganslot(ORGAN_SLOT_EYES)
+	if(eyes)
+		eyes.Remove(src,1)
+		QDEL_NULL(eyes)
+	eyes = new /obj/item/organ/eyes/night_vision/zombie
+	eyes.Insert(src)
+	set_eye_color(src, "#FF0000", "#FF0000")
 	update_body()
 	update_hair()
 	update_body_parts(redraw = TRUE)
+	eyes.update_accessory_colors()
+	mob_biotypes |= MOB_UNDEAD
+	faction = list("undead")
+	to_chat(src, span_notice("My true form is revealed."))
 
 
 /mob/living/carbon/human/proc/blood_strength()
@@ -239,7 +257,7 @@
 /datum/status_effect/buff/bloodstrength
 	id = "bloodstrength"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/bloodstrength
-	effectedstats = list("strength" = 6)
+	effectedstats = list(STATKEY_STR = 6)
 	duration = 1 MINUTES
 
 /atom/movable/screen/alert/status_effect/buff/bloodstrength
@@ -264,7 +282,7 @@
 		to_chat(src, span_warning("Already active."))
 		return
 	VD.handle_vitae(-100)
-	rogstam_add(2000)
+	energy_add(2000)
 	apply_status_effect(/datum/status_effect/buff/celerity)
 	to_chat(src, span_greentext("! QUICKENING !"))
 	src.playsound_local(get_turf(src), 'sound/misc/vampirespell.ogg', 100, FALSE, pressure_affected = FALSE)
@@ -272,7 +290,7 @@
 /datum/status_effect/buff/celerity
 	id = "celerity"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/celerity
-	effectedstats = list("speed" = 15,"perception" = 10)
+	effectedstats = list(STATKEY_SPD = 15,STATKEY_PER = 10)
 	duration = 30 SECONDS
 
 /datum/status_effect/buff/celerity/nextmove_modifier()
@@ -300,7 +318,7 @@
 		to_chat(src, span_warning("Already active."))
 		return
 	VD.vitae -= 100
-	rogstam_add(2000)
+	energy_add(2000)
 	apply_status_effect(/datum/status_effect/buff/blood_fortitude)
 	to_chat(src, span_greentext("! ARMOR OF DARKNESS !"))
 	src.playsound_local(get_turf(src), 'sound/misc/vampirespell.ogg', 100, FALSE, pressure_affected = FALSE)
@@ -308,7 +326,7 @@
 /datum/status_effect/buff/blood_fortitude
 	id = "blood_fortitude"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/blood_fortitude
-	effectedstats = list("endurance" = 20,"constitution" = 20)
+	effectedstats = list(STATKEY_WIL = 20,STATKEY_CON = 20)
 	duration = 30 SECONDS
 
 /atom/movable/screen/alert/status_effect/buff/blood_fortitude
@@ -316,7 +334,7 @@
 	desc = ""
 	icon_state = "bleed1"
 
-/datum/status_effect/buff/fortitude/on_apply()
+/datum/status_effect/buff/blood_fortitude/on_apply()
 	. = ..()
 	if(ishuman(owner))
 		var/mob/living/carbon/human/H = owner
@@ -324,7 +342,7 @@
 		H.skin_armor = new /obj/item/clothing/suit/roguetown/armor/skin_armor/vampire_fortitude(H)
 	owner.add_stress(/datum/stressevent/weed)
 
-/datum/status_effect/buff/fortitude/on_remove()
+/datum/status_effect/buff/blood_fortitude/on_remove()
 	if(ishuman(owner))
 		var/mob/living/carbon/human/H = owner
 		if(istype(H.skin_armor, /obj/item/clothing/suit/roguetown/armor/skin_armor/vampire_fortitude))
@@ -347,18 +365,17 @@
 /mob/living/carbon/human/proc/vamp_regenerate()
 	set name = "Regenerate"
 	set category = "VAMPIRE"
-	var/silver_curse_status = FALSE
-	for(var/datum/status_effect/debuff/silver_curse/silver_curse in status_effects)
-		silver_curse_status = TRUE
-		break
+	if(has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder) || has_status_effect(/datum/status_effect/fire_handler/fire_stacks/sunder/blessed))
+		if(prob(50))
+			to_chat(src, span_warning("I cannot regenerate while engulfed in holy fire!"))
+		else
+			to_chat(src, span_warning("Holy fire smothers my attempt to mend these wounds!"))
+		return
 	var/datum/antagonist/vampirelord/VD = mind.has_antag_datum(/datum/antagonist/vampirelord)
 	if(!VD)
 		return
 	if(VD.disguised)
 		to_chat(src, span_warning("My curse is hidden."))
-		return
-	if(silver_curse_status)
-		to_chat(src, span_warning("My BANE is not letting me REGEN!."))
 		return
 	if(VD.vitae < 300)
 		to_chat(src, span_warning("Not enough vitae."))

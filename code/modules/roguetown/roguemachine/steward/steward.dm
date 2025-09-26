@@ -52,7 +52,12 @@
 				return
 		to_chat(user, span_warning("Wrong key."))
 		return
+	if(istype(P, /obj/item/roguecoin/aalloy))
+		return
+	if(istype(P, /obj/item/roguecoin/inqcoin))	
+		return	
 	if(istype(P, /obj/item/roguecoin))
+		record_round_statistic(STATS_MAMMONS_DEPOSITED, P.get_real_price())
 		SStreasury.give_money_treasury(P.get_real_price(), "NERVE MASTER deposit")
 		qdel(P)
 		playsound(src, 'sound/misc/coininsert.ogg', 100, FALSE, -1)
@@ -77,6 +82,7 @@
 		SStreasury.treasury_value -= amt
 		SStreasury.total_import += amt
 		SStreasury.log_to_steward("-[amt] imported [D.name]")
+		record_round_statistic(STATS_STOCKPILE_IMPORTS_VALUE, amt)
 		if(amt >= 100) //Only announce big spending.
 			scom_announce("Azure Peak imports [D.name] for [amt] mammon.", )
 		D.raise_demand()
@@ -203,6 +209,7 @@
 			return
 		for(var/mob/living/carbon/human/H in GLOB.human_list)
 			if(H.job == job_to_pay)
+				record_round_statistic(STATS_WAGES_PAID)
 				SStreasury.give_money_account(amount_to_pay, H, "NERVE MASTER")
 	if(href_list["compact"])
 		compact = !compact
@@ -254,7 +261,7 @@
 	if(locked)
 		to_chat(user, span_warning("It's locked. Of course."))
 		return
-	user.changeNext_move(CLICK_CD_MELEE)
+	user.changeNext_move(CLICK_CD_INTENTCAP)
 	playsound(loc, 'sound/misc/keyboard_enter.ogg', 100, FALSE, -1)
 	var/canread = user.can_read(src, TRUE)
 	var/contents
@@ -284,7 +291,7 @@
 				for(var/mob/living/carbon/human/A in SStreasury.bank_accounts)
 					if(ishuman(A))
 						var/mob/living/carbon/human/tmp = A
-						contents += "[tmp.real_name] ([job_filter(tmp.advjob, tmp.job)]) - [SStreasury.bank_accounts[A]]m"
+						contents += "[tmp.real_name] ([job_filter(tmp.advjob, tmp.job, compact)]) - [SStreasury.bank_accounts[A]]m"
 					else
 						contents += "[A.real_name] - [SStreasury.bank_accounts[A]]m"
 					contents += " / <a href='?src=\ref[src];givemoney=\ref[A]'>\[PAY\]</a> <a href='?src=\ref[src];fineaccount=\ref[A]'>\[FINE\]</a><BR><BR>"
@@ -292,7 +299,7 @@
 				for(var/mob/living/carbon/human/A in SStreasury.bank_accounts)
 					if(ishuman(A))
 						var/mob/living/carbon/human/tmp = A
-						contents += "[tmp.real_name] ([job_filter(tmp.advjob, tmp.job)]) - [SStreasury.bank_accounts[A]]m<BR>"
+						contents += "[tmp.real_name] ([job_filter(tmp.advjob, tmp.job, compact)]) - [SStreasury.bank_accounts[A]]m<BR>"
 					else
 						contents += "[A.real_name] - [SStreasury.bank_accounts[A]]m<BR>"
 					contents += "<a href='?src=\ref[src];givemoney=\ref[A]'>\[Give Money\]</a> <a href='?src=\ref[src];fineaccount=\ref[A]'>\[Fine Account\]</a><BR><BR>"
@@ -323,8 +330,13 @@
 					contents += " | SELL: <a href='?src=\ref[src];setbounty=\ref[A]'>[A.payout_price]m</a>"
 					contents += " / BUY: <a href='?src=\ref[src];setprice=\ref[A]'>[A.withdraw_price]m</a>"
 					contents += " / LIMIT: <a href='?src=\ref[src];setlimit=\ref[A]'>[A.stockpile_limit]</a>"
-					if(A.importexport_amt)
-						contents += " <a href='?src=\ref[src];import=\ref[A]'>\[IMP [A.importexport_amt] ([A.get_import_price()])\]</a> <a href='?src=\ref[src];export=\ref[A]'>\[EXP [A.importexport_amt] ([A.get_export_price()])\]</a> <BR>"
+					if(!A.export_only)
+						if(A.importexport_amt)
+							contents += " <a href='?src=\ref[src];import=\ref[A]'>\[IMP [A.importexport_amt] ([A.get_import_price()])\]</a> <a href='?src=\ref[src];export=\ref[A]'>\[EXP [A.importexport_amt] ([A.get_export_price()])\]</a> <BR>"
+					else
+						if(A.importexport_amt)
+							contents += " <a href='?src=\ref[src];export=\ref[A]'>\[EXP [A.importexport_amt] ([A.get_export_price()])\]</a> <BR>"
+			
 			else
 				contents += "Treasury: [SStreasury.treasury_value]m<BR>"
 				contents += "Lord's Tax: [SStreasury.tax_value*100]%<BR>"
@@ -346,8 +358,12 @@
 					contents += "Bounty Price: <a href='?src=\ref[src];setbounty=\ref[A]'>[A.payout_price]</a><BR>"
 					contents += "Withdraw Price: <a href='?src=\ref[src];setprice=\ref[A]'>[A.withdraw_price]</a><BR>"
 					contents += "Demand: [A.demand2word()]<BR>"
-					if(A.importexport_amt)
-						contents += "<a href='?src=\ref[src];import=\ref[A]'>\[Import [A.importexport_amt] ([A.get_import_price()])\]</a> <a href='?src=\ref[src];export=\ref[A]'>\[Export [A.importexport_amt] ([A.get_export_price()])\]</a> <BR>"
+					if(!A.export_only)
+						if(A.importexport_amt)
+							contents += "<a href='?src=\ref[src];import=\ref[A]'>\[Import [A.importexport_amt] ([A.get_import_price()])\]</a> <a href='?src=\ref[src];export=\ref[A]'>\[Export [A.importexport_amt] ([A.get_export_price()])\]</a> <BR>"
+					else
+						if(A.importexport_amt)
+							contents += " <a href='?src=\ref[src];export=\ref[A]'>\[Export [A.importexport_amt] ([A.get_export_price()])\]</a> <BR>"
 					contents += "<a href='?src=\ref[src];togglewithdraw=\ref[A]'>\[[A.withdraw_disabled ? "Enable" : "Disable"] Withdrawing\]</a><BR><BR>"
 		if(TAB_IMPORT)
 			contents += "<a href='?src=\ref[src];switchtab=[TAB_MAIN]'>\[Return\]</a>"
@@ -410,16 +426,19 @@
 	popup.set_content(contents)
 	popup.open()
 
-/obj/structure/roguemachine/steward/proc/job_filter(advj, j)
+/obj/structure/roguemachine/steward/proc/job_filter(advj, j, compact = FALSE)
 	if(advj in excluded_jobs)
 		return "Adventurer"
 	if(j in excluded_jobs)
 		return "Adventurer"
-	if(advj)
-		return advj
-	else
+	if(compact && j)
 		return j
-
+	else if(!compact && advj && j)
+		return "[j] ([advj])"
+	else if(j)
+		return j
+	else if(advj)
+		return advj
 
 #undef TAB_MAIN
 #undef TAB_BANK

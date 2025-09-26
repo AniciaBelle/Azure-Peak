@@ -53,7 +53,14 @@
 		if(!C.get_bodypart(BODY_ZONE_L_LEG) && !C.get_bodypart(BODY_ZONE_R_LEG))
 			return
 		if(C.m_intent == MOVE_INTENT_SNEAK && !T.footstepstealth)
-			return// stealth
+			if(!C.loud_sneaking || C.rogue_sneaking)
+				return// stealth
+			steps++
+			if(steps&2 == 2) // Hrrghn... Colonel, I'm trying to sneak around, but I'm dummy thicc, and the clap of my asscheeks keeps ALERTING THE GUARDS
+				playsound(C, pick(list('sound/misc/mat/thicc (1).ogg','sound/misc/mat/thicc (2).ogg','sound/misc/mat/thicc (3).ogg','sound/misc/mat/thicc (4).ogg')), 15 * volume)
+			if(steps >= 6)
+				steps = 0
+			return// uhm... stealth?
 	steps++
 
 	if(steps >= 6)
@@ -102,7 +109,7 @@
 	var/list/used_footsteps
 	var/obj/item/clothing/shoes/humshoes = H.shoes
 
-	if((humshoes && !humshoes?.is_barefoot) || feetCover) //are we wearing shoes, and do they actually cover the sole
+	if((istype(humshoes) && !humshoes?.is_barefoot) || feetCover) //are we wearing shoes, and do they actually cover the sole
 		//SANITY CHECK, WILL NOT PLAY A SOUND IF THE LIST IS INVALID
 		if(!GLOB.footstep[T.footstep] || (LAZYLEN(GLOB.footstep[T.footstep]) < 3))
 			testing("SOME silly guy GAVE AN INVALID FOOTSTEP VALUE ([T.footstep]) TO [T.type]!!! FIX THIS SHIT!!!")
